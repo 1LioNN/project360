@@ -5,7 +5,7 @@ Developed by the _Project 360_ team.
 ### Team members
 
 - Lion Su - 1007271523
-- Vanshika Virmani -
+- Vanshika Virmani - 1006865251
 - Lander Joshua Vitug - 1006560366
 
 ## Project Description
@@ -24,14 +24,30 @@ Overall, _Project 360_ is an innovative and user-friendly web app that offers an
 - FLASK for the backend
 - PostgreSQL for the database
 
+### Method for Deployment
+
+- DigitalOcean Kubernetes
+
 ### Complexity Points
 
-- three.js (2 points)
+- Three.js (2 points)
+  - Will be used for the building and rendering of our 3-D space for rooms, and the items we place in it.
 - auth0 (1 point)
+  - Will be used for authenticating the users that sign up (for creating an account) and sign in (for logging into) to our website
+  - Will use scopes for User information (name, email, maybe a profile picture)
 - socket.io (2 points)
+  - Will be used for allowing users to collaborate on dragging the furniture to the room in real time.
+  - Canvas updates will give users the ability to:
+    - Place items on the canvas
+    - Move items around on the canvas
+    - Clear/ delete items from the canvas
 - sendgrid (2 points)
+  - Will be used for sending emails for invitations to the individual rooms
+  - The person who 'created' a canvas will be allowed to invite other users (who must sign up for the website) to collaborate on the sam canvas. This invitation will involve sending a Room ID (or a secret key) to the user for authorization purposes.
 - sentry (1 point)
+  - Will be used for the handling and automatic reporting of errors or exceptions that users run into while using our application.
 - react dnd (1 point)
+  - Will be used for implementing the drag and drop functionality of the furniture peices onto the canvas
 
 #### Challenge Factor
 
