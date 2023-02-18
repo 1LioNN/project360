@@ -43,16 +43,16 @@ Overall, _Project 360_ is an innovative and user-friendly web app that offers an
     - Clear/ delete items from the canvas
 - sendgrid (2 points)
   - Will be used for sending emails for invitations to the individual rooms
-  - The person who 'created' a canvas will be allowed to invite other users (who must sign up for the website) to collaborate on the sam canvas. This invitation will involve sending a Room ID (or a secret key) to the user for authorization purposes.
+  - The person who 'created' a canvas will be allowed to invite other users (who must sign up for the website) to collaborate on the same canvas. This invitation will involve sending a Room ID (or a secret key / link) to the user for authorization purposes.
 - sentry (1 point)
   - Will be used for the handling and automatic reporting of errors or exceptions that users run into while using our application.
 - react dnd (1 point)
-  - Will be used for implementing the drag and drop functionality of the furniture peices onto the canvas
+  - Will be used for implementing the drag and drop functionality of the furniture pieces onto the canvas
 
 #### Challenge Factor
 
-- celery (3 points)
 - web audio (1 point)
+  - Will be used for an enhanced user experience by adding audio indicators whenever the user interacts with the furniture, i.e. having sound effects for dragging and dropping the furniture.
 
 ## Alpha Version (March 6, 2023)
 
