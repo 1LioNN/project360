@@ -1,6 +1,8 @@
 import { User, Item, Room } from "../models/index.js";
 import { Router } from "express";
 import bcrypt from "bcrypt";
+import path from "path";
+import fs from "fs";
 import { isAuthenticated } from "../middleware/auth.js";
 
 export const usersRouter = Router({ mergeParams: true });
@@ -127,6 +129,25 @@ usersRouter.delete("/:id", async (req, res) => {
   }
 
   // will need to also remove items and item junction table
+
+  const userRooms = await Room.findAll({
+    where: {
+      UserId: req.params.id
+    }
+  });
+  await Promise.all(
+    userRooms.map((room) => {
+      fs.unlink(
+        path.join(
+          room.previewMetadata.destination,
+          room.previewMetadata.filename
+        ),
+        (err) => {
+          if (err) throw err;
+        }
+      );
+    })
+  );
 
   await Room.destroy({
     where: {

@@ -6,4 +6,8 @@ export const Room = sequelize.define("Room", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  previewMetadata: {
+    type: DataTypes.JSON,
+    allowNull: true,
+  },
 });
