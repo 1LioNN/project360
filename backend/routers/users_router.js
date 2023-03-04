@@ -132,8 +132,8 @@ usersRouter.delete("/:id", async (req, res) => {
 
   const userRooms = await Room.findAll({
     where: {
-      UserId: req.params.id
-    }
+      UserId: req.params.id,
+    },
   });
   await Promise.all(
     userRooms.map((room) => {
@@ -151,14 +151,16 @@ usersRouter.delete("/:id", async (req, res) => {
 
   await Room.destroy({
     where: {
-      UserId: req.params.id
-    }
+      UserId: req.params.id,
+    },
   });
 
   await user.removeRooms();
   await user.destroy();
 
-  return res.json({ message: `User(id=${req.params.id}) has be been deleted.` });
+  return res.json({
+    message: `User(id=${req.params.id}) has be been deleted.`,
+  });
 });
 
 // temporary, for testing purposes
@@ -177,10 +179,10 @@ usersRouter.post("/:id/temp", async (req, res) => {
   const user = await User.findByPk(req.params.id);
   const room = await Room.create({
     name: req.body.name,
-    UserId: req.params.id
+    UserId: req.params.id,
   });
   room.addUser(user);
   return res.json({
     name: room.name,
   });
-})
+});

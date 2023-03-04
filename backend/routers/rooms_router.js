@@ -92,11 +92,9 @@ roomsRouter.get("/", async (req, res) => {
   if (action && cursor && limit) {
     const isValidAction = action === `next` || action === `prev`;
     if (!isValidAction) {
-      return res
-        .status(422)
-        .json({
-          error: `${action} is not a valid value to the action query parameter (use either 'prev' or 'next').`,
-        });
+      return res.status(422).json({
+        error: `${action} is not a valid value to the action query parameter (use either 'prev' or 'next').`,
+      });
     }
 
     return action === `next` ? getNextRooms(req, res) : getPrevRooms(req, res);
@@ -129,11 +127,9 @@ roomsRouter.get("/", async (req, res) => {
     return res.json({ items: rooms });
   }
 
-  return res
-    .status(422)
-    .json({
-      error: `The provided query parameters are invalid. Please ensure that 'limit', 'cursor', and 'action' are provided correctly and are compatible with each other.`,
-    });
+  return res.status(422).json({
+    error: `The provided query parameters are invalid. Please ensure that 'limit', 'cursor', and 'action' are provided correctly and are compatible with each other.`,
+  });
 });
 
 roomsRouter.post("/", async (req, res) => {
