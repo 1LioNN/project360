@@ -4,10 +4,16 @@ import { Item } from "./item.js";
 import { Room } from "./room.js";
 import { User } from "./user.js";
 
-User.belongsToMany(Room, { through: "UserRooms" });
-Room.belongsToMany(User, { through: "UserRooms" });
+// one-to-many: every room has an owner, a user has many rooms
+User.hasMany(Room);
+Room.belongsTo(User);
 
-Room.hasMany(Item);
-Item.belongsTo(Room);
+// many-to-many: a user can be invited to another user's room
+User.belongsToMany(Room, { through: "UserRoom" });
+Room.belongsToMany(User, { through: "UserRoom" });
+
+// many-to-many: an item can appear in many rooms and rooms have many items
+Room.belongsToMany(Item, { through: "RoomItem" });
+Item.belongsToMany(Room, { through: "RoomItem" });
 
 export { Item, Room, User };

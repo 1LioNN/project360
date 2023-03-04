@@ -5,5 +5,5 @@ export const Item = sequelize.define("Item", {
   name: {
     type: DataTypes.STRING,
     allowNull: false,
-  }
+  },
 });
