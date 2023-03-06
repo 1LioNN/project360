@@ -10,13 +10,13 @@ export const Item = sequelize.define("Item", {
   filepath: {
     type: DataTypes.STRING,
     allowNull: false,
-  }, 
+  },
   rotate: {
     type: DataTypes.INTEGER,
-  }, 
+  },
   coordinates: {
     type: DataTypes.ARRAY(DataTypes.INTEGER),
-  }, 
+  },
   category: {
     type: DataTypes.STRING,
     allowNull: false,
