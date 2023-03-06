@@ -1,13 +1,11 @@
-import './App.css'
-import Edit from './pages/EditPage'
+import "./App.css";
+import Edit from "./pages/EditPage";
 function App() {
-
-
   return (
     <div className="App">
-      < Edit />
+      <Edit />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
