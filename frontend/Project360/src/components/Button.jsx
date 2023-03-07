@@ -3,7 +3,7 @@ import React from "react";
 function Button(props) {
   return (
     <div>
-      <button onClick={props.onClick}>{props.text}</button>
+      <button className={props.className + " border-indigo-500 rounded-xl border-solid border p-3"} onClick={props.onClick}>{props.text}</button>
     </div>
   );
 }

@@ -34,7 +34,7 @@ function EditPage() {
         <Button text={"Add Table"} onClick={() => addModel("table")} />
         <Button text={"Delete"} onClick={() => deleteModel()} />
       </div>
-      <Room dimensions={[40, 30]} models={models} />
+      <Room dimensions={[20, 30]} models={models} />
     </div>
   );
 }

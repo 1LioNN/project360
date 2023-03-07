@@ -2,7 +2,6 @@ import { OrbitControls } from "@react-three/drei";
 import React from "react";
 import { Canvas, useLoader } from "@react-three/fiber";
 import * as THREE from "three";
-import Model from "./Model";
 import Bed from "../models/Bed";
 import Table from "../models/Table";
 import { useState } from "react";

@@ -1,9 +1,10 @@
 import "./App.css";
+import Home from "./pages/HomePage";
 import Edit from "./pages/EditPage";
 function App() {
   return (
-    <div className="App">
-      <Edit />
+    <div className="App h-screen">
+      <Home />
     </div>
   );
 }
