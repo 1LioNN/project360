@@ -8,7 +8,7 @@ function App() {
   const { isLoading, error } = useAuth0();
 
   return (
-    <main className="column">
+    <main className="App">
       <h1>Auth0 Login</h1>
       {error && <p>Authentication Error</p>}
       {!error && isLoading && <p>Loading...</p>}
