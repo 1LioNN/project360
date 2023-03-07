@@ -142,6 +142,7 @@ roomsRouter.post("/", async (req, res) => {
 
   const room = await Room.create({
     name: req.body.name,
+    dimensions: req.body.dimensions,
     UserId: req.params.userId,
   });
   return res.json(room);
@@ -166,7 +167,13 @@ roomsRouter.patch("/:id", async (req, res) => {
       .json({ error: `Room(id=${req.params.id}) not found.` });
   }
 
-  room.name = req.body.name;
+  if (req.body.name) {
+    room.name = req.body.name;
+  }
+  if (req.body.dimensions) {
+    room.dimensions = req.body.dimensions;
+  }
+
   room.save();
   return res.json(room);
 });
