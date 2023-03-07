@@ -12,6 +12,10 @@ Room.belongsTo(User);
 User.belongsToMany(Room, { through: "UserRoom" });
 Room.belongsToMany(User, { through: "UserRoom" });
 
+// one-to-many: every item has a room, a room has many items
+Room.hasMany(Item);
+Item.belongsTo(Room);
+
 // many-to-many: an item can appear in many rooms and rooms have many items
 Room.belongsToMany(Item, { through: "RoomItem" });
 Item.belongsToMany(Room, { through: "RoomItem" });

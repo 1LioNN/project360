@@ -17,6 +17,8 @@ try {
 }
 
 app.use("/api/users", usersRouter);
+app.use("/api/items", itemsRouter);
+app.use("/api/rooms", roomsRouter);
 
 app.listen(PORT, (err) => {
   if (err) console.log(err);
