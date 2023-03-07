@@ -54,7 +54,7 @@ Overall, _Project 360_ is an innovative and user-friendly web app that offers an
 - web audio (1 point)
   - Will be used for an enhanced user experience by adding audio indicators whenever the user interacts with the furniture, i.e. having sound effects for dragging and dropping the furniture.
 
-## Alpha Version (March 6, 2023)
+## Alpha Version (March 8, 2023)
 
 - Setup the frontend, backend, and database
 - Create and store canvases properly for each user
