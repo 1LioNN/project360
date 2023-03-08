@@ -5,7 +5,7 @@ import { usersRouter } from "./routers/users_router.js";
 import { roomsRouter } from "./routers/rooms_router.js";
 import { itemsRouter } from "./routers/items_router.js";
 
-const PORT = 3000;
+const PORT = 5000;
 export const app = express();
 
 app.use(bodyParser.json());
