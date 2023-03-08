@@ -7,53 +7,27 @@ import { isAuthenticated } from "../middleware/auth.js";
 
 export const usersRouter = Router({ mergeParams: true });
 
-// sign up
-usersRouter.post("/signup", async (req, res) => {
-  if (!req.body.username || !req.body.password) {
-    return res.status(400).json({
-      error: `username and/or password are required path parameters.`,
-    });
-  }
-
-  const user = User.build({
-    username: req.body.username,
-  });
-
-  const saltRounds = 10;
-  const salt = bcrypt.genSaltSync(saltRounds);
-  const password = bcrypt.hashSync(req.body.password, salt);
-  user.password = password;
-
-  try {
-    await user.save();
-  } catch {
-    return res.status(422).json({ error: "User creation failed." });
-  }
-  return res.json({
-    username: user.username,
-  });
-});
-
 // sign in
 usersRouter.post("/signin", async (req, res) => {
-  if (!req.body.username || !req.body.password) {
+  if (!req.body.isAuth) {
+    return res.status(401).json({ error: "User not signed in" });
+  }
+  if (!req.body.sub) {
     return res.status(400).json({
       error: `username and/or password are required path parameters.`,
     });
   }
 
-  const user = await User.findOne({
+  let user = await User.findOne({
     where: {
-      username: req.body.username,
+      sub: req.body.sub,
     },
   });
   if (user === null) {
-    return res.status(401).json({ error: "Incorrect username or password." });
+    user = await User.create({
+      sub: req.body.sub,
+    });
   }
-
-  const hash = user.password;
-  const password = req.body.password;
-  const result = bcrypt.compareSync(password, hash);
 
   req.session.userId = user.id;
 
