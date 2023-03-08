@@ -14,7 +14,7 @@ function EditPage() {
 
   useEffect(() => {
     apiService.getItems(roomId).then((res) => setModels(res.items));
-  }, [models]);
+  }, [models, roomId]);
 
   const addModel = async (type) => {
     let pos = position;

@@ -38,7 +38,7 @@ const createItem = async (roomId, type, position) => {
     },
     body: JSON.stringify({ category: type, coordinates: position }),
   };
-  return fetchTemplate(`api/items?roomId=${roomId}`);
+  return fetchTemplate(`api/items?roomId=${roomId}`, params);
 };
 
 const updateItemPos = async (itemId, position) => {
@@ -81,7 +81,7 @@ const getMe = async () => {
   return fetchTemplate(`api/users/me`);
 };
 
-export default {
+const apiService = {
   getRooms,
   createRoom,
   getItems,
@@ -92,3 +92,5 @@ export default {
   signOut,
   getMe,
 };
+
+export default apiService;

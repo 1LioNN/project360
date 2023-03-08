@@ -7,7 +7,7 @@ import Popup from "reactjs-popup";
 import { useState } from "react";
 import apiService from "../services/api-service.js";
 
-function SideBar({ rooms, setRooms }) {
+function SideBar({ userId, rooms, setRooms }) {
   const [roomName, setRoomName] = useState("");
   const [width, setWidth] = useState(0);
   const [length, setLength] = useState(0);
@@ -24,9 +24,8 @@ function SideBar({ rooms, setRooms }) {
     setLength(0);
 
     apiService
-      .getMe()
       .then((res) =>
-        apiService.createRoom(res.userId, roomName, [width, length])
+        apiService.createRoom(userId, roomName, [width, length])
       )
       .then((res) => {
         setRooms([...rooms, res.room]);

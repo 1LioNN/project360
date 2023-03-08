@@ -43,7 +43,7 @@ function Table({ itemId, position, setIsDragging, floorPlane }) {
     apiService
       .updateItemPos(itemId, pos)
       .then((res) => setPos(res.item.coordinates));
-  }, [clicked]);
+  }, [clicked, itemId, pos]);
 
   return (
     <group

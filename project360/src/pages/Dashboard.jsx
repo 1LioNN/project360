@@ -2,18 +2,29 @@ import React from "react";
 import NavBar from "../components/NavBar";
 import Sidebar from "../components/Sidebar";
 import RoomsContainer from "../components/RoomsContainer";
-import CreateRoomForm from "../components/CreateRoomForm";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
+import apiService from "../services/api-service.js";
 
 function Dashboard() {
-  const [rooms, setRooms] = useState([]);
+  const { user, isAuthenticated } = useAuth0();
+  const [userId, setUserId] = useState(null);
+  useEffect(() => {
+    if (user?.sub && isAuthenticated) {
+      apiService.signIn(user.sub, isAuthenticated).then(apiService.getMe).then((res) => {
+        setUserId(res.userId);
+      });
+    }
+  }, [user, isAuthenticated]);
 
+  const [rooms, setRooms] = useState([]);
+  
   return (
     <div className="flex flex-col m-0 h-full">
       <NavBar />
       <div className="flex flex-col flex-wrap m-0 h-full sm:flex-row">
-        <Sidebar rooms={rooms} setRooms={setRooms} />
-        <RoomsContainer rooms={rooms} setRooms={setRooms} />
+        <Sidebar userId={userId} rooms={rooms} setRooms={setRooms} />
+        <RoomsContainer userId={userId} rooms={rooms} setRooms={setRooms} />
       </div>
     </div>
   );

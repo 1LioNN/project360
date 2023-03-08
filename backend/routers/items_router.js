@@ -3,16 +3,13 @@ import { Router } from "express";
 import { Op } from "sequelize";
 import path from "path";
 import fs from "fs";
-import multer from "multer";
 import { isAuthenticated } from "../middleware/auth.js";
 
-//upload for stl files of furniture pieces
-const upload = multer({ dest: "furniture/" });
 export const itemsRouter = Router({ mergeParams: true });
 
 // post furniture piece
 // api/items?$roomId=${roomId}
-itemsRouter.post("/", upload.single("file"), async (req, res) => {
+itemsRouter.post("/", async (req, res) => {
   const room = await Room.findOne({ where: { id: req.query.roomId } });
   if (!room) {
     return res

@@ -4,9 +4,11 @@ import { DataTypes } from "sequelize";
 export const Item = sequelize.define("Item", {
   rotate: {
     type: DataTypes.INTEGER,
+    allowNull: false,
   },
   coordinates: {
     type: DataTypes.ARRAY(DataTypes.INTEGER),
+    allowNull: false,
   },
   category: {
     type: DataTypes.STRING,

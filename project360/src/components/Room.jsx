@@ -42,6 +42,7 @@ function Room({ dimensions, models }) {
         />
       );
     }
+    return ``;
   });
 
   return (

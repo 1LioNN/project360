@@ -3,15 +3,18 @@ import RoomCard from "./RoomCard";
 import { useEffect } from "react";
 import apiService from "../services/api-service.js";
 
-function SideBar({ rooms, setRooms }) {
+function SideBar({ userId, rooms, setRooms }) {
   useEffect(() => {
+    if (!userId) {
+      return;
+    }
+
     apiService
-      .getMe()
-      .then((res) => apiService.getRooms(res.userId))
+      .then((res) => apiService.getRooms(userId))
       .then((res) => {
         setRooms(res.items)
       });
-  }, [rooms]);
+  }, [userId, rooms, setRooms]);
 
   const RoomsList = rooms.map((room) => {
     return <RoomCard name={room.name} id={room.id} key={room.id} />;

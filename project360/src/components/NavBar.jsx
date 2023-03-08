@@ -30,7 +30,10 @@ function NavBar() {
               "bg-indigo-900 w-28 hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800"
             }
             text={"Log In"}
-            onClick={() => loginWithRedirect()}
+            onClick={() => loginWithRedirect().then(() => {
+              console.log("when? NOW");
+              apiService.signIn(user.sub, isAuthenticated)
+            })}
           />
         </div>
       ) : (

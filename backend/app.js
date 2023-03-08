@@ -5,10 +5,11 @@ import { usersRouter } from "./routers/users_router.js";
 import { roomsRouter } from "./routers/rooms_router.js";
 import { itemsRouter } from "./routers/items_router.js";
 import session from "express-session";
+import cors from "cors";
 
 const PORT = 3000;
 export const app = express();
-
+app.use(cors());
 app.use(bodyParser.json());
 
 try {
