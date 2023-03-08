@@ -1,8 +1,13 @@
 import React from "react";
 import RoomCard from "./RoomCard";
 
+// will need to refactor this to take props specifically setRooms and rooms
 function SideBar() {
   //Dummy Api data to get rooms, refer to EditPage.jsx for info on useEffect rerendering
+
+  // create useEffect to get models for this particular room
+    // call GET items api-service and set state
+    // trigger by the models state
 
   const Rooms = [
     {

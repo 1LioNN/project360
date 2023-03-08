@@ -37,6 +37,10 @@ function Bed({ position, setIsDragging, floorPlane }) {
     },
     { delay: true }
   );
+
+  // create useEffect here that will trigger whenever clicked
+  // changes. we make a PATCH request to update position
+
   return (
     <group
       ref={ref}

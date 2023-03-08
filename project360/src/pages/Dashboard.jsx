@@ -5,6 +5,9 @@ import RoomsContainer from "../components/RoomsContainer";
 import CreateRoomForm from "../components/CreateRoomForm";
 
 function Dashboard() {
+  // define use states for rooms
+  // pass it over to the two sibling components
+
   return (
     <div className="flex flex-col m-0 h-full">
       <NavBar />
