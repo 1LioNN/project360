@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import * as THREE from "three";
 import { useDrag } from "@use-gesture/react";
 import { useState } from "react";
