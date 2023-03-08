@@ -69,7 +69,7 @@ function SideBar() {
   ];
 
   const RoomsList = Rooms.map((room) => {
-    return <RoomCard name={room.name} key={room.id}/>;
+    return <RoomCard name={room.name} id={room.id} key={room.id}/>;
   });
 
   //CSS CURRENTLY NOT WORKING AS INTENDED CAN'T FIT OVERFLOW ROOMS (EASY FIX IS TO SWITCH TO OFFSET LIMIT PAGINATION)
