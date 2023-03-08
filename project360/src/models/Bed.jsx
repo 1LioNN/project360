@@ -28,7 +28,6 @@ function Bed({ position, setIsDragging, floorPlane }) {
           event.ray.intersectPlane(floorPlane, planeIntersectPoint);
           setPos([planeIntersectPoint.x, 0, planeIntersectPoint.z]);
         } else {
-          console.log("not active");
           setClicked(false);
           ref.current.scale.set(scale, scale, scale);
         }

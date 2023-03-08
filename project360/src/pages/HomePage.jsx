@@ -1,7 +1,6 @@
 import React from "react";
 import Graphic from "../components/Graphic";
 import NavBar from "../components/NavBar";
-import Room from "../components/Room";
 
 function HomePage() {
   return (

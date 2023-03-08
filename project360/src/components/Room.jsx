@@ -41,7 +41,7 @@ function Room({ dimensions, models }) {
       );
     }
   });
-  console.log(modelsList);
+
   return (
     <div className="basis-9/12 h-screen bg-zinc-900">
       <Canvas camera={{ position: [0, 5, 10] }}>

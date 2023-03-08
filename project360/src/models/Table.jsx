@@ -11,13 +11,13 @@ function Table({ position, setIsDragging, floorPlane }) {
   const { nodes, materials } = useGLTF(table);
   const [clicked, setClicked] = useState(false);
   const [pos, setPos] = useState(position);
-  const raycaster = new useMemo(() => new THREE.Raycaster(), []);
 
   let planeIntersectPoint = new THREE.Vector3();
   const ref = useRef();
 
   const clickHandler = () => {
     setClicked(!clicked);
+    ref.current.scale.set(scale * 1.1, scale * 1.1, scale * 1.1);
   };
 
   const bind = useDrag(
@@ -28,6 +28,7 @@ function Table({ position, setIsDragging, floorPlane }) {
           setPos([planeIntersectPoint.x, 0.6, planeIntersectPoint.z]);
         } else {
           setClicked(false);
+          ref.current.scale.set(scale, scale, scale);
         }
         setIsDragging(active);
         return timeStamp;
