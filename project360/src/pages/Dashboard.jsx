@@ -2,6 +2,7 @@ import React from "react";
 import NavBar from "../components/NavBar";
 import Sidebar from "../components/Sidebar";
 import RoomsContainer from "../components/RoomsContainer";
+import CreateRoomForm from "../components/CreateRoomForm";
 
 function Dashboard() {
   return (

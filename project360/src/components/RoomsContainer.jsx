@@ -2,7 +2,7 @@ import React from "react";
 import RoomCard from "./RoomCard";
 
 function SideBar() {
-  //Api call to get rooms
+  //Dummy Api data to get rooms, refer to EditPage.jsx for info on useEffect rerendering
 
   const Rooms = [
     {
@@ -56,15 +56,15 @@ function SideBar() {
       ,
       {
         name: "Room 2",
-          id: 10
+          id: 13
     },
     {
         name: "Room 3",
-          id: 11
+          id: 14
     },
     {
         name: "Room 4",
-          id: 12
+          id: 15
     },
   ];
 
