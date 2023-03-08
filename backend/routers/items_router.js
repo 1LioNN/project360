@@ -30,6 +30,24 @@ itemsRouter.post("/", upload.single("file"), async (req, res) => {
   return res.json(item);
 });
 
+// get all furniture pieces
+// api/items?roomId=${roomId}
+itemsRouter.get("/", async (req, res) => {
+  const room = await Room.findByPk(req.query.roomId);
+  if (!room) {
+    return res
+      .status(404)
+      .json({ error: `Room(id=${req.query.roomId}) not found.` });
+  }
+
+  const items = await Item.findAll({
+    where: {
+      RoomId: room.id
+    }
+  });
+  return res.json(items);
+});
+
 // get furniture piece
 // api/items/:id?roomId=${roomId}
 itemsRouter.get("/:id", async (req, res) => {
