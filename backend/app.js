@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import { usersRouter } from "./routers/users_router.js";
 import { roomsRouter } from "./routers/rooms_router.js";
 import { itemsRouter } from "./routers/items_router.js";
+import session from "express-session";
 
 const PORT = 3000;
 export const app = express();
@@ -17,6 +18,14 @@ try {
 } catch (error) {
   console.error("Unable to connect to the database:", error);
 }
+
+app.use(
+  session({
+    secret: "i changed this secret",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 app.use("/api/users", usersRouter);
 app.use("/api/users/:userId/rooms", roomsRouter);

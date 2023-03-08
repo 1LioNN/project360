@@ -1,6 +1,6 @@
 const BASE_URL = `http://localhost:3000`;
 
-const templateFetch = async (url, params = {}) => {
+const fetchTemplate = async (url, params = {}) => {
   return fetch(`${BASE_URL}/${url}`, params).then((res) => {
     if (!res.ok) {
       throw new Error(`api fetch failed: ${res.status}`);
@@ -11,7 +11,7 @@ const templateFetch = async (url, params = {}) => {
 
 // ROOMS
 const getRooms = async (userId) => {
-  return templateFetch(`api/users/${userId}/rooms`);
+  return fetchTemplate(`api/users/${userId}/rooms`);
 };
 
 const createRoom = async (userId, name, dimensions) => {
@@ -22,12 +22,12 @@ const createRoom = async (userId, name, dimensions) => {
     },
     body: JSON.stringify({ name, dimensions }),
   };
-  return templateFetch(`api/users/${userId}/rooms`, params);
+  return fetchTemplate(`api/users/${userId}/rooms`, params);
 };
 
 // ITEMS
 const getItems = async (roomId) => {
-  return templateFetch(`api/items?roomId=${roomId}`);
+  return fetchTemplate(`api/items?roomId=${roomId}`);
 };
 
 const createItem = async (roomId, type, position) => {
@@ -38,7 +38,7 @@ const createItem = async (roomId, type, position) => {
     },
     body: JSON.stringify({ category: type, coordinates: position }),
   };
-  return templateFetch(`api/items?roomId=${roomId}`);
+  return fetchTemplate(`api/items?roomId=${roomId}`);
 };
 
 const updateItemPos = async (itemId, position) => {
@@ -48,7 +48,7 @@ const updateItemPos = async (itemId, position) => {
       "Content-Type": "application/json",
     },
   };
-  return templateFetch(
+  return fetchTemplate(
     `api/items/${itemId}/move/${position[0]}/${position[1]}/${position[2]}`,
     params
   );
@@ -58,13 +58,28 @@ const deleteItem = async (roomId, itemId) => {
   const params = {
     method: `DELETE`,
   };
-  return templateFetch(`api/items/${itemId}?roomId=${roomId}`, params);
+  return fetchTemplate(`api/items/${itemId}?roomId=${roomId}`, params);
 };
 
 // USERS
+const signIn = async (sub, isAuthen) => {
+  const params = {
+    method: `POST`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ sub, isAuthen }),
+  };
+  return fetchTemplate(`api/users/signin`, params);
+};
+
+const signOut = async () => {
+  return fetchTemplate(`api/users/signout`);
+};
+
 const getMe = async () => {
-  return templateFetch(`api/users/me`);
-}
+  return fetchTemplate(`api/users/me`);
+};
 
 export default {
   getRooms,
@@ -73,5 +88,7 @@ export default {
   createItem,
   updateItemPos,
   deleteItem,
-  getMe
+  signIn,
+  signOut,
+  getMe,
 };

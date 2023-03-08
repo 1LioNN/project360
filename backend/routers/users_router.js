@@ -9,7 +9,7 @@ export const usersRouter = Router({ mergeParams: true });
 
 // sign in
 usersRouter.post("/signin", async (req, res) => {
-  if (!req.body.isAuth) {
+  if (!req.body.isAuthen) {
     return res.status(401).json({ error: "User not signed in" });
   }
   if (!req.body.sub) {
@@ -42,7 +42,7 @@ usersRouter.post("/signin", async (req, res) => {
 usersRouter.get("/me", async (req, res) => {
   if (req.session.userId) {
     const user = await User.findByPk(req.session.userId);
-    return res.json({ userId: req.session.userId });
+    return res.json({ userId: user.id });
   }
 
   return res.status(404).json({ error: "User not signed in" });
