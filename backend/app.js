@@ -2,8 +2,10 @@ import { sequelize } from "./datasource.js";
 import express from "express";
 import bodyParser from "body-parser";
 import { usersRouter } from "./routers/users_router.js";
+import { roomsRouter } from "./routers/rooms_router.js";
+import { itemsRouter } from "./routers/items_router.js";
 
-const PORT = 3000;
+const PORT = 5000;
 export const app = express();
 
 app.use(bodyParser.json());
@@ -17,8 +19,8 @@ try {
 }
 
 app.use("/api/users", usersRouter);
+app.use("/api/users/:userId/rooms", roomsRouter);
 app.use("/api/items", itemsRouter);
-app.use("/api/rooms", roomsRouter);
 
 app.listen(PORT, (err) => {
   if (err) console.log(err);

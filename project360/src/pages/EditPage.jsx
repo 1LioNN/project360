@@ -2,6 +2,7 @@ import React from "react";
 import Room from "../components/Room";
 import Button from "../components/Button";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 function EditPage() {
   //dummy api calls
@@ -32,6 +33,7 @@ function EditPage() {
         <Button text={"Add"} onClick={() => addModel("bed")} />
         <Button text={"Add Table"} onClick={() => addModel("table")} />
         <Button text={"Delete"} onClick={() => deleteModel()} />
+        <Link to="/dashboard"> Back </Link>
       </div>
       <Room dimensions={[70, 30]} models={models} />
     </div>
