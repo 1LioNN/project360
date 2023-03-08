@@ -17,11 +17,12 @@ function Room({ dimensions, models }) {
   texture.repeat.set(2, 2);
 
   //To be replace with api call to get models for a room
-  const modelsList = models.map((model, index) => {
+  const modelsList = models.map((model) => {
     if (model.model === "bed") {
       return (
         <Bed
-          key={index}
+          key={model.id}
+          itemId={model.id}
           position={model.position}
           scale={model.scale}
           setIsDragging={setIsDragging}
@@ -32,7 +33,8 @@ function Room({ dimensions, models }) {
     if (model.model === "table") {
       return (
         <Table
-          key={index}
+          key={model.id}
+          itemId={model.id}
           position={model.position}
           scale={model.scale}
           setIsDragging={setIsDragging}

@@ -1,38 +1,40 @@
 import React from "react";
 import Room from "../components/Room";
 import Button from "../components/Button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
+import apiService from "../services/api-service.js";
 
 function EditPage() {
   //dummy api calls
   const [models, setModels] = useState([]);
   const [position, setPosition] = useState([0, 0, 0]);
-  const [id, setId] = useState(1);
 
-  // use useParams() to get roomId
+  const roomId = useParams().roomId;
 
-  // create useEffect to get models for this particular room
-    // call GET items api-service and set state
-    // trigger by the models state
+  useEffect(() => {
+    apiService.getItems(roomId).then((res) => setModels(res.items));
+  }, [models]);
 
-  // change this to async and call POST item api with fetch
-  const addModel = (type) => {
+  const addModel = async (type) => {
     let pos = position;
     if (type === "table") {
       pos[1] = 0.6;
     }
-    const newModel = { model: type, position: pos, id: id };
-    setModels([...models, newModel]);
+
     setPosition([position[0] + 3, position[1], position[2]]);
-    setId(id + 1);
+    apiService
+      .createItem(roomId, type, pos)
+      .then((res) => setModels([...models, res.item]));
   };
 
-  // change this to async and call DELETE item api with fetch
-  const deleteModel = () => {
-    console.log(models.length);
-    const newModels = models.filter((model) => model.id !== models.length);
-    setModels(newModels);
+  const deleteModel = async () => {
+    // delete most recent item
+    const modelId = models[models.length - 1].id;
+    apiService.deleteItem(roomId, modelId).then((res) => {
+      const newModels = models.filter((model) => model.id !== modelId);
+      setModels(newModels);
+    });
   };
 
   return (
@@ -48,4 +50,3 @@ function EditPage() {
   );
 }
 export default EditPage;
-

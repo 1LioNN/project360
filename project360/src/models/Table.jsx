@@ -1,12 +1,14 @@
 import React from "react";
 import * as THREE from "three";
 import { useDrag } from "@use-gesture/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import table from "./table.gltf";
+import apiService from "../services/api-service.js";
+
 //function takes in a gltf file and returns a primitive object
-function Table({ position, setIsDragging, floorPlane }) {
+function Table({ itemId, position, setIsDragging, floorPlane }) {
   const scale = 0.01;
   const { nodes, materials } = useGLTF(table);
   const [clicked, setClicked] = useState(false);
@@ -37,8 +39,11 @@ function Table({ position, setIsDragging, floorPlane }) {
     { delay: true }
   );
 
-  // create useEffect here that will trigger whenever clicked
-  // changes. we make a PATCH request to update position
+  useEffect(() => {
+    apiService
+      .updateItemPos(itemId, pos)
+      .then((res) => setPos(res.item.coordinates));
+  }, [clicked]);
 
   return (
     <group

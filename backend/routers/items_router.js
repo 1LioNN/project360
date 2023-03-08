@@ -20,10 +20,8 @@ itemsRouter.post("/", upload.single("file"), async (req, res) => {
       .json({ error: `Room(id=${req.query.roomId}) not found.` });
   }
   const item = await Item.create({
-    name: req.body.name,
-    filepath: req.file.path,
-    rotate: req.body.rotate,
     coordinates: req.body.coordinates,
+    rotate: 0,
     category: req.body.category,
     RoomId: room.id,
   });
@@ -96,6 +94,7 @@ itemsRouter.patch(":id/rotate/:degree", async (req, res) => {
     return res.status(400).json({ error: `Invalid degree ${degree}.` });
   }
   item.rotate = req.params.degree;
+  await item.save();
   return res.json(item);
 });
 
@@ -108,6 +107,7 @@ itemsRouter.patch(":id/move/:x/:y/:z", async (req, res) => {
       .json({ error: `Item(id=${req.params.itemId}) not found.` });
   }
   item.coordinates = [req.params.x, req.params.y, req.params.z];
+  await item.save();
   return res.json(item);
 });
 
