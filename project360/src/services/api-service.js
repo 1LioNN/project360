@@ -61,6 +61,11 @@ const deleteItem = async (roomId, itemId) => {
   return templateFetch(`api/items/${itemId}?roomId=${roomId}`, params);
 };
 
+// USERS
+const getMe = async () => {
+  return templateFetch(`api/users/me`);
+}
+
 export default {
   getRooms,
   createRoom,
@@ -68,4 +73,5 @@ export default {
   createItem,
   updateItemPos,
   deleteItem,
+  getMe
 };

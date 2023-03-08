@@ -5,16 +5,14 @@ import { faUsers } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Popup from "reactjs-popup";
 import { useState } from "react";
+import apiService from "../services/api-service.js";
 
-// will need to refactor this to take props specifically setRooms and rooms
-function SideBar() {
+function SideBar({ rooms, setRooms }) {
   const [roomName, setRoomName] = useState("");
   const [width, setWidth] = useState(0);
   const [length, setLength] = useState(0);
 
-  //Change to API call
-  // this will now be async and call a fetch POST room request
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     //log form data
     console.log(roomName);
@@ -24,6 +22,15 @@ function SideBar() {
     setRoomName("");
     setWidth(0);
     setLength(0);
+
+    apiService
+      .getMe()
+      .then((res) =>
+        apiService.createRoom(res.userId, roomName, [width, length])
+      )
+      .then((res) => {
+        setRooms([...rooms, res.room]);
+      });
   };
 
   return (
