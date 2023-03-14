@@ -1,13 +1,14 @@
 import React from "react";
 import * as THREE from "three";
 import { useDrag } from "@use-gesture/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import bed from "./bed.gltf";
+import apiService from "../services/api-service.js";
 
 //function takes in a gltf file and returns a primitive object
-function Bed({ position, setIsDragging, floorPlane }) {
+function Bed({ itemId, position, setIsDragging, floorPlane }) {
   const scale = 1;
   const { nodes, materials } = useGLTF(bed);
   const [clicked, setClicked] = useState(false);
@@ -37,6 +38,13 @@ function Bed({ position, setIsDragging, floorPlane }) {
     },
     { delay: true }
   );
+
+  useEffect(() => {
+    apiService
+      .updateItemPos(itemId, pos)
+      .then((res) => setPos(res.item.coordinates));
+  }, [clicked]);
+
   return (
     <group
       ref={ref}

@@ -16,8 +16,4 @@ Room.belongsToMany(User, { through: "UserRoom" });
 Room.hasMany(Item);
 Item.belongsTo(Room);
 
-// many-to-many: an item can appear in many rooms and rooms have many items
-Room.belongsToMany(Item, { through: "RoomItem" });
-Item.belongsToMany(Room, { through: "RoomItem" });
-
 export { Item, Room, User };

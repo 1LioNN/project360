@@ -6,6 +6,7 @@ import Bed from "../models/Bed";
 import Table from "../models/Table";
 import { useState } from "react";
 import img from "../textures/wood.jpg";
+
 function Room({ dimensions, models }) {
   const length = dimensions[0];
   const width = dimensions[1];
@@ -16,14 +17,13 @@ function Room({ dimensions, models }) {
   texture.wrapT = THREE.RepeatWrapping;
   texture.repeat.set(2, 2);
 
-  //To be replace with api call to get models for a room
-  const modelsList = models.map((model, index) => {
+  const modelsList = models.map((model) => {
     if (model.model === "bed") {
       return (
         <Bed
-          key={index}
+          key={model.id}
+          itemId={model.id}
           position={model.position}
-          scale={model.scale}
           setIsDragging={setIsDragging}
           floorPlane={floorPlane}
         />
@@ -32,14 +32,15 @@ function Room({ dimensions, models }) {
     if (model.model === "table") {
       return (
         <Table
-          key={index}
+          key={model.id}
+          itemId={model.id}
           position={model.position}
-          scale={model.scale}
           setIsDragging={setIsDragging}
           floorPlane={floorPlane}
         />
       );
     }
+    return ``;
   });
 
   return (
