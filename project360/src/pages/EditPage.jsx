@@ -1,13 +1,19 @@
 import React from "react";
 import Room from "../components/Room";
 import Button from "../components/Button";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { Link, useParams } from "react-router-dom";
 import apiService from "../services/api-service.js";
 
+import { Canvas, useLoader } from "@react-three/fiber";
+import * as THREE from "three";
+import img from "../textures/wood.jpg";
+
 function EditPage() {
+  //const texture = useLoader(THREE.TextureLoader, img);
   const [models, setModels] = useState([]);
   const [position, setPosition] = useState([0, 0, 0]);
+  
 
   const roomId = useParams().roomId;
   console.log(models);
@@ -52,15 +58,18 @@ function EditPage() {
   };
 
   return (
-    <div className="flex flex-row flex-wrap m-0 h-full">
+    <Suspense fallback={<div>Loading...</div>}>
+      <div className="flex flex-row flex-wrap m-0 h-full">
       <div className="basis-3/12 h-screen bg-gradient-to-br from-zinc-700 via-zinc-400 to-blue-100 ">
         <Button text={"Add"} onClick={() => addModel("bed")} />
         <Button text={"Add Table"} onClick={() => addModel("table")} />
         <Button text={"Delete"} onClick={() => deleteModel()} />
         <Link to="/dashboard"> Back </Link>
       </div>
-      <Room dimensions={[70, 30]} models={models} />
+      {<Room dimensions={[70, 30]} models={models} />}
     </div>
+    </Suspense>
+    
   );
 }
 export default EditPage;
