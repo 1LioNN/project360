@@ -14,22 +14,19 @@ function SideBar({ userId, rooms, setRooms }) {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    //log form data
-    console.log(roomName);
-    console.log(width);
-    console.log(length);
     //reset form
     setRoomName("");
     setWidth(0);
     setLength(0);
 
-    apiService
-      .then((res) =>
-        apiService.createRoom(userId, roomName, [width, length])
-      )
-      .then((res) => {
-        setRooms([...rooms, res.room]);
-      });
+    apiService.createRoom(userId, roomName, [width, length]).then((res) => {
+      const newRoom = {
+        id: res.id,
+        name: res.name,
+        dimensions: res.dimensions
+      }
+      setRooms([...rooms, newRoom]);
+    });
   };
 
   return (

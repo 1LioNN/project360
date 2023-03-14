@@ -6,15 +6,22 @@ import { Link, useParams } from "react-router-dom";
 import apiService from "../services/api-service.js";
 
 function EditPage() {
-  //dummy api calls
   const [models, setModels] = useState([]);
   const [position, setPosition] = useState([0, 0, 0]);
 
   const roomId = useParams().roomId;
-
+  console.log(models);
   useEffect(() => {
-    apiService.getItems(roomId).then((res) => setModels(res.items));
-  }, [models, roomId]);
+    apiService.getItems(roomId).then((res) => {
+      setModels(res.items.map(item => {
+        return {
+          ...item,
+          position: item.coordinates,
+          model: item.category
+        }
+      }));
+    });
+  }, [roomId]);
 
   const addModel = async (type) => {
     let pos = position;
@@ -25,7 +32,14 @@ function EditPage() {
     setPosition([position[0] + 3, position[1], position[2]]);
     apiService
       .createItem(roomId, type, pos)
-      .then((res) => setModels([...models, res.item]));
+      .then((res) => {
+        const newItem = {
+          id: res.item.id,
+          model: res.item.category,
+          position: res.item.coordinates
+        }
+        setModels([...models, newItem])
+      });
   };
 
   const deleteModel = async () => {

@@ -7,15 +7,14 @@ import { useAuth0 } from "@auth0/auth0-react";
 import apiService from "../services/api-service.js";
 
 function Dashboard() {
-  const { user, isAuthenticated } = useAuth0();
+  const { user } = useAuth0();
   const [userId, setUserId] = useState(null);
+
   useEffect(() => {
-    if (user?.sub && isAuthenticated) {
-      apiService.signIn(user.sub, isAuthenticated).then(apiService.getMe).then((res) => {
-        setUserId(res.userId);
-      });
-    }
-  }, [user, isAuthenticated]);
+    apiService.signIn(user.sub).then((res) => {
+      setUserId(res.userId);
+    });
+  }, [user]);
 
   const [rooms, setRooms] = useState([]);
   

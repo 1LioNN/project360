@@ -47,9 +47,10 @@ const updateItemPos = async (itemId, position) => {
     headers: {
       "Content-Type": "application/json",
     },
+    body: JSON.stringify({ coordinates: position })
   };
   return fetchTemplate(
-    `api/items/${itemId}/move/${position[0]}/${position[1]}/${position[2]}`,
+    `api/items/${itemId}/move`,
     params
   );
 };

@@ -43,7 +43,7 @@ function Bed({ itemId, position, setIsDragging, floorPlane }) {
     apiService
       .updateItemPos(itemId, pos)
       .then((res) => setPos(res.item.coordinates));
-  }, [clicked, itemId, pos]);
+  }, [clicked]);
 
   return (
     <group

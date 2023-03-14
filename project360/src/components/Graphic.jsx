@@ -37,7 +37,7 @@ function Graphic() {
               "p-5 w-72  text-3xl bg-indigo-900 hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800"
             }
             text={"Get Started"}
-            onClick={() => loginWithRedirect().then(() => apiService.signIn(user.sub, isAuthenticated))}
+            onClick={() => loginWithRedirect()}
           />
         </div>
       </div>

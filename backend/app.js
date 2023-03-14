@@ -9,8 +9,16 @@ import cors from "cors";
 
 const PORT = 3000;
 export const app = express();
+
 app.use(cors());
 app.use(bodyParser.json());
+app.use(
+  session({
+    secret: "i changed this secret",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 try {
   await sequelize.authenticate();
@@ -19,14 +27,6 @@ try {
 } catch (error) {
   console.error("Unable to connect to the database:", error);
 }
-
-app.use(
-  session({
-    secret: "i changed this secret",
-    resave: false,
-    saveUninitialized: true,
-  })
-);
 
 app.use("/api/users", usersRouter);
 app.use("/api/users/:userId/rooms", roomsRouter);

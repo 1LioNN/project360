@@ -9,10 +9,6 @@ export const usersRouter = Router({ mergeParams: true });
 
 // sign in
 usersRouter.post("/signin", async (req, res) => {
-  
-  if (!req.body.isAuthen) {
-    return res.status(401).json({ error: "User not signed in" });
-  }
   if (!req.body.sub) {
     return res.status(400).json({
       error: `sub is required`,
@@ -31,15 +27,13 @@ usersRouter.post("/signin", async (req, res) => {
   }
 
   req.session.userId = user.id;
-  console.log("1", req.session.userId);
 
   return res.json({
-    username: user.username,
+    userId: user.id,
   });
 });
 
 usersRouter.get("/me", async (req, res) => {
-  console.log("2", req.session.userId);
   if (req.session.userId) {
     const user = await User.findByPk(req.session.userId);
     return res.json({ userId: user.id });

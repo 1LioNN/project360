@@ -8,13 +8,10 @@ function SideBar({ userId, rooms, setRooms }) {
     if (!userId) {
       return;
     }
-
-    apiService
-      .then((res) => apiService.getRooms(userId))
-      .then((res) => {
-        setRooms(res.items)
-      });
-  }, [userId, rooms, setRooms]);
+    apiService.getRooms(userId).then((res) => {
+      setRooms(res.items);
+    });
+  }, [userId]);
 
   const RoomsList = rooms.map((room) => {
     return <RoomCard name={room.name} id={room.id} key={room.id} />;
