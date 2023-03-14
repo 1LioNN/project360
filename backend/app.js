@@ -7,7 +7,7 @@ import { itemsRouter } from "./routers/items_router.js";
 import session from "express-session";
 import cors from "cors";
 
-const PORT = 3000;
+const PORT = 5000;
 export const app = express();
 
 app.use(cors());
