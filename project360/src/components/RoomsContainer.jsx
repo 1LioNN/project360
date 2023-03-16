@@ -14,7 +14,7 @@ function SideBar({ userId, rooms, setRooms }) {
   }, [userId]);
 
 
-  const RoomsList = Rooms.map((room) => {
+  const RoomsList = rooms.map((room) => {
     return <RoomCard name={room.name} id={room.id} key={room.id}/>;
   });
 
