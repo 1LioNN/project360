@@ -10,6 +10,7 @@ function RoomCard(props) {
         <img
           className=" overflow-hidden opacity-50 object-contain"
           src={logo}
+          alt="Logo"
         />
         <div className="basis-2/6 object-contain bg-transparent p-3 text-white font-bold text-xl">
           {props.name}

@@ -3,16 +3,13 @@ import { Router } from "express";
 import { Op } from "sequelize";
 import path from "path";
 import fs from "fs";
-import multer from "multer";
 import { isAuthenticated } from "../middleware/auth.js";
 
-//upload for stl files of furniture pieces
-const upload = multer({ dest: "furniture/" });
 export const itemsRouter = Router({ mergeParams: true });
 
 // post furniture piece
 // api/items?$roomId=${roomId}
-itemsRouter.post("/", upload.single("file"), async (req, res) => {
+itemsRouter.post("/", async (req, res) => {
   const room = await Room.findOne({ where: { id: req.query.roomId } });
   if (!room) {
     return res
@@ -20,14 +17,37 @@ itemsRouter.post("/", upload.single("file"), async (req, res) => {
       .json({ error: `Room(id=${req.query.roomId}) not found.` });
   }
   const item = await Item.create({
-    name: req.body.name,
-    filepath: req.file.path,
-    rotate: req.body.rotate,
     coordinates: req.body.coordinates,
+    rotate: 0,
     category: req.body.category,
     RoomId: room.id,
   });
-  return res.json(item);
+  return res.json({ item });
+});
+
+// get all furniture pieces
+// api/items?roomId=${roomId}
+itemsRouter.get("/", async (req, res) => {
+  const room = await Room.findByPk(req.query.roomId);
+  if (!room) {
+    return res
+      .status(404)
+      .json({ error: `Room(id=${req.query.roomId}) not found.` });
+  }
+
+  let items = await Item.findAll({
+    where: {
+      RoomId: room.id,
+    },
+  });
+
+  items = items.map((item) => {
+    item.coordinates = item.coordinates
+      .split(",")
+      .map((coord) => parseFloat(coord));
+    return item;
+  });
+  return res.json({ items });
 });
 
 // get furniture piece
@@ -48,7 +68,10 @@ itemsRouter.get("/:id", async (req, res) => {
       .status(404)
       .json({ error: `Item(id=${req.params.itemId}) not found.` });
   }
-  return res.json(item);
+  item.coordinates = item.coordinates
+    .split(",")
+    .map((coord) => parseFloat(coord));
+  return res.json({ item });
 });
 
 // display items for the sidebar according to category
@@ -62,35 +85,47 @@ itemsRouter.get("/catergories/:type", async (req, res) => {
       .status(404)
       .json({ error: `Items with category ${req.params.type} not found.` });
   }
-  return res.json(items);
+  return res.json({ items });
 });
 
 // rotate the item once it has been placed
-itemsRouter.patch(":id/rotate/:degree", async (req, res) => {
+itemsRouter.patch("/:id/rotate/", async (req, res) => {
   const item = await Item.findByPk(req.params.id);
   if (!item) {
     return res
       .status(404)
-      .json({ error: `Item(id=${req.params.itemId}) not found.` });
+      .json({ error: `Item(id=${req.params.id}) not found.` });
   }
-  const degree = req.params.degree;
+  const degree = req.body.degree;
+  if (!degree) {
+    return res
+      .status(422)
+      .json({ error: `Missing required parameter 'degree' in request body.` });
+  }
   if (degree < 0 || degree > 360) {
     return res.status(400).json({ error: `Invalid degree ${degree}.` });
   }
   item.rotate = req.params.degree;
-  return res.json(item);
+  await item.save();
+  return res.json({ item });
 });
 
 // move the item once it has been placed
-itemsRouter.patch(":id/move/:x/:y/:z", async (req, res) => {
+itemsRouter.patch("/:id/move", async (req, res) => {
   const item = await Item.findByPk(req.params.id);
   if (!item) {
     return res
       .status(404)
-      .json({ error: `Item(id=${req.params.itemId}) not found.` });
+      .json({ error: `Item(id=${req.params.id}) not found.` });
   }
-  item.coordinates = [req.params.x, req.params.y, req.params.z];
-  return res.json(item);
+  item.coordinates = req.body.coordinates;
+  if (!req.body.coordinates) {
+    return res.status(422).json({
+      error: `Missing required parameter 'coordinates' in request body.`,
+    });
+  }
+  await item.save();
+  return res.json({ item });
 });
 
 // delete item from room
@@ -102,8 +137,8 @@ itemsRouter.delete("/:id", async (req, res) => {
   if (!item) {
     return res
       .status(404)
-      .json({ error: `Item(id=${req.params.itemId}) not found.` });
+      .json({ error: `Item(id=${req.params.id}) not found.` });
   }
   await item.destroy();
-  return res.json(item);
+  return res.json({ item });
 });

@@ -5,24 +5,28 @@ import { faUsers } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Popup from "reactjs-popup";
 import { useState } from "react";
+import apiService from "../services/api-service.js";
 
-function SideBar() {
+function SideBar({ userId, rooms, setRooms }) {
   const [roomName, setRoomName] = useState("");
   const [width, setWidth] = useState(0);
   const [length, setLength] = useState(0);
 
-  //Change to API call
-  
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    //log form data
-    console.log(roomName);
-    console.log(width);
-    console.log(length);
     //reset form
     setRoomName("");
     setWidth(0);
     setLength(0);
+
+    apiService.createRoom(userId, roomName, [width, length]).then((res) => {
+      const newRoom = {
+        id: res.id,
+        name: res.name,
+        dimensions: res.dimensions
+      }
+      setRooms([...rooms, newRoom]);
+    });
   };
 
   return (

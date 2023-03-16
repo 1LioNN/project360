@@ -9,12 +9,9 @@ export const usersRouter = Router({ mergeParams: true });
 
 // sign in
 usersRouter.post("/signin", async (req, res) => {
-  if (!req.body.isAuth) {
-    return res.status(401).json({ error: "User not signed in" });
-  }
   if (!req.body.sub) {
     return res.status(400).json({
-      error: `username and/or password are required path parameters.`,
+      error: `sub is required`,
     });
   }
 
@@ -31,18 +28,15 @@ usersRouter.post("/signin", async (req, res) => {
 
   req.session.userId = user.id;
 
-  if (!result) {
-    return res.status(401).json({ error: "Incorrect username or password." });
-  }
   return res.json({
-    username: user.username,
+    userId: user.id,
   });
 });
 
 usersRouter.get("/me", async (req, res) => {
   if (req.session.userId) {
     const user = await User.findByPk(req.session.userId);
-    return res.json({ userId: req.session.userId });
+    return res.json({ userId: user.id });
   }
 
   return res.status(404).json({ error: "User not signed in" });

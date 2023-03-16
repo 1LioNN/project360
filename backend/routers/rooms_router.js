@@ -3,10 +3,8 @@ import { Router } from "express";
 import { Op } from "sequelize";
 import path from "path";
 import fs from "fs";
-import multer from "multer";
 import { isAuthenticated } from "../middleware/auth.js";
 
-const upload = multer({ dest: "snapshots/" });
 export const roomsRouter = Router({ mergeParams: true });
 
 const getCursor = async (cursor, res) => {
@@ -203,6 +201,7 @@ roomsRouter.delete("/:id", async (req, res) => {
   return res.json(room);
 });
 
+/*
 roomsRouter.get("/:id/snapshot", async (req, res) => {
   const room = await Room.findByPk(req.params.id);
   if (!room) {
@@ -239,3 +238,4 @@ roomsRouter.patch("/:id/snapshot", upload.single("file"), async (req, res) => {
   room.save();
   return res.json(room);
 });
+*/
