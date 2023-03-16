@@ -5,33 +5,37 @@ import { faUsers } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Popup from "reactjs-popup";
 import { useState } from "react";
+import apiService from "../services/api-service.js";
 
-function SideBar() {
+function SideBar({ userId, rooms, setRooms }) {
   const [roomName, setRoomName] = useState("");
   const [width, setWidth] = useState(0);
   const [length, setLength] = useState(0);
 
-  //Change to API call
-  
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    //log form data
-    console.log(roomName);
-    console.log(width);
-    console.log(length);
     //reset form
     setRoomName("");
     setWidth(0);
     setLength(0);
+
+    apiService.createRoom(userId, roomName, [width, length]).then((res) => {
+      const newRoom = {
+        id: res.id,
+        name: res.name,
+        dimensions: res.dimensions
+      }
+      setRooms([...rooms, newRoom]);
+    });
   };
 
   return (
-    <div className="flex flex-row basis-1/12 overflow-hidden flex-grow items-center justify-evenly text-gray-50 bg-gradient-to-b from-black via-neutral-900 to-black sm:basis-2/12 sm:justify-start sm:flex-col sm:border-r sm:border-neutral-800">
+    <div className="flex flex-row flex-auto basis-2/12 overflow-hidden flex-grow items-center justify-evenly text-gray-50 bg-gradient-to-b from-black via-neutral-900 to-black sm:basis-2/12 sm:justify-start sm:flex-col sm:border-r sm:border-neutral-800">
       <Popup
         trigger={
           <button
             className={
-              "border-indigo-500 rounded-xl border-solid border p-3 pt-5 pb-5 bg-indigo-900 m-6 sm:w-5/6 w-24 hover:bg-gradient-to-br font-bold from-blue-300 via-indigo-400 to-indigo-800"
+              "border-indigo-500 rounded-xl border-solid border p-3 pt-5 pb-5  bg-indigo-900 m-6 sm:w-5/6 w-24 hover:bg-gradient-to-br font-bold from-blue-300 via-indigo-400 to-indigo-800"
             }
           >
             <div className="flex flex-row items-center justify-center">
@@ -84,15 +88,14 @@ function SideBar() {
         )}
       </Popup>
 
-      <div className="flex flex-row gap-20 m-7 sm:flex-col sm:gap-5 sm:ml-7 sm:mt-5">
-        <div className="flex flex-row text-xl font-semibold items-center p-5  rounded-full hover:bg-neutral-800">
+        <div className="flex flex-row text-xl font-semibold items-center p-5 m-3 sm:pl-10 rounded-full cursor-pointer sm:w-full hover:bg-neutral-800">
           <FontAwesomeIcon
             className="sm:mr-4 text-3xl sm:text-2xl"
             icon={faCube}
           />
           <span className="hidden sm:block">My Rooms</span>
         </div>
-        <div className="flex flex-row text-xl font-semibold items-center p-5  rounded-full hover:bg-neutral-800">
+        <div className="flex flex-row text-xl font-semibold items-center p-5 m-3 sm:pl-10 rounded-full cursor-pointer sm:w-full hover:bg-neutral-800">
           <FontAwesomeIcon
             className="sm:mr-4 text-3xl sm:text-2xl"
             icon={faUsers}
@@ -100,7 +103,6 @@ function SideBar() {
           <span className="hidden sm:block">Shared with Me</span>
         </div>
       </div>
-    </div>
   );
 }
 

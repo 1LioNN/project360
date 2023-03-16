@@ -6,7 +6,9 @@ import { Routes, Route } from "react-router-dom";
 
 function App() {
   const { isLoading, error } = useAuth0();
-
+  console.log("SLEEP")
+  console.log(isLoading)
+  console.log(error)
   return (
     <div className="App h-full">
       {error && <p>Authentication Error</p>}
