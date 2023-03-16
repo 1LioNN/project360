@@ -9,14 +9,18 @@ import apiService from "../services/api-service.js";
 function Dashboard() {
   const { user } = useAuth0();
   const [userId, setUserId] = useState(null);
+  const [rooms, setRooms] = useState([]);
+  let once = false;
 
   useEffect(() => {
+    if (!user || once) {
+      return;
+    }
+    once = true;
     apiService.signIn(user.sub).then((res) => {
       setUserId(res.userId);
     });
-  }, [user]);
-
-  const [rooms, setRooms] = useState([]);
+  }, []);
   
   return (
     <div className="flex flex-col m-0 h-full">
