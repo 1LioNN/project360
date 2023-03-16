@@ -23,7 +23,7 @@ function Dashboard() {
   }, []);
   
   return (
-    <div className="flex flex-col m-0 h-full">
+    <div className="flex flex-col m-0 h-full overflow-hidden">
       <NavBar />
       <div className="flex flex-col flex-wrap m-0 h-full sm:flex-row">
         <Sidebar userId={userId} rooms={rooms} setRooms={setRooms} />
