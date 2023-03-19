@@ -8,7 +8,7 @@ import bed from "./bed.gltf";
 import apiService from "../services/api-service.js";
 
 //function takes in a gltf file and returns a primitive object
-function Bed({ itemId, position, setIsDragging, floorPlane }) {
+function Bed({ itemId, position, setIsDragging, floorPlane, ContextMenu }) {
   const scale = 1;
   const { nodes, materials } = useGLTF(bed);
   const [clicked, setClicked] = useState(false);
@@ -17,8 +17,14 @@ function Bed({ itemId, position, setIsDragging, floorPlane }) {
   let planeIntersectPoint = new THREE.Vector3();
   const ref = useRef();
 
-  const clickHandler = () => {
+  const cm = ContextMenu;
+
+  const clickHandler = (e) => {
     setClicked(!clicked);
+    cm.current.style.display = (clicked ? " none" : " block")
+    cm.current.style.top = e.clientY + "px";
+    cm.current.style.left = e.clientX + "px";
+    cm.current.id = itemId;
     ref.current.scale.set(scale * 1.1, scale * 1.1, scale * 1.1);
   };
 
@@ -52,7 +58,7 @@ function Bed({ itemId, position, setIsDragging, floorPlane }) {
       scale={scale}
       position={pos}
       {...bind()}
-      onClick={() => clickHandler()}
+      onClick={(e) => clickHandler(e)}
       dispose={null}
     >
       <mesh
