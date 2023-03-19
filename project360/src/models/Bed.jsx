@@ -6,6 +6,7 @@ import { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import bed from "./bed.gltf";
 import apiService from "../services/api-service.js";
+import useSocketIO from './useSocketIO'
 
 //function takes in a gltf file and returns a primitive object
 function Bed({ itemId, position, setIsDragging, floorPlane }) {
@@ -14,8 +15,11 @@ function Bed({ itemId, position, setIsDragging, floorPlane }) {
   const [clicked, setClicked] = useState(false);
   const [pos, setPos] = useState(position);
 
+
   let planeIntersectPoint = new THREE.Vector3();
   const ref = useRef();
+
+  useSocketIO(ref)
 
   const clickHandler = () => {
     setClicked(!clicked);
