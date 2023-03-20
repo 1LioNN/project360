@@ -19,13 +19,20 @@ function Table({ itemId, position, setIsDragging, floorPlane, ContextMenu }) {
   const cm = ContextMenu;
 
   const clickHandler = (e) => {
-    console.log(e);
     setClicked(!clicked);
-    cm.current.style.display = (clicked ? " none" : " block")
+    cm.current.style.display = clicked ? " none" : " block";
     cm.current.style.top = e.clientY + "px";
+    if (e.clientX > 1625) {
+      cm.current.style.left = e.clientX - 250 + "px";
+    } else
     cm.current.style.left = e.clientX + "px";
     cm.current.id = itemId;
-    ref.current.scale.set(scale * 1.1, scale * 1.1, scale * 1.1);
+  };
+
+  const missHandler = (e) => {
+    setClicked(false);
+    cm.current.style.display = "none";
+    cm.current.id = "";
   };
 
   const bind = useDrag(
@@ -36,7 +43,6 @@ function Table({ itemId, position, setIsDragging, floorPlane, ContextMenu }) {
           setPos([planeIntersectPoint.x, 0.6, planeIntersectPoint.z]);
         } else {
           setClicked(false);
-          ref.current.scale.set(scale, scale, scale);
         }
         setIsDragging(active);
         return timeStamp;
@@ -59,6 +65,7 @@ function Table({ itemId, position, setIsDragging, floorPlane, ContextMenu }) {
       position={pos}
       {...bind()}
       onClick={(e) => clickHandler(e)}
+      onPointerMissed={(e) => missHandler(e)}
       dispose={null}
     >
       <mesh

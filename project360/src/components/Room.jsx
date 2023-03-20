@@ -7,13 +7,13 @@ import Table from "../models/Table";
 import { useState } from "react";
 import img from "../textures/wood.jpg";
 import { useRef } from "react";
-import Button from "./Button";
+import { useEffect } from "react";
+import ContextMenu from "../components/ContextMenu";
 
 function Room({ dimensions, models }) {
   const length = dimensions[0];
   const width = dimensions[1];
   const [isDragging, setIsDragging] = useState(false);
-  const [showContextMenu, setShowContextMenu] = useState(false);
   const floorPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
   const texture = useLoader(THREE.TextureLoader, img);
   texture.wrapS = THREE.RepeatWrapping;
@@ -45,35 +45,18 @@ function Room({ dimensions, models }) {
           setIsDragging={setIsDragging}
           floorPlane={floorPlane}
           ContextMenu={cm}
+  
         />
       );
     }
     return ``;
   });
 
-  const clickHandler = () => {
-    //If the context menu is open and user clicked canvas, close it
-    if (showContextMenu) {
-      setShowContextMenu(false);
-      cm.current.style.display = "none";
-    }
-    //Else if the context menu is alredy closed and user clicked canvas, do nothing
-    else {
-      return;
-    }
- 
-  };
 
   return (
-    <div className="basis-9/12 h-screen bg-zinc-900">
-      <div className="absolute font-bold text-3xl z-50 h-16 w-60 bg-white rounded-xl border-2 border-white" style={{display: 'none'}} ref={cm}>
-        <div className="flex flex-row">
-          <Button text="" onClick={()=>console.log("HEllo!")}/>
-          <Button text="" onClick={()=>console.log("HEllo!")}/>
-          <Button text="" onClick={()=>console.log("HEllo!")}/>
-        </div>
-      </div>
-      <Canvas camera={{ position: [0, 5, 10] }} onClick ={()=> clickHandler()}>
+    <div className="basis-9/12 h-screen bg-zinc-900 overflow-hidden">
+      <ContextMenu ContextMenu={cm} />
+      <Canvas camera={{ position: [0, 5, 10] }}>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} />
         <mesh position={[-length / 2, 2.5, 0]} rotation={[0, Math.PI / 2, 0]}>
@@ -113,6 +96,33 @@ function Room({ dimensions, models }) {
         />
       </Canvas>
     </div>
+  );
+}
+// Hook
+function useOnClickOutside(ref, handler) {
+  useEffect(
+    () => {
+      const listener = (event) => {
+        // Do nothing if clicking ref's element or descendent elements
+        if (!ref.current || ref.current.contains(event.target)) {
+          return;
+        }
+        handler(event);
+      };
+      document.addEventListener("mousedown", listener);
+      document.addEventListener("touchstart", listener);
+      return () => {
+        document.removeEventListener("mousedown", listener);
+        document.removeEventListener("touchstart", listener);
+      };
+    },
+    // Add ref and handler to effect dependencies
+    // It's worth noting that because passed in handler is a new ...
+    // ... function on every render that will cause this effect ...
+    // ... callback/cleanup to run every render. It's not a big deal ...
+    // ... but to optimize you can wrap handler in useCallback before ...
+    // ... passing it into this hook.
+    [ref, handler]
   );
 }
 
