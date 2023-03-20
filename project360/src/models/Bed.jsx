@@ -8,7 +8,7 @@ import bed from "./bed.gltf";
 import apiService from "../services/api-service.js";
 
 //function takes in a gltf file and returns a primitive object
-function Bed({ itemId, position, setIsDragging, floorPlane }) {
+function Bed({ itemId, position, setIsDragging, floorPlane, ContextMenu}) {
   const scale = 1;
   const { nodes, materials } = useGLTF(bed);
   const [clicked, setClicked] = useState(false);
@@ -17,10 +17,26 @@ function Bed({ itemId, position, setIsDragging, floorPlane }) {
   let planeIntersectPoint = new THREE.Vector3();
   const ref = useRef();
 
-  const clickHandler = () => {
+  const cm = ContextMenu;
+
+  const clickHandler = (e) => {
     setClicked(!clicked);
-    ref.current.scale.set(scale * 1.1, scale * 1.1, scale * 1.1);
+    cm.current.style.display = clicked ? " none" : " block";
+    cm.current.style.top = e.clientY + "px";
+    if (e.clientX > 1625) {
+      cm.current.style.left = e.clientX - 250 + "px";
+    } else
+    cm.current.style.left = e.clientX + "px";
+    cm.current.id = itemId;
   };
+
+  const missHandler = (e) => {
+    setClicked(false);
+    cm.current.style.display = "none";
+    cm.current.id = "";
+  };
+
+
 
   const bind = useDrag(
     ({ active, movement: [x, y], timeStamp, event }) => {
@@ -30,7 +46,6 @@ function Bed({ itemId, position, setIsDragging, floorPlane }) {
           setPos([planeIntersectPoint.x, 0, planeIntersectPoint.z]);
         } else {
           setClicked(false);
-          ref.current.scale.set(scale, scale, scale);
         }
         setIsDragging(active);
         return timeStamp;
@@ -52,7 +67,8 @@ function Bed({ itemId, position, setIsDragging, floorPlane }) {
       scale={scale}
       position={pos}
       {...bind()}
-      onClick={() => clickHandler()}
+      onClick={(e) => clickHandler(e)}
+      onPointerMissed={(e) => missHandler(e)}
       dispose={null}
     >
       <mesh
