@@ -7,7 +7,7 @@ export const Room = sequelize.define("Room", {
     allowNull: false,
   },
   dimensions: {
-    type: DataTypes.ARRAY(DataTypes.DOUBLE),
+    type: DataTypes.STRING,
     allowNull: false,
   },
   previewMetadata: {
