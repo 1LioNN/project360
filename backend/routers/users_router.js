@@ -7,8 +7,8 @@ import { isAuthenticated } from "../middleware/auth.js";
 
 export const usersRouter = Router({ mergeParams: true });
 
-// sign in
-usersRouter.post("/signin", async (req, res) => {
+// store auth0 data
+usersRouter.post("/auth0", async (req, res) => {
   if (!req.body.sub) {
     return res.status(400).json({
       error: `sub is required`,

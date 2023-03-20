@@ -73,7 +73,7 @@ const signIn = async (sub, isAuthen) => {
     },
     body: JSON.stringify({ sub, isAuthen }),
   };
-  return fetchTemplate(`api/users/signin`, params);
+  return fetchTemplate(`api/users/auth0`, params);
 };
 
 const signOut = async () => {

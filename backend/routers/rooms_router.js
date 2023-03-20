@@ -21,13 +21,17 @@ const getPrevRooms = async (req, res) => {
 
   const prevRoom = await getCursor(cursor, res);
 
-  const rooms = await Room.findAll({
+  let rooms = await Room.findAll({
     limit: limit + 1,
     order: [["createdAt", "ASC"]],
     where: {
       UserId: req.params.userId,
       createdAt: { [Op.gte]: new Date(prevRoom.createdAt) },
     },
+  });
+  rooms = rooms.map((room) => {
+    room.dimensions = JSON.parse(room.dimensions);
+    return room;
   });
 
   const newNext = await Room.findAll({
@@ -38,10 +42,16 @@ const getPrevRooms = async (req, res) => {
       createdAt: { [Op.lt]: new Date(prevRoom.createdAt) },
     },
   });
+  if (newNext[0]) {
+    newNext[0].dimensions = JSON.parse(newNext[0].dimensions);
+  }
 
   // note that reverse() affects the original array
   rooms.reverse();
   const newPrev = rooms.length === limit + 1 ? rooms.shift() : null;
+  if (newPrev) {
+    newPrev.dimensions = JSON.parse(newPrev.dimensions);
+  }
   return res.json({
     items: rooms,
     prev: newPrev,
@@ -55,13 +65,17 @@ const getNextRooms = async (req, res) => {
 
   const nextRoom = await getCursor(cursor, res);
 
-  const rooms = await Room.findAll({
+  let rooms = await Room.findAll({
     limit: limit + 1,
     order: [["createdAt", "DESC"]],
     where: {
       UserId: req.params.userId,
       createdAt: { [Op.lte]: new Date(nextRoom.createdAt) },
     },
+  });
+  rooms = rooms.map((room) => {
+    room.dimensions = JSON.parse(room.dimensions);
+    return room;
   });
 
   const newPrev = await Room.findAll({
@@ -72,8 +86,14 @@ const getNextRooms = async (req, res) => {
       createdAt: { [Op.gt]: new Date(nextRoom.createdAt) },
     },
   });
+  if (newPrev[0]) {
+    newPrev[0].dimensions = JSON.parse(newPrev[0].dimensions);
+  }
 
   const newNext = rooms.length === limit + 1 ? rooms.pop() : null;
+  if (newNext) {
+    newNext.dimensions = JSON.parse(newNext.dimensions);
+  }
   return res.json({
     items: rooms,
     prev: newPrev[0] ? newPrev[0] : null,
@@ -82,6 +102,12 @@ const getNextRooms = async (req, res) => {
 };
 
 roomsRouter.get("/", async (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  console.log("get rooms USERID")
+  console.log(req.session.userId + "\n\n");
+  
+  
   const action = req.query.action;
   const limit = req.query.limit;
   const cursor = req.query.cursor;
@@ -116,12 +142,16 @@ roomsRouter.get("/", async (req, res) => {
 
   // get list of everything
   if (!action && !cursor && !limit) {
-    const rooms = await Room.findAll({
+    let rooms = await Room.findAll({
       order: [["createdAt", "DESC"]],
       where: {
         UserId: req.params.userId,
       },
     });
+    rooms = rooms.map((room) => {
+      room.dimensions = JSON.parse(room.dimensions);
+      return room;
+    })
     return res.json({ items: rooms });
   }
 
@@ -140,10 +170,11 @@ roomsRouter.post("/", async (req, res) => {
 
   const room = await Room.create({
     name: req.body.name,
-    dimensions: req.body.dimensions,
+    dimensions: JSON.stringify(req.body.dimensions),
     UserId: req.params.userId,
   });
-  return res.json(room);
+  room.dimensions = JSON.parse(room.dimensions);
+  return res.json({ room });
 });
 
 roomsRouter.get("/:id", async (req, res) => {
@@ -154,7 +185,9 @@ roomsRouter.get("/:id", async (req, res) => {
       .json({ error: `Room(id=${req.params.id}) not found.` });
   }
 
-  return res.json(room);
+  room.dimensions = JSON.parse(room.dimensions);
+
+  return res.json({ room });
 });
 
 roomsRouter.patch("/:id", async (req, res) => {
@@ -169,11 +202,12 @@ roomsRouter.patch("/:id", async (req, res) => {
     room.name = req.body.name;
   }
   if (req.body.dimensions) {
-    room.dimensions = req.body.dimensions;
+    room.dimensions = JSON.stringify(req.body.dimensions);
   }
 
   room.save();
-  return res.json(room);
+  room.dimensions = JSON.parse(req.body.dimensions);
+  return res.json({ room });
 });
 
 roomsRouter.delete("/:id", async (req, res) => {
@@ -198,7 +232,7 @@ roomsRouter.delete("/:id", async (req, res) => {
 
   await room.removeItems();
   await room.destroy();
-  return res.json(room);
+  return res.json({ room });
 });
 
 /*
