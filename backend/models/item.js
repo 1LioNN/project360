@@ -7,7 +7,7 @@ export const Item = sequelize.define("Item", {
     allowNull: false,
   },
   coordinates: {
-    type: DataTypes.ARRAY(DataTypes.INTEGER),
+    type: DataTypes.STRING,
     allowNull: false,
   },
   category: {
