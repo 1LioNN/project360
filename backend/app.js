@@ -10,7 +10,10 @@ import cors from "cors";
 const PORT = 5000;
 export const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: `http://localhost:${process.env.PORT || 3000}`,
+  credentials: true
+}));
 app.use(bodyParser.json());
 app.use(
   session({
