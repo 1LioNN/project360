@@ -27,12 +27,19 @@ function EditSideBar({ roomId, position, setPosition, models, setModels }) {
       };
 
     return (
-        <div className="basis-3/12 h-screen bg-gradient-to-t from-black via-neutral-900 to-black text-white">
+        <div className="basis-3/12 h-screen bg-gradient-to-t from-black via-neutral-900 to-black text-white overflow-y-auto no-scrollbar">
             <Link to="/dashboard"  className=" flex font-semibold text-2xl gap-4 items-center m-5 hover:text-blue-500"> 
-            <FontAwesomeIcon icon={faLeftLong} style={{ fontSize: 40}} />
+            <FontAwesomeIcon icon={faLeftLong} style={{ fontSize: 30}} />
              Back to Dashboard 
              </Link>
-             <Dropdown addModel={addModel} />
+             <Dropdown type="bed" addModel={addModel} />
+             <Dropdown type="table" addModel={addModel} />
+             <Dropdown type="bed" addModel={addModel} />
+             <Dropdown type="table" addModel={addModel} />
+             <Dropdown type="bed" addModel={addModel} />
+             <Dropdown type="table" addModel={addModel} />
+             <Dropdown type="bed" addModel={addModel} />
+             <Dropdown type="table" addModel={addModel} />
         </div>
     );
 }

@@ -22,11 +22,17 @@ function Bed({ itemId, position, setIsDragging, floorPlane, ContextMenu}) {
   const clickHandler = (e) => {
     setClicked(!clicked);
     cm.current.style.display = clicked ? " none" : " block";
-    cm.current.style.top = e.clientY + "px";
+    if (e.clientY > 880) {
+      cm.current.style.top = e.clientY - 100 + "px";
+    } else {
+      cm.current.style.top = e.clientY + "px";
+    }
+    
     if (e.clientX > 1625) {
       cm.current.style.left = e.clientX - 250 + "px";
-    } else
+    } else {
     cm.current.style.left = e.clientX + "px";
+    }
     cm.current.id = itemId;
   };
 
@@ -113,6 +119,6 @@ function Bed({ itemId, position, setIsDragging, floorPlane, ContextMenu}) {
   );
 }
 
-useGLTF.preload("src/models/bed.gltf");
+useGLTF.preload("src/models/beds/bed1/bed.gltf");
 
 export default Bed;
