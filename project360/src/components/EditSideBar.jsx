@@ -2,6 +2,9 @@ import React from "react";
 import Button from "./Button";
 import { Link } from "react-router-dom";
 import apiService from "../services/api-service.js";
+import { faLeftLong } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Dropdown from "./Dropdown";
 
 function EditSideBar({ roomId, position, setPosition, models, setModels }) {
 
@@ -24,10 +27,12 @@ function EditSideBar({ roomId, position, setPosition, models, setModels }) {
       };
 
     return (
-        <div className="basis-3/12 h-screen bg-gradient-to-br from-zinc-700 via-zinc-400 to-blue-100 ">
-            <Button text={"Add"} onClick={() => addModel("bed")} />
-            <Button text={"Add Table"} onClick={() => addModel("table")} />
-            <Link to="/dashboard"> Back </Link>
+        <div className="basis-3/12 h-screen bg-gradient-to-t from-black via-neutral-900 to-black text-white">
+            <Link to="/dashboard"  className=" flex font-semibold text-2xl gap-4 items-center m-5 hover:text-blue-500"> 
+            <FontAwesomeIcon icon={faLeftLong} style={{ fontSize: 40}} />
+             Back to Dashboard 
+             </Link>
+             <Dropdown addModel={addModel} />
         </div>
     );
 }
