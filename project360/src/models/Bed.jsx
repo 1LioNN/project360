@@ -36,8 +36,6 @@ function Bed({ itemId, position, setIsDragging, floorPlane, ContextMenu}) {
     cm.current.id = "";
   };
 
-
-
   const bind = useDrag(
     ({ active, movement: [x, y], timeStamp, event }) => {
       if (clicked) {
