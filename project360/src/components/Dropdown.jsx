@@ -1,6 +1,8 @@
 import React from "react";
 import { useState } from "react";
 import ModelButton from "./ModelButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1) + "s";
@@ -16,16 +18,21 @@ function Dropdown({ type, addModel }) {
   return (
     <div>
       <div
-        className="m-10 mb-2 font-semibold text-2xl cursor-pointer"
+        className="flex m-10 mb-2 font-semibold text-xl cursor-pointer justify-between hover:text-blue-500"
         onClick={toggleShow}
       >
         {capitalizeFirstLetter(type)}
+        <FontAwesomeIcon icon={faCaretDown} style={{transform: show? "rotate(180deg)" : "rotate(0deg)"}}/>
       </div>
+      
       <div
-        className="transition-[height] duration-500 overflow-hidden"
-        style={{ height: show ? "175px" : "0px" }}
+        className="transition-[max-height] duration-500 overflow-hidden m-5"
+        style={{ maxHeight: show ? "5000px" : "0px" }}
       >
-        <div className="flex flex-row overflow-x-scroll">
+        <div className="flex flex-row flex-wrap gap-3 ">
+          <ModelButton type="bed" addModel={addModel} />
+          <ModelButton type="bed" addModel={addModel} />
+          <ModelButton type="bed" addModel={addModel} />
           <ModelButton type="bed" addModel={addModel} />
           <ModelButton type="bed" addModel={addModel} />
           <ModelButton type="bed" addModel={addModel} />

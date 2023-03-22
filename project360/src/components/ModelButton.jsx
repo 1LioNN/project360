@@ -1,16 +1,15 @@
 import React from "react";
-import bed from "../models/bed.gltf";
-import { Canvas, useLoader } from "@react-three/fiber";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import Button from "./Button";
 
+
 function ModelButton({ type, addModel }) {
-  const gltf = useLoader(GLTFLoader, bed);
   return (
-    <div className="border-white border-2 h-40 w-36">
-      <div className="flex flex-col overflow-hidden ">
-        <div className="basis-2/6 object-contain p-3 text-white">
-          <Button text="Add" onClick={() => addModel(type)} />
+    <div className="border-neutral-600 border-2 rounded-3xl h-60 w-52">
+      <div className="flex flex-col overflow-hidden">
+        <div className="basis-4/6 object-contain">
+        </div>
+        <div className="flex basis-2/6 object-contain p-3 text-white justify-center">
+          <Button className="bg-indigo-600 rounded-md hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800" text="Add To Room" onClick={() => addModel(type)} />
         </div>
       </div>
     </div>

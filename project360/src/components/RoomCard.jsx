@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../icons/360.png";
+import logo from "../assets/icons/360.png";
 import { Link } from "react-router-dom";
 
 function RoomCard(props) {
