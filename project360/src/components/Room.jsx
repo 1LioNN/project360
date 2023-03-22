@@ -2,12 +2,11 @@ import { OrbitControls } from "@react-three/drei";
 import React from "react";
 import { Canvas, useLoader } from "@react-three/fiber";
 import * as THREE from "three";
-import Bed from "../models/Bed";
-import Table from "../models/Table";
+import Bed from "../assets/models/beds/bed1/Bed";
+import Table from "../assets/models/tables/table1/Table";
 import { useState } from "react";
-import img from "../textures/wood.jpg";
+import img from "../assets/textures/wood.jpg";
 import { useRef } from "react";
-import { useEffect } from "react";
 import ContextMenu from "../components/ContextMenu";
 
 function Room({ dimensions, models }) {
@@ -32,7 +31,6 @@ function Room({ dimensions, models }) {
           setIsDragging={setIsDragging}
           floorPlane={floorPlane}
           ContextMenu={cm}
-
         />
       );
     }
@@ -45,13 +43,11 @@ function Room({ dimensions, models }) {
           setIsDragging={setIsDragging}
           floorPlane={floorPlane}
           ContextMenu={cm}
-  
         />
       );
     }
     return ``;
   });
-
 
   return (
     <div className="basis-9/12 h-screen bg-zinc-900 overflow-hidden">
@@ -96,33 +92,6 @@ function Room({ dimensions, models }) {
         />
       </Canvas>
     </div>
-  );
-}
-// Hook
-function useOnClickOutside(ref, handler) {
-  useEffect(
-    () => {
-      const listener = (event) => {
-        // Do nothing if clicking ref's element or descendent elements
-        if (!ref.current || ref.current.contains(event.target)) {
-          return;
-        }
-        handler(event);
-      };
-      document.addEventListener("mousedown", listener);
-      document.addEventListener("touchstart", listener);
-      return () => {
-        document.removeEventListener("mousedown", listener);
-        document.removeEventListener("touchstart", listener);
-      };
-    },
-    // Add ref and handler to effect dependencies
-    // It's worth noting that because passed in handler is a new ...
-    // ... function on every render that will cause this effect ...
-    // ... callback/cleanup to run every render. It's not a big deal ...
-    // ... but to optimize you can wrap handler in useCallback before ...
-    // ... passing it into this hook.
-    [ref, handler]
   );
 }
 
