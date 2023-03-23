@@ -8,17 +8,19 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1) + "s";
 }
 
-function Dropdown({ type, addModel }) {
+function Dropdown({ type, addModel, numModels }) {
   const [show, setShow] = useState(false);
 
   const toggleShow = () => {
     setShow(!show);
   };
 
+  
+
   return (
     <div>
       <div
-        className="flex m-10 mb-2 font-semibold text-xl cursor-pointer justify-between hover:text-blue-500"
+        className="flex m-10 mb-2 font-semibold text-xl cursor-pointer justify-between border-b-[1px] border-solid border-neutral-800 hover:text-blue-500"
         onClick={toggleShow}
       >
         {capitalizeFirstLetter(type)}
@@ -30,16 +32,7 @@ function Dropdown({ type, addModel }) {
         style={{ maxHeight: show ? "5000px" : "0px" }}
       >
         <div className="flex flex-row flex-wrap gap-3 ">
-          <ModelButton type="bed" addModel={addModel} />
-          <ModelButton type="bed" addModel={addModel} />
-          <ModelButton type="bed" addModel={addModel} />
-          <ModelButton type="bed" addModel={addModel} />
-          <ModelButton type="bed" addModel={addModel} />
-          <ModelButton type="bed" addModel={addModel} />
-          <ModelButton type="bed" addModel={addModel} />
-          <ModelButton type="bed" addModel={addModel} />
-          <ModelButton type="bed" addModel={addModel} />
-          <ModelButton type="bed" addModel={addModel} />
+          <ModelButton type={type} addModel={addModel} />
         </div>
       </div>
     </div>

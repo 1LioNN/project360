@@ -22,7 +22,7 @@ function Room({ dimensions, models }) {
   const cm = useRef(null);
 
   const modelsList = models.map((model) => {
-    if (model.model === "bed") {
+    if (model.model === "bed1") {
       return (
         <Bed
           key={model.id}
@@ -34,7 +34,7 @@ function Room({ dimensions, models }) {
         />
       );
     }
-    if (model.model === "table") {
+    if (model.model === "table1") {
       return (
         <Table
           key={model.id}

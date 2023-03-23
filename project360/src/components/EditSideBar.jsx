@@ -32,8 +32,8 @@ function EditSideBar({ roomId, position, setPosition, models, setModels }) {
             <FontAwesomeIcon icon={faLeftLong} style={{ fontSize: 30}} />
              Back to Dashboard 
              </Link>
-             <Dropdown type="bed" addModel={addModel} />
-             <Dropdown type="table" addModel={addModel} />
+             <Dropdown type="bed1" addModel={addModel} />
+             <Dropdown type="table1" addModel={addModel} />
              <Dropdown type="chair" addModel={addModel} />
              <Dropdown type="sofa" addModel={addModel} />
         </div>
