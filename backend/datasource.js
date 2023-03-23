@@ -1,6 +1,13 @@
 import { Sequelize } from "sequelize";
+import dotenv from "dotenv";
+dotenv.config();
 
-export const sequelize = new Sequelize({
-  dialect: "sqlite",
-  storage: "project-db.sqlite",
-});
+export const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USR,
+  process.env.DB_PWD,
+  {
+    host: process.env.DB_HOST,
+    dialect: `postgres`,
+  }
+);

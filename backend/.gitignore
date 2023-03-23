@@ -5,3 +5,5 @@ Thumbs.db
 # node.js
 node_modules
 *.sqlite
+
+.env

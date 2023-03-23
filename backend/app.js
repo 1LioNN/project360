@@ -6,15 +6,20 @@ import { roomsRouter } from "./routers/rooms_router.js";
 import { itemsRouter } from "./routers/items_router.js";
 import session from "express-session";
 import cors from "cors";
+import dotenv from "dotenv";
+dotenv.config();
 
 const PORT = 5000;
 export const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: `http://localhost:${process.env.PORT || 3000}`,
+  credentials: true
+}));
 app.use(bodyParser.json());
 app.use(
   session({
-    secret: "i changed this secret",
+    secret: process.env.SESS_SECRET,
     resave: false,
     saveUninitialized: true,
   })

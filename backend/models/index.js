@@ -1,5 +1,3 @@
-import { sequelize } from "../datasource.js";
-import { DataTypes } from "sequelize";
 import { Item } from "./item.js";
 import { Room } from "./room.js";
 import { User } from "./user.js";
