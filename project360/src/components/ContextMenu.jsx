@@ -10,16 +10,19 @@ function ContextMenu({ ContextMenu }) {
   const deleteItem = () => {
     console.log("delete");
     console.log(ContextMenu.current.id);
+    // simply call fetch
   };
 
   const rotateC = () => {
     console.log("rotateC");
     console.log(ContextMenu.current.id);
+    ContextMenu.current.ref.current.rotation.y -= Math.PI / 4;
   };
 
   const rotateCC = () => {
     console.log("rotateCC");
     console.log(ContextMenu.current.id);
+    ContextMenu.current.ref.current.rotation.y += Math.PI / 4;
   };
 
   return (

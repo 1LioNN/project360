@@ -15,7 +15,7 @@ function Table({ itemId, position, setIsDragging, floorPlane, ContextMenu }) {
   const [pos, setPos] = useState(position);
 
   let planeIntersectPoint = new THREE.Vector3();
-  const ref = useRef();
+  const ref = useRef(null);
   const cm = ContextMenu;
 
   const clickHandler = (e) => {
@@ -27,6 +27,7 @@ function Table({ itemId, position, setIsDragging, floorPlane, ContextMenu }) {
     } else
     cm.current.style.left = e.clientX + "px";
     cm.current.id = itemId;
+    cm.current.ref = ref;
   };
 
   const missHandler = (e) => {

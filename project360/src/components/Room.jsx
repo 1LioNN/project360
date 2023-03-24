@@ -10,7 +10,7 @@ import { useRef } from "react";
 import { useEffect } from "react";
 import ContextMenu from "../components/ContextMenu";
 
-function Room({ dimensions, models }) {
+function Room({ dimensions, models, setModels }) {
   const length = dimensions[0];
   const width = dimensions[1];
   const [isDragging, setIsDragging] = useState(false);
@@ -55,7 +55,7 @@ function Room({ dimensions, models }) {
 
   return (
     <div className="basis-9/12 h-screen bg-zinc-900 overflow-hidden">
-      <ContextMenu ContextMenu={cm} />
+      <ContextMenu ContextMenu={cm} setModels={setModels} />
       <Canvas camera={{ position: [0, 5, 10] }}>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} />
