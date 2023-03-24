@@ -87,7 +87,7 @@ itemsRouter.get("/catergories/:type", async (req, res) => {
 });
 
 // rotate the item once it has been placed
-itemsRouter.patch("/:id/rotate/", async (req, res) => {
+itemsRouter.patch("/:id/rotate", async (req, res) => {
   const item = await Item.findByPk(req.params.id);
   if (!item) {
     return res

@@ -57,6 +57,17 @@ const updateItemPos = async (itemId, position) => {
   return fetchTemplate(`api/items/${itemId}/move`, params);
 };
 
+const updateItemAng = async (itemId, degree) => {
+  const params = {
+    method: `PATCH`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ degree })
+  };
+  return fetchTemplate(`api/items/${itemId}/rotate`, params);
+}
+
 const deleteItem = async (roomId, itemId) => {
   const params = {
     method: `DELETE`,
@@ -91,6 +102,7 @@ const apiService = {
   getItems,
   createItem,
   updateItemPos,
+  updateItemAng,
   deleteItem,
   signIn,
   signOut,

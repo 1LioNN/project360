@@ -5,18 +5,12 @@ import { useState, useEffect, Suspense } from "react";
 import { Link, useParams } from "react-router-dom";
 import apiService from "../services/api-service.js";
 
-import { Canvas, useLoader } from "@react-three/fiber";
-import * as THREE from "three";
-import img from "../textures/wood.jpg";
-
 function EditPage() {
   //const texture = useLoader(THREE.TextureLoader, img);
   const [models, setModels] = useState([]);
   const [position, setPosition] = useState([0, 0, 0]);
-  
 
   const roomId = useParams().roomId;
-  console.log(models);
   useEffect(() => {
     apiService.getItems(roomId).then((res) => {
       setModels(res.items.map(item => {
@@ -29,7 +23,7 @@ function EditPage() {
     });
   }, [roomId]);
 
-  const addModel = async (type) => {
+  const addModel = (type) => {
     let pos = position;
     if (type === "table") {
       pos[1] = 0.6;
@@ -48,7 +42,7 @@ function EditPage() {
       });
   };
 
-  const deleteModel = async () => {
+  const deleteModel = () => {
     // delete most recent item
     const modelId = models[models.length - 1].id;
     apiService.deleteItem(roomId, modelId).then((res) => {
@@ -66,7 +60,7 @@ function EditPage() {
         <Button text={"Delete"} onClick={() => deleteModel()} />
         <Link to="/dashboard"> Back </Link>
       </div>
-      {<Room dimensions={[70, 30]} models={models} />}
+      {<Room dimensions={[70, 30]} models={models} setModels={setModels} />}
     </div>
     </Suspense>
     
