@@ -21,9 +21,9 @@ function SideBar({ userId, rooms, setRooms }) {
 
     apiService.createRoom(userId, roomName, [width, length]).then((res) => {
       const newRoom = {
-        id: res.id,
-        name: res.name,
-        dimensions: res.dimensions
+        id: res.room.id,
+        name: res.room.name,
+        dimensions: res.room.dimensions
       }
       setRooms([...rooms, newRoom]);
     });
