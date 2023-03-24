@@ -27,7 +27,7 @@ function EditPage() {
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <div className="flex flex-row flex-wrap m-0 h-full">
+      <div className="flex flex-col sm:flex-row flex-wrap m-0 h-full">
         <EditSideBar
           roomId={roomId}
           position={position}
