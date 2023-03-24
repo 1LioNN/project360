@@ -7,6 +7,11 @@ import Sofa0 from "./sofa0/Sofa0";
 import Bed0 from "./bed0/Bed0";
 import Table0 from "./table0/Table0";
 import Chair0 from "./chair0/Chair0";
+import Bed1 from "./bed1/Bed1";
+import Sofa1 from "./sofa1/Sofa1";
+import Table1 from "./table1/Table1";
+import Chair1 from "./chair1/Chair1";
+
 import apiService from "../../services/api-service.js";
 //function takes in a gltf file and returns a primitive object
 function Model({
@@ -35,6 +40,22 @@ function Model({
     case "chair0":
       scale = 0.024;
       floor = 0;
+      break;
+    case "bed1":
+      scale = 0.07;
+      floor = 0.1;
+      break;
+    case "table1":
+      scale = 2.5
+      floor = 1;
+      break;
+    case "sofa1":
+      scale = 0.06;
+      floor = 0.1;
+      break;
+    case "chair1":
+      scale = 2;
+      floor = 0.1;
       break;
     default:
       break;
@@ -105,17 +126,42 @@ function Model({
         />
       );
 
+    case "bed1":
+      return (
+        <Bed1
+          innerRef={ref}
+          scale={scale}
+          pos={pos}
+          bind={bind}
+          clickHandler={clickHandler}
+          missHandler={missHandler}
+        />
+      );
+
     case "table0":
       return (
         <Table0
-        innerRef={ref}
-        scale={scale}
-        pos={pos}
-        bind={bind}
-        clickHandler={clickHandler}
-        missHandler={missHandler}
-      />
+          innerRef={ref}
+          scale={scale}
+          pos={pos}
+          bind={bind}
+          clickHandler={clickHandler}
+          missHandler={missHandler}
+        />
       );
+
+    case "table1":
+      return (
+        <Table1
+          innerRef={ref}
+          scale={scale}
+          pos={pos}
+          bind={bind}
+          clickHandler={clickHandler}
+          missHandler={missHandler}
+        />
+      );
+
     case "sofa0":
       return (
         <Sofa0
@@ -127,18 +173,42 @@ function Model({
           missHandler={missHandler}
         />
       );
+
+    case "sofa1":
+      return (
+        <Sofa1
+          innerRef={ref}
+          scale={scale}
+          pos={pos}
+          bind={bind}
+          clickHandler={clickHandler}
+          missHandler={missHandler}
+        />
+      );
+
     case "chair0":
       return (
         <Chair0
-        innerRef={ref}
-        scale={scale}
-        pos={pos}
-        bind={bind}
-        clickHandler={clickHandler}
-        missHandler={missHandler}
-      />
+          innerRef={ref}
+          scale={scale}
+          pos={pos}
+          bind={bind}
+          clickHandler={clickHandler}
+          missHandler={missHandler}
+        />
       );
 
+    case "chair1":
+      return (
+        <Chair1
+          innerRef={ref}
+          scale={scale}
+          pos={pos}
+          bind={bind}
+          clickHandler={clickHandler}
+          missHandler={missHandler}
+        />
+      );
 
     default:
       return null;

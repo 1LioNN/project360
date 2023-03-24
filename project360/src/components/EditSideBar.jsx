@@ -10,8 +10,21 @@ function EditSideBar({ roomId, position, setPosition, models, setModels }) {
 
     const addModel = async (type) => {
         let pos = position;
-        if (type === "table0") {
-          pos[1] = 0.9;
+        switch (type) {
+          case "table0":
+            pos[1] = 0.9;
+            break;
+          case "bed1":
+            pos[1] = 0.1;
+            break;
+          case "table1":
+            pos[1] = 1;
+            break;
+          case "sofa1":
+            pos[1] = 0.1;
+            break;
+          default:
+            break;
         }
         setPosition([position[0] + 3, position[1], position[2]]);
         apiService
