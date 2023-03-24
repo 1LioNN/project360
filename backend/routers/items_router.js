@@ -100,7 +100,7 @@ itemsRouter.patch("/:id/rotate", async (req, res) => {
       .status(422)
       .json({ error: `Missing required parameter 'degree' in request body.` });
   }
-  if (degree < 0 || degree > 360) {
+  if (degree < -2 * Math.PI || degree > 2 * Math.PI) {
     return res.status(400).json({ error: `Invalid degree ${degree}.` });
   }
   item.rotate = req.body.degree;
