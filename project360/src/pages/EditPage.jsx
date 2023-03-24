@@ -23,7 +23,7 @@ function EditPage() {
     });
   }, [roomId]);
 
-  const addModel = (type) => {
+  const addModel = async (type) => {
     let pos = position;
     if (type === "table") {
       pos[1] = 0.6;
@@ -34,11 +34,13 @@ function EditPage() {
       .createItem(roomId, type, pos)
       .then((res) => {
         const newItem = {
-          id: res.item.id,
+          ...res.item,
           model: res.item.category,
           position: res.item.coordinates
         }
+        console.log("what's going on?!");
         setModels([...models, newItem])
+        console.log(models);
       });
   };
 

@@ -8,7 +8,7 @@ import bed from "./bed.gltf";
 import apiService from "../services/api-service.js";
 
 //function takes in a gltf file and returns a primitive object
-function Bed({ itemId, position, setIsDragging, floorPlane, ContextMenu}) {
+function Bed({ itemId, position, rotation, setIsDragging, floorPlane, ContextMenu}) {
   const scale = 1;
   const { nodes, materials } = useGLTF(bed);
   const [clicked, setClicked] = useState(false);
@@ -65,6 +65,7 @@ function Bed({ itemId, position, setIsDragging, floorPlane, ContextMenu}) {
       object={nodes}
       scale={scale}
       position={pos}
+      rotation={[0, rotation, 0]}
       {...bind()}
       onClick={(e) => clickHandler(e)}
       onPointerMissed={(e) => missHandler(e)}

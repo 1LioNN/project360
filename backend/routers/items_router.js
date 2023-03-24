@@ -95,7 +95,7 @@ itemsRouter.patch("/:id/rotate", async (req, res) => {
       .json({ error: `Item(id=${req.params.id}) not found.` });
   }
   const degree = req.body.degree;
-  if (!degree) {
+  if (!degree && degree !== 0) {
     return res
       .status(422)
       .json({ error: `Missing required parameter 'degree' in request body.` });

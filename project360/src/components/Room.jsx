@@ -29,6 +29,7 @@ function Room({ dimensions, models, setModels }) {
           key={model.id}
           itemId={model.id}
           position={model.position}
+          rotation={model.rotate}
           setIsDragging={setIsDragging}
           floorPlane={floorPlane}
           ContextMenu={cm}
@@ -42,6 +43,7 @@ function Room({ dimensions, models, setModels }) {
           key={model.id}
           itemId={model.id}
           position={model.position}
+          rotation={model.rotate}
           setIsDragging={setIsDragging}
           floorPlane={floorPlane}
           ContextMenu={cm}
@@ -55,7 +57,7 @@ function Room({ dimensions, models, setModels }) {
 
   return (
     <div className="basis-9/12 h-screen bg-zinc-900 overflow-hidden">
-      <ContextMenu ContextMenu={cm} setModels={setModels} />
+      <ContextMenu ContextMenu={cm} models={models} setModels={setModels} />
       <Canvas camera={{ position: [0, 5, 10] }}>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} />

@@ -8,7 +8,7 @@ import table from "./table.gltf";
 import apiService from "../services/api-service.js";
 
 //function takes in a gltf file and returns a primitive object
-function Table({ itemId, position, setIsDragging, floorPlane, ContextMenu }) {
+function Table({ itemId, position, rotation, setIsDragging, floorPlane, ContextMenu }) {
   const scale = 0.01;
   const { nodes, materials } = useGLTF(table);
   const [clicked, setClicked] = useState(false);
@@ -64,6 +64,7 @@ function Table({ itemId, position, setIsDragging, floorPlane, ContextMenu }) {
       object={nodes}
       scale={scale}
       position={pos}
+      rotation={[0, rotation, 0]}
       {...bind()}
       onClick={(e) => clickHandler(e)}
       onPointerMissed={(e) => missHandler(e)}
