@@ -102,12 +102,6 @@ const getNextRooms = async (req, res) => {
 };
 
 roomsRouter.get("/", async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  console.log("get rooms USERID")
-  console.log(req.session.userId + "\n\n");
-  
-  
   const action = req.query.action;
   const limit = req.query.limit;
   const cursor = req.query.cursor;
@@ -234,42 +228,3 @@ roomsRouter.delete("/:id", async (req, res) => {
   await room.destroy();
   return res.json({ room });
 });
-
-/*
-roomsRouter.get("/:id/snapshot", async (req, res) => {
-  const room = await Room.findByPk(req.params.id);
-  if (!room) {
-    return res
-      .status(404)
-      .json({ error: `Room(id=${req.params.id}) not found.` });
-  }
-
-  res.setHeader("Content-Type", room.previewMetadata.mimetype);
-  res.sendFile(room.previewMetadata.path, { root: path.resolve() });
-});
-
-roomsRouter.patch("/:id/snapshot", upload.single("file"), async (req, res) => {
-  const room = await Room.findByPk(req.params.id);
-  if (!room) {
-    return res
-      .status(404)
-      .json({ error: `Room(id=${req.params.id}) not found.` });
-  }
-
-  if (room.previewMetadata) {
-    await fs.unlink(
-      path.join(
-        room.previewMetadata.destination,
-        room.previewMetadata.filename
-      ),
-      (err) => {
-        if (err) throw err;
-      }
-    );
-  }
-
-  room.previewMetadata = req.file;
-  room.save();
-  return res.json(room);
-});
-*/
