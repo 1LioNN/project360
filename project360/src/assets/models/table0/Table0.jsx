@@ -1,62 +1,9 @@
 import React from "react";
-import * as THREE from "three";
-import { useDrag } from "@use-gesture/react";
-import { useState, useEffect } from "react";
-import { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
-import table from "./table.gltf";
-import apiService from "../../../../services/api-service.js";
+import table from "./table0.gltf";
 
-//function takes in a gltf file and returns a primitive object
-function Table({ itemId, position, setIsDragging, floorPlane, ContextMenu }) {
-  const scale = 0.01;
+export function Table0({ ref, scale, pos, bind, clickHandler, missHandler }) {
   const { nodes, materials } = useGLTF(table);
-  const [clicked, setClicked] = useState(false);
-  const [pos, setPos] = useState(position);
-
-  let planeIntersectPoint = new THREE.Vector3();
-  const ref = useRef();
-  const cm = ContextMenu;
-
-  const clickHandler = (e) => {
-    setClicked(!clicked);
-    cm.current.style.display = clicked ? " none" : " block";
-    cm.current.style.top = e.clientY + "px";
-    if (e.clientX > 1625) {
-      cm.current.style.left = e.clientX - 250 + "px";
-    } else
-    cm.current.style.left = e.clientX + "px";
-    cm.current.id = itemId;
-  };
-
-  const missHandler = (e) => {
-    setClicked(false);
-    cm.current.style.display = "none";
-    cm.current.id = "";
-  };
-
-  const bind = useDrag(
-    ({ active, movement: [x, y], timeStamp, event }) => {
-      if (clicked) {
-        if (active) {
-          event.ray.intersectPlane(floorPlane, planeIntersectPoint);
-          setPos([planeIntersectPoint.x, 0.6, planeIntersectPoint.z]);
-        } else {
-          setClicked(false);
-        }
-        setIsDragging(active);
-        return timeStamp;
-      }
-    },
-    { delay: true }
-  );
-
-  useEffect(() => {
-    apiService
-      .updateItemPos(itemId, pos)
-      .then((res) => setPos(res.item.coordinates));
-  }, [clicked]);
-
   return (
     <group
       ref={ref}
@@ -132,6 +79,6 @@ function Table({ itemId, position, setIsDragging, floorPlane, ContextMenu }) {
   );
 }
 
-useGLTF.preload("src/models/table.gltf");
+useGLTF.preload("/table0.gltf");
 
-export default Table;
+export default Table0;

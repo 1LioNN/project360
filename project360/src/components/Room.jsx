@@ -2,12 +2,11 @@ import { OrbitControls } from "@react-three/drei";
 import React from "react";
 import { Canvas, useLoader } from "@react-three/fiber";
 import * as THREE from "three";
-import Bed from "../assets/models/beds/bed1/Bed";
-import Table from "../assets/models/tables/table1/Table";
 import { useState } from "react";
 import img from "../assets/textures/wood.jpg";
 import { useRef } from "react";
 import ContextMenu from "../components/ContextMenu";
+import Model from "../assets/models/Model";
 
 function Room({ dimensions, models }) {
   const length = dimensions[0];
@@ -22,31 +21,16 @@ function Room({ dimensions, models }) {
   const cm = useRef(null);
 
   const modelsList = models.map((model) => {
-    if (model.model === "bed1") {
-      return (
-        <Bed
-          key={model.id}
-          itemId={model.id}
-          position={model.position}
-          setIsDragging={setIsDragging}
-          floorPlane={floorPlane}
-          ContextMenu={cm}
-        />
-      );
-    }
-    if (model.model === "table1") {
-      return (
-        <Table
-          key={model.id}
-          itemId={model.id}
-          position={model.position}
-          setIsDragging={setIsDragging}
-          floorPlane={floorPlane}
-          ContextMenu={cm}
-        />
-      );
-    }
-    return ``;
+    return (
+    <Model
+      type = {model.model}
+      key={model.id}
+      itemId={model.id}
+      position={model.position}
+      setIsDragging={setIsDragging}
+      floorPlane={floorPlane}
+      ContextMenu={cm}
+    />);
   });
 
   return (

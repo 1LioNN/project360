@@ -10,8 +10,8 @@ function EditSideBar({ roomId, position, setPosition, models, setModels }) {
 
     const addModel = async (type) => {
         let pos = position;
-        if (type === "table") {
-          pos[1] = 0.6;
+        if (type === "table0") {
+          pos[1] = 0.9;
         }
         setPosition([position[0] + 3, position[1], position[2]]);
         apiService
@@ -32,10 +32,10 @@ function EditSideBar({ roomId, position, setPosition, models, setModels }) {
             <FontAwesomeIcon icon={faLeftLong} style={{ fontSize: 30}} />
              Back to Dashboard 
              </Link>
-             <Dropdown type="bed1" addModel={addModel} />
-             <Dropdown type="table1" addModel={addModel} />
-             <Dropdown type="chair" addModel={addModel} />
-             <Dropdown type="sofa" addModel={addModel} />
+             <Dropdown type="bed" addModel={addModel} numModels={2}/>
+             <Dropdown type="table" addModel={addModel} numModels={2} />
+             <Dropdown type="chair" addModel={addModel} numModels={2}/>
+             <Dropdown type="sofa" addModel={addModel} numModels={2}/>
         </div>
     );
 }

@@ -15,7 +15,12 @@ function Dropdown({ type, addModel, numModels }) {
     setShow(!show);
   };
 
-  
+  let modelButtons = [];
+  for (let i = 0; i < numModels; i++) {
+    modelButtons.push(
+      <ModelButton type={type + i} addModel={addModel} key={i} />
+    );
+  }
 
   return (
     <div>
@@ -28,11 +33,11 @@ function Dropdown({ type, addModel, numModels }) {
       </div>
       
       <div
-        className="transition-[max-height] duration-500 overflow-hidden m-5"
+        className="transition-[max-height] duration-300 overflow-hidden m-5"
         style={{ maxHeight: show ? "5000px" : "0px" }}
       >
         <div className="flex flex-row flex-wrap gap-3 ">
-          <ModelButton type={type} addModel={addModel} />
+          {modelButtons}
         </div>
       </div>
     </div>
