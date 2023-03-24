@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../icons/360.png";
+import logo from "../assets/icons/360.png";
 import Button from "./Button";
 import { useAuth0 } from "@auth0/auth0-react";
 import apiService from "../services/api-service.js";
