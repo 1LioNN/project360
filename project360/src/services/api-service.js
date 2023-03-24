@@ -1,8 +1,7 @@
-
 const BASE_URL = `http://localhost:${process.env.PORT || 5000}`;
 
-
 const fetchTemplate = async (url, params = {}) => {
+  params.credentials = `include`;
   return fetch(`${BASE_URL}/${url}`, params).then((res) => {
     if (!res.ok) {
       throw new Error(`api fetch failed: ${res.status}`);
@@ -14,6 +13,10 @@ const fetchTemplate = async (url, params = {}) => {
 // ROOMS
 const getRooms = async (userId) => {
   return fetchTemplate(`api/users/${userId}/rooms`);
+};
+
+const getRoom = async (userId, roomId) => {
+  return fetchTemplate(`api/users/${userId}/rooms/${roomId}`);
 };
 
 const createRoom = async (userId, name, dimensions) => {
@@ -51,11 +54,19 @@ const updateItemPos = async (itemId, position) => {
     },
     body: JSON.stringify({ coordinates: position })
   };
-  return fetchTemplate(
-    `api/items/${itemId}/move`,
-    params
-  );
+  return fetchTemplate(`api/items/${itemId}/move`, params);
 };
+
+const updateItemAng = async (itemId, degree) => {
+  const params = {
+    method: `PATCH`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ degree })
+  };
+  return fetchTemplate(`api/items/${itemId}/rotate`, params);
+}
 
 const deleteItem = async (roomId, itemId) => {
   const params = {
@@ -73,7 +84,7 @@ const signIn = async (sub, isAuthen) => {
     },
     body: JSON.stringify({ sub, isAuthen }),
   };
-  return fetchTemplate(`api/users/signin`, params);
+  return fetchTemplate(`api/users/auth0`, params);
 };
 
 const signOut = async () => {
@@ -86,10 +97,12 @@ const getMe = async () => {
 
 const apiService = {
   getRooms,
+  getRoom,
   createRoom,
   getItems,
   createItem,
   updateItemPos,
+  updateItemAng,
   deleteItem,
   signIn,
   signOut,
