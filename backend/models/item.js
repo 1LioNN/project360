@@ -5,7 +5,7 @@ export const Item = sequelize.define(
   "Item",
   {
     rotate: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DOUBLE,
       allowNull: false,
     },
     coordinates: {
