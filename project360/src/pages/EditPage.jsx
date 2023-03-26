@@ -35,7 +35,7 @@ function EditPage() {
           models={models}
           setModels={setModels}
         />
-        {<Room dimensions={[70, 30]} models={models} />}
+        {<Room dimensions={[70, 30]} models={models} setModels={setModels} />}
       </div>
     </Suspense>
   );

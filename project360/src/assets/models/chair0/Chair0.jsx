@@ -2,14 +2,15 @@ import React from "react";
 import { useGLTF } from "@react-three/drei";
 import chair from "./chair0.gltf";
 
-export function Chair0({ ref, scale, pos, bind, clickHandler, missHandler }) {
+export function Chair0({ innerRef, scale, pos, rot, bind, clickHandler, missHandler }) {
   const { nodes, materials } = useGLTF(chair);
   return (
     <group
-      ref={ref}
+      ref={innerRef}
       object={nodes}
       scale={scale}
       position={pos}
+      rotation={[0, rot, 0]}
       {...bind()}
       onClick={(e) => clickHandler(e)}
       onPointerMissed={(e) => missHandler(e)}

@@ -31,7 +31,7 @@ function EditSideBar({ roomId, position, setPosition, models, setModels }) {
           .createItem(roomId, type, pos)
           .then((res) => {
             const newItem = {
-              id: res.item.id,
+              ...res.item,
               model: res.item.category,
               position: res.item.coordinates
             }

@@ -3,14 +3,15 @@ import React from "react";
 import { useGLTF } from "@react-three/drei";
 import bed from "./bed0.gltf";
 
-export function Bed0({ ref, scale, pos, bind, clickHandler, missHandler }) {
+export function Bed0({ innerRef, scale, pos, rot, bind, clickHandler, missHandler }) {
   const { nodes, materials } = useGLTF(bed);
   return (
     <group
-      ref={ref}
+      ref={innerRef}
       object={nodes}
       scale={scale}
       position={pos}
+      rotation={[0, rot, 0]}
       {...bind()}
       onClick={(e) => clickHandler(e)}
       onPointerMissed={(e) => missHandler(e)}
@@ -21,14 +22,14 @@ export function Bed0({ ref, scale, pos, bind, clickHandler, missHandler }) {
         receiveShadow
         geometry={nodes.bed_frame.geometry}
         material={materials.WoodQuarteredChiffon001_2K}
-        position={[-2.41, 0.31, 0.77]}
+        position={[0, 0.31, 0]}
       />
       <mesh
         castShadow
         receiveShadow
         geometry={nodes.matress.geometry}
         material={materials["Material.001"]}
-        position={[-2.41, 0.37, 0.77]}
+        position={[0, 0.37, 0]}
         scale={[1.53, 0.11, 0.96]}
       />
       <mesh
@@ -36,7 +37,7 @@ export function Bed0({ ref, scale, pos, bind, clickHandler, missHandler }) {
         receiveShadow
         geometry={nodes.pillow.geometry}
         material={materials.FabricUpholsteryMidCenturyPebbles001_2K}
-        position={[-3.32, 0.54, 0.77]}
+        position={[-0.91, 0.54, 0]}
         scale={[0.45, 0.06, 0.58]}
       />
       <mesh
@@ -44,7 +45,7 @@ export function Bed0({ ref, scale, pos, bind, clickHandler, missHandler }) {
         receiveShadow
         geometry={nodes.blanket.geometry}
         material={materials.FabricUpholsteryMidCenturyPebbles001_2K}
-        position={[-2.13, 0.99, 0.77]}
+        position={[0.28, 0.99, 0]}
         scale={[1.35, 1, 1.28]}
       />
       <mesh
@@ -52,7 +53,7 @@ export function Bed0({ ref, scale, pos, bind, clickHandler, missHandler }) {
         receiveShadow
         geometry={nodes.Circle.geometry}
         material={materials.WoodFlooringMerbauBrickBondNatural001_2K}
-        position={[-0.87, 0, 1.72]}
+        position={[1.54, 0, 0.95]}
         rotation={[-Math.PI, 0, 0]}
         scale={[-0.02, 0.02, 0.02]}
       />
