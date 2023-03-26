@@ -6,12 +6,19 @@ import apiService from "../services/api-service.js";
 import EditSideBar from "../components/EditSideBar";
 
 function EditPage() {
-  //const texture = useLoader(THREE.TextureLoader, img);
   const [models, setModels] = useState([]);
   const [position, setPosition] = useState([0, 0, 0]);
+  const [dimensions, setDimensions] = useState(null);
   const roomId = useParams().roomId;
 
   useEffect(() => {
+    apiService
+      .getMe()
+      .then((res) => apiService.getRoom(res.userId, roomId))
+      .then((res) => {
+        setDimensions(res.room.dimensions);
+      });
+
     apiService.getItems(roomId).then((res) => {
       setModels(
         res.items.map((item) => {
@@ -35,7 +42,7 @@ function EditPage() {
           models={models}
           setModels={setModels}
         />
-        {<Room dimensions={[70, 30]} models={models} setModels={setModels} />}
+        {dimensions ? <Room dimensions={dimensions} models={models} /> : ``}
       </div>
     </Suspense>
   );
