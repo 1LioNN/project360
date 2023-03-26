@@ -18,6 +18,7 @@ function Model({
   type,
   itemId,
   position,
+  rotation,
   setIsDragging,
   floorPlane,
   ContextMenu,
@@ -83,6 +84,7 @@ function Model({
       cm.current.style.left = e.clientX + "px";
     }
     cm.current.id = itemId;
+    cm.current.ref = ref;
   };
 
   const missHandler = () => {
@@ -120,6 +122,7 @@ function Model({
           innerRef={ref}
           scale={scale}
           pos={pos}
+          rot={rotation}
           bind={bind}
           clickHandler={clickHandler}
           missHandler={missHandler}
@@ -132,6 +135,7 @@ function Model({
           innerRef={ref}
           scale={scale}
           pos={pos}
+          rot={rotation}
           bind={bind}
           clickHandler={clickHandler}
           missHandler={missHandler}
@@ -144,6 +148,7 @@ function Model({
           innerRef={ref}
           scale={scale}
           pos={pos}
+          rot={rotation}
           bind={bind}
           clickHandler={clickHandler}
           missHandler={missHandler}
@@ -156,6 +161,7 @@ function Model({
           innerRef={ref}
           scale={scale}
           pos={pos}
+          rot={rotation}
           bind={bind}
           clickHandler={clickHandler}
           missHandler={missHandler}
@@ -168,6 +174,7 @@ function Model({
           innerRef={ref}
           scale={scale}
           pos={pos}
+          rot={rotation}
           bind={bind}
           clickHandler={clickHandler}
           missHandler={missHandler}
@@ -180,6 +187,7 @@ function Model({
           innerRef={ref}
           scale={scale}
           pos={pos}
+          rot={rotation}
           bind={bind}
           clickHandler={clickHandler}
           missHandler={missHandler}
@@ -192,6 +200,7 @@ function Model({
           innerRef={ref}
           scale={scale}
           pos={pos}
+          rot={rotation}
           bind={bind}
           clickHandler={clickHandler}
           missHandler={missHandler}
@@ -204,6 +213,7 @@ function Model({
           innerRef={ref}
           scale={scale}
           pos={pos}
+          rot={rotation}
           bind={bind}
           clickHandler={clickHandler}
           missHandler={missHandler}

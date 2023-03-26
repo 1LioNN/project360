@@ -2,14 +2,15 @@ import React from "react";
 import { useGLTF } from "@react-three/drei";
 import table from "./table0.gltf";
 
-export function Table0({ ref, scale, pos, bind, clickHandler, missHandler }) {
+export function Table0({ innerRef, scale, pos, rot, bind, clickHandler, missHandler }) {
   const { nodes, materials } = useGLTF(table);
   return (
     <group
-      ref={ref}
+      ref={innerRef}
       object={nodes}
       scale={scale}
       position={pos}
+      rotation={[0, rot, 0]}
       {...bind()}
       onClick={(e) => clickHandler(e)}
       onPointerMissed={(e) => missHandler(e)}

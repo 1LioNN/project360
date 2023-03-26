@@ -3,14 +3,15 @@ import React from "react";
 import { useGLTF } from "@react-three/drei";
 import bed from "./bed1.gltf";
 
-export function Bed1({ ref, scale, pos, bind, clickHandler, missHandler }) {
+export function Bed1({ innerRef, scale, pos, rot, bind, clickHandler, missHandler }) {
   const { nodes, materials } = useGLTF(bed);
   return (
     <group
-      ref={ref}
+      ref={innerRef}
       object={nodes}
       scale={scale}
       position={pos}
+      rotation={[0, rot, 0]}
       {...bind()}
       onClick={(e) => clickHandler(e)}
       onPointerMissed={(e) => missHandler(e)}
