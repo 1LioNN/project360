@@ -21,6 +21,7 @@ function Model({
   rotation,
   setIsDragging,
   floorPlane,
+  dimensions,
   ContextMenu,
 }) {
   let scale = 1;
@@ -47,7 +48,7 @@ function Model({
       floor = 0.1;
       break;
     case "table1":
-      scale = 2.5
+      scale = 2.5;
       floor = 1;
       break;
     case "sofa1":
@@ -63,11 +64,35 @@ function Model({
   }
   const [clicked, setClicked] = useState(false);
   const [pos, setPos] = useState(position);
+  const [bbox, setBBox] = useState(null);
+  const [center, setCenter] = useState(null);
 
   let planeIntersectPoint = new THREE.Vector3();
   const ref = useRef();
 
   const cm = ContextMenu;
+
+  const validX = (x) => {
+    if (!center) {
+      setCenter(bbox.max.clone().sub(bbox.min).multiplyScalar(1/2));
+      return 0;
+    }
+
+    const maxAbsX = Math.abs(x) + center.x;
+    const signedBound = Math.sign(x) * ((dimensions[0] / 2) - center.x);
+    return maxAbsX <= (dimensions[0] / 2) ? x : signedBound;
+  }
+
+  const validZ = (z) => {
+    if (!center) {
+      setCenter(bbox.max.clone().sub(bbox.min).multiplyScalar(1/2));
+      return 0;
+    }
+
+    const maxAbsZ = Math.abs(z) + center.z;
+    const signedBound = Math.sign(z) * ((dimensions[1] / 2) - center.z);
+    return maxAbsZ <= (dimensions[1] / 2) ? z : signedBound;
+  }
 
   const clickHandler = (e) => {
     setClicked(!clicked);
@@ -85,12 +110,16 @@ function Model({
     }
     cm.current.id = itemId;
     cm.current.ref = ref;
+    cm.current.setBBox = setBBox;
+    cm.current.setCenter = setCenter;
+    setBBox(new THREE.Box3().setFromObject(ref.current));
   };
 
   const missHandler = () => {
     setClicked(false);
     cm.current.style.display = "none";
     cm.current.id = "";
+    setBBox(null);
   };
 
   const bind = useDrag(
@@ -98,7 +127,9 @@ function Model({
       if (clicked) {
         if (active) {
           event.ray.intersectPlane(floorPlane, planeIntersectPoint);
-          setPos([planeIntersectPoint.x, floor, planeIntersectPoint.z]);
+          const newX = validX(planeIntersectPoint.x);
+          const newZ = validZ(planeIntersectPoint.z);
+          setPos([newX, floor, newZ]);
         } else {
           setClicked(false);
         }
@@ -110,9 +141,7 @@ function Model({
   );
 
   useEffect(() => {
-    apiService
-      .updateItemPos(itemId, pos)
-      .then((res) => setPos(res.item.coordinates));
+    apiService.updateItemPos(itemId, pos);
   }, [clicked]);
 
   switch (type) {

@@ -30,6 +30,7 @@ function Room({ dimensions, models, setModels }) {
       rotation={model.rotate}
       setIsDragging={setIsDragging}
       floorPlane={floorPlane}
+      dimensions={dimensions}
       ContextMenu={cm}
     />);
   });

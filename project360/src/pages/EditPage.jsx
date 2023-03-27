@@ -16,7 +16,7 @@ function EditPage() {
       .getMe()
       .then((res) => apiService.getRoom(res.userId, roomId))
       .then((res) => {
-        setDimensions(res.room.dimensions);
+        setDimensions(res.room.dimensions.map((x) => parseFloat(x)));
       });
 
     apiService.getItems(roomId).then((res) => {
@@ -42,7 +42,7 @@ function EditPage() {
           models={models}
           setModels={setModels}
         />
-        {dimensions ? <Room dimensions={dimensions} models={models} /> : ``}
+        {dimensions ? <Room dimensions={dimensions} models={models} setModels={setModels} /> : ``}
       </div>
     </Suspense>
   );
