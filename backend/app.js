@@ -7,13 +7,12 @@ import { itemsRouter } from "./routers/items_router.js";
 import session from "express-session";
 import cors from "cors";
 import http from "http";
-import { Server } from 'socket.io';
+import { Server } from "socket.io";
+export const app = express();
+const server = http.createServer(app);
 
 const PORT = 5000;
 const clients = {}; 
-export const app = express();
-const server = new http.Server(app); 
-const io = new Server(server);
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -25,10 +24,22 @@ app.use(
   })
 );
 
+const io = new Server(server, { 
+  cors: {
+    origin: "http://localhost:3000",
+  }, 
+}); 
+
 io.on("connection", (socket) => {
-  clients[socket.id] = {};
+  // clients[socket.id] = {};
   console.log("a user connected : " + socket.id);
   socket.emit("id", socket.id);
+  socket.emit("hello", "world"); 
+
+  socket.on("howdy", (data) => { 
+    console.log(data); 
+  }); 
+
 
   socket.on("disconnect", () => {
     console.log("socket disconnected : " + socket.id);
@@ -40,7 +51,9 @@ io.on("connection", (socket) => {
   });
 
   socket.on("update", (message) => {
+    console.log(message)
     if (clients[socket.id]) {
+      socket.broadcast.emit("position", message);
       clients[socket.id].t = message.t; //client timestamp
       clients[socket.id].p = message.p; //position
     }
@@ -67,3 +80,5 @@ app.listen(PORT, (err) => {
   if (err) console.log(err);
   else console.log("HTTP server on http://localhost:%s", PORT);
 });
+
+io.listen(5001)
