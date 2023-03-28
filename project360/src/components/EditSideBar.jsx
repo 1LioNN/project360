@@ -26,7 +26,7 @@ function EditSideBar({ roomId, position, setPosition, models, setModels }) {
           default:
             break;
         }
-        setPosition([position[0] + 3, position[1], position[2]]);
+        setPosition([position[0], position[1], position[2]]);
         apiService
           .createItem(roomId, type, pos)
           .then((res) => {

@@ -1,4 +1,5 @@
 import React from "react";
+import * as THREE from "three";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTrash,
@@ -20,6 +21,8 @@ function ContextMenu({ ContextMenu, models, setModels }) {
       ContextMenu.current.ref = null;
       ContextMenu.current.id = "";
       ContextMenu.current.style.display = "none";
+      ContextMenu.current.setBBox(null);
+      ContextMenu.current.setCenter(null);
     })
   };
 
@@ -32,6 +35,9 @@ function ContextMenu({ ContextMenu, models, setModels }) {
     if (model.rotation.y <= -2 * Math.PI) {
       model.rotation.y = 0;
     }
+    const bbox = new THREE.Box3().setFromObject(model);
+    ContextMenu.current.setBBox(bbox);
+    ContextMenu.current.setCenter(bbox.max.clone().sub(bbox.min).multiplyScalar(1/2));
     apiService.updateItemAng(ContextMenu.current.id, model.rotation.y);
   };
 
@@ -44,6 +50,9 @@ function ContextMenu({ ContextMenu, models, setModels }) {
     if (model.rotation.y >= 2 * Math.PI) {
       model.rotation.y = 0;
     }
+    const bbox = new THREE.Box3().setFromObject(model);
+    ContextMenu.current.setBBox(bbox);
+    ContextMenu.current.setCenter(bbox.max.clone().sub(bbox.min).multiplyScalar(1/2));
     apiService.updateItemAng(ContextMenu.current.id, model.rotation.y);
   };
 
