@@ -212,18 +212,6 @@ roomsRouter.delete("/:id", async (req, res) => {
       .json({ error: `Room(id=${req.params.id}) not found.` });
   }
 
-  if (room.previewMetadata) {
-    await fs.unlink(
-      path.join(
-        room.previewMetadata.destination,
-        room.previewMetadata.filename
-      ),
-      (err) => {
-        if (err) throw err;
-      }
-    );
-  }
-
   await room.removeItems();
   await room.destroy();
   return res.json({ room });
