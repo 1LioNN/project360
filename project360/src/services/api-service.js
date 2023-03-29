@@ -30,6 +30,13 @@ const createRoom = async (userId, name, dimensions) => {
   return fetchTemplate(`api/users/${userId}/rooms`, params);
 };
 
+const deleteRoom = async (userId, roomId) => {
+  const params = {
+    method: `DELETE`,
+  };
+  return fetchTemplate(`api/users/${userId}/rooms/${roomId}`, params);
+};
+
 // ITEMS
 const getItems = async (roomId) => {
   return fetchTemplate(`api/items?roomId=${roomId}`);
@@ -99,6 +106,7 @@ const apiService = {
   getRooms,
   getRoom,
   createRoom,
+  deleteRoom,
   getItems,
   createItem,
   updateItemPos,
