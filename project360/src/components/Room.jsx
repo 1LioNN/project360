@@ -2,15 +2,13 @@ import { OrbitControls } from "@react-three/drei";
 import React from "react";
 import { Canvas, useLoader } from "@react-three/fiber";
 import * as THREE from "three";
-import Bed from "../models/Bed";
-import Table from "../models/Table";
 import { useState } from "react";
-import img from "../textures/wood.jpg";
+import img from "../assets/textures/wood.jpg";
 import { useRef } from "react";
-import { useEffect } from "react";
 import ContextMenu from "../components/ContextMenu";
+import Model from "../assets/models/Model";
 
-function Room({ dimensions, models }) {
+function Room({ dimensions, models, setModels }) {
   const length = dimensions[0];
   const width = dimensions[1];
   const [isDragging, setIsDragging] = useState(false);
@@ -23,39 +21,23 @@ function Room({ dimensions, models }) {
   const cm = useRef(null);
 
   const modelsList = models.map((model) => {
-    if (model.model === "bed") {
-      return (
-        <Bed
-          key={model.id}
-          itemId={model.id}
-          position={model.position}
-          setIsDragging={setIsDragging}
-          floorPlane={floorPlane}
-          ContextMenu={cm}
-
-        />
-      );
-    }
-    if (model.model === "table") {
-      return (
-        <Table
-          key={model.id}
-          itemId={model.id}
-          position={model.position}
-          setIsDragging={setIsDragging}
-          floorPlane={floorPlane}
-          ContextMenu={cm}
-  
-        />
-      );
-    }
-    return ``;
+    return (
+    <Model
+      type = {model.model}
+      key={model.id}
+      itemId={model.id}
+      position={model.position}
+      rotation={model.rotate}
+      setIsDragging={setIsDragging}
+      floorPlane={floorPlane}
+      dimensions={dimensions}
+      ContextMenu={cm}
+    />);
   });
-
 
   return (
     <div className="basis-9/12 h-screen bg-zinc-900 overflow-hidden">
-      <ContextMenu ContextMenu={cm} />
+      <ContextMenu ContextMenu={cm} models={models} setModels={setModels}  />
       <Canvas camera={{ position: [0, 5, 10] }}>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} />
@@ -96,33 +78,6 @@ function Room({ dimensions, models }) {
         />
       </Canvas>
     </div>
-  );
-}
-// Hook
-function useOnClickOutside(ref, handler) {
-  useEffect(
-    () => {
-      const listener = (event) => {
-        // Do nothing if clicking ref's element or descendent elements
-        if (!ref.current || ref.current.contains(event.target)) {
-          return;
-        }
-        handler(event);
-      };
-      document.addEventListener("mousedown", listener);
-      document.addEventListener("touchstart", listener);
-      return () => {
-        document.removeEventListener("mousedown", listener);
-        document.removeEventListener("touchstart", listener);
-      };
-    },
-    // Add ref and handler to effect dependencies
-    // It's worth noting that because passed in handler is a new ...
-    // ... function on every render that will cause this effect ...
-    // ... callback/cleanup to run every render. It's not a big deal ...
-    // ... but to optimize you can wrap handler in useCallback before ...
-    // ... passing it into this hook.
-    [ref, handler]
   );
 }
 

@@ -10,16 +10,21 @@ import http from "http";
 import { Server } from "socket.io";
 export const app = express();
 const server = http.createServer(app);
+import dotenv from "dotenv";
+dotenv.config();
 
 const PORT = 5000;
 const clients = {}; 
 const furniture = {}; 
 
-app.use(cors());
+app.use(cors({
+  origin: `http://localhost:${process.env.PORT || 3000}`,
+  credentials: true
+}));
 app.use(bodyParser.json());
 app.use(
   session({
-    secret: "i changed this secret",
+    secret: process.env.SESS_SECRET,
     resave: false,
     saveUninitialized: true,
   })
