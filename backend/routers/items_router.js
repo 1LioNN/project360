@@ -4,6 +4,7 @@ import { Op } from "sequelize";
 import path from "path";
 import fs from "fs";
 import { isAuthenticated } from "../middleware/auth.js";
+// import ioObject from "../app.js";
 
 export const itemsRouter = Router({ mergeParams: true });
 
@@ -127,11 +128,14 @@ itemsRouter.patch("/:id/move", async (req, res) => {
   item.coordinates = JSON.stringify(req.body.coordinates);
   await item.save();
   item.coordinates = JSON.parse(item.coordinates);
+  // emit socket io event to tell other clients to update the room
+  req.io.emit("updateRoom", { roomId: item.RoomId, itemId: item.id, x: item.coordinates[0], z: item.coordinates[2] }); 
+  
   return res.json({ item });
 });
 
 // delete item from room
-// api/items/:id?roomId=${roomId}
+// api/items/:id?roomId=${roomId}0
 itemsRouter.delete("/:id", async (req, res) => {
   const item = await Item.findOne({
     where: { id: req.params.id, RoomId: req.query.roomId },

@@ -11,40 +11,36 @@ export default function useSocketIO(model) {
     const otherUsers = useRef({})
 
     useEffect(() => {
-      //console.log('setting socket io')
-      // socket.current = io()
+      // console.log('setting socket io')
+      socket.current = io()
       // debugger; 
       function onConnect() {
-        
+        console.log('connected');
       }
       socket.on('connect', onConnect);
-  
-      const intervalId = setInterval(() => {
-        model.current &&
-          socket.emit('update', {
-            t: Date.now(),
-            p: model.current.position
-          })
-      })
 
-      socket.on('position', (data) => {
-        console.log("Hi"); 
+      socket.on('updateRoom', (data) => {
+        console.log("Listening to updateRoom")
         console.log(data);
-      })
-
-
-    // //send message to server
-    // socket.emit("howdy", "Hi"); 
+      }); 
+  
+    //   socket.current.on('id', (id) => {
+    //     console.log('myId = ' + id)
+    //     myId.current = id
+    //   })
+      
 
     // //recieve message from server
-    // socket.on("hello", (data) => {
+    // socket.on("update/${roomif}", (data) => {
     //   console.log(data);
+    //   // add a debounce here
+    //   getItems();
     // });
 
     return () => {
       console.log('in useSocketIO return')
-      clearInterval(intervalId)
-      // socket.current.off('id')
+      // clearInterval(intervalId)
+      socket.current.off('id')
       // socket.current.off('clients')
       // socket.current.off('removeClient')
     }
