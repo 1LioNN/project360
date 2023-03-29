@@ -24,6 +24,9 @@ itemsRouter.post("/", async (req, res) => {
     RoomId: room.id,
   });
   item.coordinates = JSON.parse(item.coordinates);
+
+  req.io.emit("updateRoom", { roomId: item.RoomId, itemId: item.id, x: item.coordinates[0], z: item.coordinates[2] }); 
+
   return res.json({ item });
 });
 
@@ -128,6 +131,7 @@ itemsRouter.patch("/:id/move", async (req, res) => {
   item.coordinates = JSON.stringify(req.body.coordinates);
   await item.save();
   item.coordinates = JSON.parse(item.coordinates);
+
   // emit socket io event to tell other clients to update the room
   req.io.emit("updateRoom", { roomId: item.RoomId, itemId: item.id, x: item.coordinates[0], z: item.coordinates[2] }); 
   
@@ -145,6 +149,9 @@ itemsRouter.delete("/:id", async (req, res) => {
       .status(404)
       .json({ error: `Item(id=${req.params.id}) not found.` });
   }
+
+  req.io.emit("updateRoom", { roomId: item.RoomId, itemId: item.id }); 
+
   await item.destroy();
   return res.json({ item });
 });

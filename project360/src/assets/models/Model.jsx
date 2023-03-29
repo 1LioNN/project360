@@ -11,6 +11,7 @@ import Bed1 from "./bed1/Bed1";
 import Sofa1 from "./sofa1/Sofa1";
 import Table1 from "./table1/Table1";
 import Chair1 from "./chair1/Chair1";
+import useSocketIO from "../../services/useSocketIO.js"; 
 
 import apiService from "../../services/api-service.js";
 //function takes in a gltf file and returns a primitive object
@@ -66,6 +67,12 @@ function Model({
   const [pos, setPos] = useState(position);
   const [bbox, setBBox] = useState(null);
   const [center, setCenter] = useState(null);
+
+  console.log("pos"); 
+  console.log(pos);
+
+  console.log("position");
+  console.log(position);
 
   let planeIntersectPoint = new THREE.Vector3();
   const ref = useRef();
@@ -141,7 +148,7 @@ function Model({
   );
 
   useEffect(() => {
-    apiService.updateItemPos(itemId, pos);
+    apiService.updateItemPos(itemId, position);
   }, [clicked]);
 
   switch (type) {

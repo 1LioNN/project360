@@ -20,6 +20,8 @@ function Room({ dimensions, models, setModels }) {
 
   const cm = useRef(null);
 
+  console.log("valorant");
+  console.log(models); 
   const modelsList = models.map((model) => {
     return (
     <Model

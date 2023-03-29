@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react'
 import { useThree } from '@react-three/fiber'
 import io from 'socket.io-client'
-import {socket} from "../socketConnect"
+import { socket } from "../socketConnect"
+// import { useModels } from './states/models'
 // const socket = io("localhost:5000");
 
 export default function useSocketIO(model) {
@@ -20,7 +21,8 @@ export default function useSocketIO(model) {
       socket.on('connect', onConnect);
 
       socket.on('updateRoom', (data) => {
-        console.log("Listening to updateRoom")
+
+        console.log("Listening to updateRoom"); 
         console.log(data);
       }); 
   
