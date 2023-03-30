@@ -11,13 +11,10 @@ function EditPage() {
   const [models, setModels] = useState([]);
   const [position, setPosition] = useState([0, 0, 0]);
   const [dimensions, setDimensions] = useState(null);
-  const [pos, setPos] = useState(position);
   const roomId = useParams().roomId;
 
   const myId = useRef();
 
-  console.log("Pony"); 
-  console.log(models); 
   useEffect(() => {
     socket.current = io();
 
@@ -47,8 +44,7 @@ function EditPage() {
 
     socket.on("updateRoom", (data) => {
       console.log("Listening to updateRoom");
-      console.log(data);
-
+    
       apiService.getItems(data.roomId).then((res) => {
         console.log(res); 
         const val = res.items.map((item) => {
@@ -59,26 +55,19 @@ function EditPage() {
           };
         }); 
         setModels(val); 
-        console.log("val"); 
-        console.log(val); 
-        console.log("Vanshika"); 
-        console.log(models); 
       });
 
 
     });
 
     socket.current.on("id", (id) => {
-      console.log("myId = " + id);
       myId.current = id;
     });
 
     return () => {
       console.log("in useSocketIO return");
-      // clearInterval(intervalId)
       socket.current.off("id");
       // socket.current.off('clients')
-      // socket.current.off('removeClient')
     };
   }, [roomId]);
 
@@ -93,7 +82,7 @@ function EditPage() {
           setModels={setModels}
         />
         {dimensions ? (
-          <Room dimensions={dimensions} models={models} setModels={setModels} />
+          <Room dimensions={dimensions} models={models} setModels={setModels}/>
         ) : (
           ``
         )}

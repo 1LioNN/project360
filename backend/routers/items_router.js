@@ -110,6 +110,9 @@ itemsRouter.patch("/:id/rotate/", async (req, res) => {
   item.rotate = req.body.degree;
   await item.save();
   item.coordinates = JSON.parse(item.coordinates);
+
+  req.io.emit("updateRoom", { roomId: item.RoomId, itemId: item.id, degree: item.rotate }); 
+
   return res.json({ item });
 });
 

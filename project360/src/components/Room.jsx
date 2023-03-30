@@ -8,7 +8,7 @@ import { useRef } from "react";
 import ContextMenu from "../components/ContextMenu";
 import Model from "../assets/models/Model";
 
-function Room({ dimensions, models, setModels }) {
+function Room({ dimensions, models, setModels, pos, setPos}) {
   const length = dimensions[0];
   const width = dimensions[1];
   const [isDragging, setIsDragging] = useState(false);
@@ -34,6 +34,8 @@ function Room({ dimensions, models, setModels }) {
       floorPlane={floorPlane}
       dimensions={dimensions}
       ContextMenu={cm}
+      pos={pos}
+      setPos={setPos}
     />);
   });
 
