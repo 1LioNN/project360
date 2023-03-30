@@ -1,9 +1,11 @@
 import React from "react";
 import Room from "../components/Room";
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import apiService from "../services/api-service.js";
 import EditSideBar from "../components/EditSideBar";
+import { socket } from "../socketConnect";
+import io from "socket.io-client";
 
 function EditPage() {
   const [models, setModels] = useState([]);
@@ -11,7 +13,16 @@ function EditPage() {
   const [dimensions, setDimensions] = useState(null);
   const roomId = useParams().roomId;
 
+  const myId = useRef();
+
   useEffect(() => {
+    socket.current = io();
+
+    function onConnect() {
+      console.log("connected");
+    }
+    socket.on("connect", onConnect);
+
     apiService
       .getMe()
       .then((res) => apiService.getRoom(res.userId, roomId))
@@ -30,6 +41,34 @@ function EditPage() {
         })
       );
     });
+
+    socket.on("updateRoom", (data) => {
+      console.log("Listening to updateRoom");
+    
+      apiService.getItems(data.roomId).then((res) => {
+        console.log(res); 
+        const val = res.items.map((item) => {
+          return {
+            ...item,
+            position: item.coordinates,
+            model: item.category,
+          };
+        }); 
+        setModels(val); 
+      });
+
+
+    });
+
+    socket.current.on("id", (id) => {
+      myId.current = id;
+    });
+
+    return () => {
+      console.log("in useSocketIO return");
+      socket.current.off("id");
+      // socket.current.off('clients')
+    };
   }, [roomId]);
 
   return (
@@ -42,9 +81,14 @@ function EditPage() {
           models={models}
           setModels={setModels}
         />
-        {dimensions ? <Room dimensions={dimensions} models={models} setModels={setModels} /> : ``}
+        {dimensions ? (
+          <Room dimensions={dimensions} models={models} setModels={setModels}/>
+        ) : (
+          ``
+        )}
       </div>
     </Suspense>
   );
 }
+
 export default EditPage;
