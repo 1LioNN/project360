@@ -21,7 +21,7 @@ function Dashboard() {
       setUserId(res.userId);
     });
   }, []);
-  
+
   return (
     <div className="flex flex-col m-0 h-full overflow-hidden">
       <NavBar />

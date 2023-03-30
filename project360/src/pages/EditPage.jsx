@@ -1,75 +1,99 @@
 import React from "react";
 import Room from "../components/Room";
-import Button from "../components/Button";
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import apiService from "../services/api-service.js";
-
-import { Canvas, useLoader } from "@react-three/fiber";
-import * as THREE from "three";
-import img from "../textures/wood.jpg";
+import EditSideBar from "../components/EditSideBar";
+import { socket } from "../socketConnect";
+import io from "socket.io-client";
 
 function EditPage() {
-  //const texture = useLoader(THREE.TextureLoader, img);
   const [models, setModels] = useState([]);
   const [position, setPosition] = useState([0, 0, 0]);
-  
-
+  const [dimensions, setDimensions] = useState(null);
+  const [roomName, setRoomName] = useState("New Room");
   const roomId = useParams().roomId;
-  console.log(models);
+
+
+  const myId = useRef();
+
+
   useEffect(() => {
-    apiService.getItems(roomId).then((res) => {
-      setModels(res.items.map(item => {
-        return {
-          ...item,
-          position: item.coordinates,
-          model: item.category
-        }
-      }));
-    });
-  }, [roomId]);
+    socket.current = io();
 
-  const addModel = async (type) => {
-    let pos = position;
-    if (type === "table") {
-      pos[1] = 0.6;
+    function onConnect() {
+      console.log("connected");
     }
+    socket.on("connect", onConnect);
 
-    setPosition([position[0] + 3, position[1], position[2]]);
     apiService
-      .createItem(roomId, type, pos)
+      .getMe()
+      .then((res) => apiService.getRoom(res.userId, roomId))
       .then((res) => {
-        const newItem = {
-          id: res.item.id,
-          model: res.item.category,
-          position: res.item.coordinates
-        }
-        setModels([...models, newItem])
+        setDimensions(res.room.dimensions.map((x) => parseFloat(x)));
+        setRoomName(res.room.name);
       });
-  };
 
-  const deleteModel = async () => {
-    // delete most recent item
-    const modelId = models[models.length - 1].id;
-    apiService.deleteItem(roomId, modelId).then((res) => {
-      const newModels = models.filter((model) => model.id !== modelId);
-      setModels(newModels);
+    apiService.getItems(roomId).then((res) => {
+      setModels(
+        res.items.map((item) => {
+          return {
+            ...item,
+            position: item.coordinates,
+            model: item.category,
+          };
+        })
+      );
     });
-  };
+
+    socket.on("updateRoom", (data) => {
+      console.log("Listening to updateRoom");
+    
+      apiService.getItems(data.roomId).then((res) => {
+        console.log(res); 
+        const val = res.items.map((item) => {
+          return {
+            ...item,
+            position: item.coordinates,
+            model: item.category,
+          };
+        }); 
+        setModels(val); 
+      });
+
+
+    });
+
+    socket.current.on("id", (id) => {
+      myId.current = id;
+    });
+
+    return () => {
+      console.log("in useSocketIO return");
+      socket.current.off("id");
+      // socket.current.off('clients')
+    };
+  }, [roomId]);
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <div className="flex flex-row flex-wrap m-0 h-full">
-      <div className="basis-3/12 h-screen bg-gradient-to-br from-zinc-700 via-zinc-400 to-blue-100 ">
-        <Button text={"Add"} onClick={() => addModel("bed")} />
-        <Button text={"Add Table"} onClick={() => addModel("table")} />
-        <Button text={"Delete"} onClick={() => deleteModel()} />
-        <Link to="/dashboard"> Back </Link>
+      <div className="flex flex-col sm:flex-row flex-wrap m-0 h-full">
+        <EditSideBar
+          roomId={roomId}
+          position={position}
+          setPosition={setPosition}
+          models={models}
+          setModels={setModels}
+          name = {roomName}
+        />
+        {dimensions ? (
+          <Room dimensions={dimensions} models={models} setModels={setModels}/>
+        ) : (
+          ``
+        )}
       </div>
-      {<Room dimensions={[70, 30]} models={models} />}
-    </div>
     </Suspense>
-    
   );
 }
+
 export default EditPage;

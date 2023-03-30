@@ -4,6 +4,7 @@ import { Op } from "sequelize";
 import path from "path";
 import fs from "fs";
 import { isAuthenticated } from "../middleware/auth.js";
+// import ioObject from "../app.js";
 
 export const itemsRouter = Router({ mergeParams: true });
 
@@ -17,11 +18,15 @@ itemsRouter.post("/", async (req, res) => {
       .json({ error: `Room(id=${req.query.roomId}) not found.` });
   }
   const item = await Item.create({
-    coordinates: req.body.coordinates,
+    coordinates: JSON.stringify(req.body.coordinates),
     rotate: 0,
     category: req.body.category,
     RoomId: room.id,
   });
+  item.coordinates = JSON.parse(item.coordinates);
+
+  req.io.emit("updateRoom", { roomId: item.RoomId, itemId: item.id, x: item.coordinates[0], z: item.coordinates[2] }); 
+
   return res.json({ item });
 });
 
@@ -42,9 +47,7 @@ itemsRouter.get("/", async (req, res) => {
   });
 
   items = items.map((item) => {
-    item.coordinates = item.coordinates
-      .split(",")
-      .map((coord) => parseFloat(coord));
+    item.coordinates = JSON.parse(item.coordinates);
     return item;
   });
   return res.json({ items });
@@ -68,12 +71,11 @@ itemsRouter.get("/:id", async (req, res) => {
       .status(404)
       .json({ error: `Item(id=${req.params.itemId}) not found.` });
   }
-  item.coordinates = item.coordinates
-    .split(",")
-    .map((coord) => parseFloat(coord));
+  item.coordinates = JSON.parse(item.coordinates);
   return res.json({ item });
 });
 
+// will need to update at some point
 // display items for the sidebar according to category
 itemsRouter.get("/catergories/:type", async (req, res) => {
   const items = await Item.findAll({
@@ -97,16 +99,20 @@ itemsRouter.patch("/:id/rotate/", async (req, res) => {
       .json({ error: `Item(id=${req.params.id}) not found.` });
   }
   const degree = req.body.degree;
-  if (!degree) {
+  if (!degree && degree !== 0) {
     return res
       .status(422)
       .json({ error: `Missing required parameter 'degree' in request body.` });
   }
-  if (degree < 0 || degree > 360) {
+  if (degree < -2 * Math.PI || degree > 2 * Math.PI) {
     return res.status(400).json({ error: `Invalid degree ${degree}.` });
   }
-  item.rotate = req.params.degree;
+  item.rotate = req.body.degree;
   await item.save();
+  item.coordinates = JSON.parse(item.coordinates);
+
+  req.io.emit("updateRoom", { roomId: item.RoomId, itemId: item.id, degree: item.rotate }); 
+
   return res.json({ item });
 });
 
@@ -118,18 +124,25 @@ itemsRouter.patch("/:id/move", async (req, res) => {
       .status(404)
       .json({ error: `Item(id=${req.params.id}) not found.` });
   }
-  item.coordinates = req.body.coordinates;
+  
   if (!req.body.coordinates) {
     return res.status(422).json({
       error: `Missing required parameter 'coordinates' in request body.`,
     });
   }
+  
+  item.coordinates = JSON.stringify(req.body.coordinates);
   await item.save();
+  item.coordinates = JSON.parse(item.coordinates);
+
+  // emit socket io event to tell other clients to update the room
+  req.io.emit("updateRoom", { roomId: item.RoomId, itemId: item.id, x: item.coordinates[0], z: item.coordinates[2] }); 
+  
   return res.json({ item });
 });
 
 // delete item from room
-// api/items/:id?roomId=${roomId}
+// api/items/:id?roomId=${roomId}0
 itemsRouter.delete("/:id", async (req, res) => {
   const item = await Item.findOne({
     where: { id: req.params.id, RoomId: req.query.roomId },
@@ -139,6 +152,9 @@ itemsRouter.delete("/:id", async (req, res) => {
       .status(404)
       .json({ error: `Item(id=${req.params.id}) not found.` });
   }
+
+  req.io.emit("updateRoom", { roomId: item.RoomId, itemId: item.id }); 
+
   await item.destroy();
   return res.json({ item });
 });
