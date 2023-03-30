@@ -11,9 +11,12 @@ function EditPage() {
   const [models, setModels] = useState([]);
   const [position, setPosition] = useState([0, 0, 0]);
   const [dimensions, setDimensions] = useState(null);
+  const [roomName, setRoomName] = useState("New Room");
   const roomId = useParams().roomId;
 
+
   const myId = useRef();
+
 
   useEffect(() => {
     socket.current = io();
@@ -28,6 +31,7 @@ function EditPage() {
       .then((res) => apiService.getRoom(res.userId, roomId))
       .then((res) => {
         setDimensions(res.room.dimensions.map((x) => parseFloat(x)));
+        setRoomName(res.room.name);
       });
 
     apiService.getItems(roomId).then((res) => {
@@ -80,6 +84,7 @@ function EditPage() {
           setPosition={setPosition}
           models={models}
           setModels={setModels}
+          name = {roomName}
         />
         {dimensions ? (
           <Room dimensions={dimensions} models={models} setModels={setModels}/>
