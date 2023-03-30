@@ -67,6 +67,10 @@ function Model({
   const [bbox, setBBox] = useState(null);
   const [center, setCenter] = useState(null);
 
+  useEffect(() => {
+    setPos(position);
+  }, [position]);
+
   let planeIntersectPoint = new THREE.Vector3();
   const ref = useRef();
 
