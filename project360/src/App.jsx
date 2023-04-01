@@ -3,6 +3,7 @@ import Home from "./pages/HomePage";
 import Dashboard from "./pages/Dashboard";
 import Edit from "./pages/EditPage";
 import NotFound from "./pages/NotFound";
+import Loading from "./components/Loading";
 // import Test from "./pages/test_yjs.js";
 import { Routes, Route} from "react-router-dom";
 
@@ -14,14 +15,14 @@ function App() {
   return (
     <div className="App h-full">
       {error && <p>Authentication Error</p>}
-      {!error && isLoading && <p>Loading...</p>}
+      {!error && isLoading && <Loading />}
       {!error && !isLoading && (
         <>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/dashboard/:filter" element={<Dashboard />} />
             <Route path="/edit/:roomId" element={<Edit />} />
-            <Route path="*" element={<NotFound />} />
+            <Route path="*" element={<Loading />} />
           </Routes>
         </>
       )}

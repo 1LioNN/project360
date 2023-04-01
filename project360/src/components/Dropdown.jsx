@@ -8,7 +8,7 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1) + "s";
 }
 
-function Dropdown({ type, addModel, numModels }) {
+function Dropdown({ type, addModel, numModels, loadingModels}) {
   const [show, setShow] = useState(false);
 
   const toggleShow = () => {
@@ -18,7 +18,7 @@ function Dropdown({ type, addModel, numModels }) {
   let modelButtons = [];
   for (let i = 0; i < numModels; i++) {
     modelButtons.push(
-      <ModelButton type={type + i} addModel={addModel} key={i} />
+      <ModelButton type={type + i} addModel={addModel} key={i} loadingModels={loadingModels} />
     );
   }
 
@@ -33,7 +33,7 @@ function Dropdown({ type, addModel, numModels }) {
       </div>
       
       <div
-        className="transition-[max-height] duration-300 overflow-hidden m-5"
+        className="transition-[max-height] duration-300 ease-in-out overflow-hidden m-5"
         style={{ maxHeight: show ? "5000px" : "0px" }}
       >
         <div className="flex flex-row flex-wrap gap-3 ">

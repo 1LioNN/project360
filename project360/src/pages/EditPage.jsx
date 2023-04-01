@@ -9,6 +9,7 @@ import io from "socket.io-client";
 import { useAuth0 } from "@auth0/auth0-react";
 import Error from "../components/Error";
 import NavBar from "../components/NavBar";
+import Loading from "../components/Loading";
 
 function EditPage() {
   const { isAuthenticated } = useAuth0();
@@ -19,6 +20,8 @@ function EditPage() {
   const roomId = useParams().roomId;
   const [errorCode, setErrorCode] = useState(null);
   const [redirect, setRedirect] = useState(null);
+  const [loadingRoom, setLoadingRoom] = useState(true);
+  const [loadingItems, setLoadingItems] = useState(true);
 
   const myId = useRef();
 
@@ -36,13 +39,16 @@ function EditPage() {
       .then((res) => {
         setDimensions(res.room.dimensions.map((x) => parseFloat(x)));
         setRoomName(res.room.name);
+        setLoadingRoom(false);
       })
       .catch((err) => {
+        setLoadingRoom(false);
         setErrorCode(404);
         isAuthenticated ? setRedirect("/dashboard/my-rooms") : setRedirect("/");
       });
 
     apiService.getItems(roomId).then((res) => {
+      setLoadingItems(false);
       setModels(
         res.items.map((item) => {
           return {
@@ -60,6 +66,7 @@ function EditPage() {
       apiService.getItems(data.roomId).then((res) => {
         console.log(res);
         const val = res.items.map((item) => {
+          setLoadingItems(false);
           return {
             ...item,
             position: item.coordinates,
@@ -79,6 +86,8 @@ function EditPage() {
       // socket.current.off('clients')
     };
   }, [roomId, isAuthenticated]);
+
+
 
   if (!isAuthenticated) {
     return (
@@ -106,7 +115,8 @@ function EditPage() {
     );
   } else {
     return (
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Loading/>}>
+        {loadingRoom && loadingItems ? <Loading /> : (
         <div className="flex flex-col sm:flex-row flex-wrap m-0 h-full">
           <EditSideBar
             roomId={roomId}
@@ -115,6 +125,8 @@ function EditPage() {
             models={models}
             setModels={setModels}
             name={roomName}
+            loadingRoom={loadingRoom}
+            loadingItems={loadingItems}
           />
           {dimensions ? (
             <Room
@@ -125,8 +137,8 @@ function EditPage() {
           ) : (
             ``
           )}
-        </div>
-      </Suspense>
+        </div>)}
+      </Suspense> 
     );
   }
 }

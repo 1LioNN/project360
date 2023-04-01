@@ -14,13 +14,11 @@ function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
   const [width, setWidth] = useState(10);
   const [length, setLength] = useState(10);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    //reset form
-    setRoomName("");
-    setWidth(0);
-    setLength(0);
+    setLoading(true);
 
     apiService.createRoom(userId, roomName, [width, length]).then((res) => {
       const newRoom = {
@@ -28,7 +26,12 @@ function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
         name: res.room.name,
         dimensions: res.room.dimensions,
       };
+      //reset form
+      setRoomName("");
+      setWidth(0);
+      setLength(0);
       setRooms([...rooms, newRoom]);
+      setLoading(false);
       navigate(`/edit/${res.room.id}`);
     });
   };
@@ -53,8 +56,11 @@ function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
       >
         {(close) => (
           <div className="modal bg-neutral-800 p-10 pt-7 rounded-xl  font-semibold">
-            <button className="flex ml-auto text-white text-xl " onClick={close}>
-            <FontAwesomeIcon icon={faXmark} />
+            <button
+              className="flex ml-auto text-white text-xl "
+              onClick={close}
+            >
+              <FontAwesomeIcon icon={faXmark} />
             </button>
             <div className="header text-white text-2xl"> Create New Room </div>
             <form onSubmit={onSubmit} className="content flex flex-col">
@@ -85,12 +91,18 @@ function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
                 onChange={(e) => setWidth(e.target.value)}
               />
               <div className="flex flex-row justify-center mt-5">
-                <button
-                  type="submit"
-                  className="bg-indigo-900 w-28 hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800 rounded-xl p-2 font-bold"
-                >
-                  Create
-                </button>
+                {!loading ? (
+                  <button
+                    type="submit"
+                    className="bg-indigo-900 w-28 hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800 rounded-xl p-2 font-bold text-white"
+                  >
+                    Create
+                  </button>
+                ) : (
+                  <div className="flex bg-indigo-900 w-28 hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800 rounded-xl p-2 font-bold text-white cursor-pointer justify-center">
+                    Loading...
+                  </div>
+                )}
               </div>
             </form>
           </div>
