@@ -18,7 +18,7 @@ function RoomCard(props) {
   };
 
   return (
-    <div className="h-64 w-72 rounded-2xl border-neutral-700 border-2 box-border overflow-hidden bg-neutral-800 hover:scale-[1.05] transition-all duration-300 relative group">
+    <div className="h-[15.7rem] w-72 rounded-2xl border-neutral-700 border-2 box-border overflow-hidden bg-neutral-800 hover:scale-[1.05] transition-all duration-300 relative group">
       <div className="flex flex-col h-64 w-72 overflow-hidden">
         <img
           className=" overflow-hidden opacity-50 object-contain duration-300 group-hover:translate-y-5"
