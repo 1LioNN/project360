@@ -11,7 +11,7 @@ function SideBar({ userId, rooms, setRooms }) {
     apiService.getRooms(userId).then((res) => {
       setRooms(res.items);
     });
-  }, [userId]);
+  }, [userId, setRooms]);
 
 
   const RoomsList = rooms.map((room) => {

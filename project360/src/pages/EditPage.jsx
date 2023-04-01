@@ -1,7 +1,7 @@
 import React from "react";
 import Room from "../components/Room";
 import { useState, useEffect, Suspense, useRef } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import apiService from "../services/api-service.js";
 import EditSideBar from "../components/EditSideBar";
 import { socket } from "../socketConnect";
@@ -11,7 +11,7 @@ import Error from "../components/Error";
 import NavBar from "../components/NavBar";
 
 function EditPage() {
-  const { user, isAuthenticated } = useAuth0();
+  const { isAuthenticated } = useAuth0();
   const [models, setModels] = useState([]);
   const [position, setPosition] = useState([0, 0, 0]);
   const [dimensions, setDimensions] = useState(null);
@@ -78,7 +78,7 @@ function EditPage() {
       socket.current.off("id");
       // socket.current.off('clients')
     };
-  }, [roomId]);
+  }, [roomId, isAuthenticated]);
 
   if (!isAuthenticated) {
     return (
@@ -92,7 +92,7 @@ function EditPage() {
         />
       </div>
     );
-  } else if (errorCode == 404) {
+  } else if (errorCode === 404) {
     return (
       <div className="flex flex-col m-0 h-full overflow-hidden">
         <NavBar />

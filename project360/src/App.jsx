@@ -5,7 +5,6 @@ import Edit from "./pages/EditPage";
 import NotFound from "./pages/NotFound";
 // import Test from "./pages/test_yjs.js";
 import { Routes, Route} from "react-router-dom";
-import { Redirect } from "react-router-dom";
 
 function App() {
   const { isLoading, error } = useAuth0();
