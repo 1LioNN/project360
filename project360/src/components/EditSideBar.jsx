@@ -49,7 +49,7 @@ function EditSideBar({
         {name}
       </div>
       <Link
-        to="/dashboard"
+        to="/dashboard/my-rooms"
         className=" flex font-semibold text-2xl gap-4 items-center m-7 hover:text-blue-500"
       >
         <FontAwesomeIcon icon={faLeftLong} style={{ fontSize: 30 }} />
