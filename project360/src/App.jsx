@@ -2,8 +2,10 @@ import { useAuth0 } from "@auth0/auth0-react";
 import Home from "./pages/HomePage";
 import Dashboard from "./pages/Dashboard";
 import Edit from "./pages/EditPage";
+import NotFound from "./pages/NotFound";
 // import Test from "./pages/test_yjs.js";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route} from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
 function App() {
   const { isLoading, error } = useAuth0();
@@ -18,8 +20,9 @@ function App() {
         <>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard/:filter" element={<Dashboard />} />
             <Route path="/edit/:roomId" element={<Edit />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </>
       )}

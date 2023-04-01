@@ -4,7 +4,9 @@ const fetchTemplate = async (url, params = {}) => {
   params.credentials = `include`;
   return fetch(`${BASE_URL}/${url}`, params).then((res) => {
     if (!res.ok) {
-      throw new Error(`api fetch failed: ${res.status}`);
+      return res.json().then((err) => {
+        throw new Error(`api fetch failed: ${res.status}`);
+      });
     }
     return res.json();
   });
@@ -59,7 +61,7 @@ const updateItemPos = async (itemId, position) => {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ coordinates: position })
+    body: JSON.stringify({ coordinates: position }),
   };
   return fetchTemplate(`api/items/${itemId}/move`, params);
 };
@@ -70,10 +72,10 @@ const updateItemAng = async (itemId, degree) => {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ degree })
+    body: JSON.stringify({ degree }),
   };
   return fetchTemplate(`api/items/${itemId}/rotate`, params);
-}
+};
 
 const deleteItem = async (roomId, itemId) => {
   const params = {

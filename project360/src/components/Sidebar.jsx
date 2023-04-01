@@ -9,7 +9,7 @@ import { useState } from "react";
 import apiService from "../services/api-service.js";
 import { useNavigate } from "react-router-dom";
 
-function SideBar({ userId, rooms, setRooms }) {
+function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
   const [roomName, setRoomName] = useState("New Room");
   const [width, setWidth] = useState(10);
   const [length, setLength] = useState(10);
