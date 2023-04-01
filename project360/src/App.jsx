@@ -2,7 +2,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import Home from "./pages/HomePage";
 import Dashboard from "./pages/Dashboard";
 import Edit from "./pages/EditPage";
-// import Test from "./pages/test_yjs.js";
+import AuthGuard from "./components/AuthGuard";
 import { Routes, Route } from "react-router-dom";
 
 function App() {
@@ -20,8 +20,11 @@ function App() {
     <div className="App h-full">
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/edit/:roomId" element={<Edit />} />
+        <Route
+          path="/dashboard"
+          element={<AuthGuard component={Dashboard} />}
+        />
+        <Route path="/edit/:roomId" element={<AuthGuard component={Edit} />} />
       </Routes>
     </div>
   );
