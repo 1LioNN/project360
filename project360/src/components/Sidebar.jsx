@@ -8,6 +8,7 @@ import Popup from "reactjs-popup";
 import { useState } from "react";
 import apiService from "../services/api-service.js";
 import { useNavigate } from "react-router-dom";
+import audioService from "../services/audio-service.js";
 
 function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
   const [roomName, setRoomName] = useState("New Room");
@@ -15,6 +16,14 @@ function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
   const [length, setLength] = useState(10);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+
+  const playSound = () => {
+    audioService.playJoinSound();
+  };
+
+  const playLeaveSound = () => {
+    audioService.playLeaveSound();
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -109,14 +118,16 @@ function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
         )}
       </Popup>
 
-      <div className="flex flex-row text-xl font-semibold items-center p-5 m-3 sm:pl-10 rounded-full cursor-pointer sm:w-full hover:bg-neutral-800">
+      <div className="flex flex-row text-xl font-semibold items-center p-5 m-3 sm:pl-10 rounded-full cursor-pointer sm:w-full hover:bg-neutral-800" 
+      onClick={() => playSound()}>
         <FontAwesomeIcon
           className="sm:mr-4 text-3xl sm:text-2xl"
           icon={faCube}
         />
         <span className="hidden sm:block">My Rooms</span>
       </div>
-      <div className="flex flex-row text-xl font-semibold items-center p-5 m-3 sm:pl-10 rounded-full cursor-pointer sm:w-full hover:bg-neutral-800">
+      <div className="flex flex-row text-xl font-semibold items-center p-5 m-3 sm:pl-10 rounded-full cursor-pointer sm:w-full hover:bg-neutral-800"
+      onClick={()=> playLeaveSound()}>
         <FontAwesomeIcon
           className="sm:mr-4 text-3xl sm:text-2xl"
           icon={faUsers}

@@ -10,6 +10,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import Error from "../components/Error";
 import NavBar from "../components/NavBar";
 import Loading from "../components/Loading";
+import audioService from "../services/audio-service";
 
 function EditPage() {
   const { isAuthenticated } = useAuth0();
@@ -81,6 +82,7 @@ function EditPage() {
       myId.current = id;
     });
     return () => {
+      audioService.playLeaveSound();
       console.log("in useSocketIO return");
       socket.current.off("id");
       // socket.current.off('clients')

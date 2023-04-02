@@ -6,6 +6,7 @@ import { faLeftLong } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Dropdown from "./Dropdown";
 import Loading from "./Loading";
+import audioService from "../services/audio-service.js";
 
 function EditSideBar({
   roomId,
@@ -50,6 +51,10 @@ function EditSideBar({
     });
   };
 
+  const playLeaveSound = () => {
+    audioService.playLeaveSound();
+  };
+
   return (
     <div>
     {!loadingRoom && !loadingItems ? (
@@ -60,6 +65,7 @@ function EditSideBar({
       <Link
         to="/dashboard/my-rooms"
         className=" flex font-semibold text-2xl gap-4 items-center m-7 hover:text-blue-500"
+        onClick={() => playLeaveSound()}
       >
         <FontAwesomeIcon icon={faLeftLong} style={{ fontSize: 30 }} />
         Back to Dashboard
