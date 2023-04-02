@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Popup from "reactjs-popup";
 import { useState } from "react";
 import apiService from "../services/api-service.js";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
   const [roomName, setRoomName] = useState("New Room");
@@ -34,6 +34,14 @@ function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
       setLoading(false);
       navigate(`/edit/${res.room.id}`);
     });
+  };
+
+  const onFilter = (f, url) => {
+    console.log(f);
+    console.log(url);
+    setFilter(f);
+    console.log(filter);
+    navigate(url);
   };
 
   return (
@@ -109,20 +117,52 @@ function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
         )}
       </Popup>
 
-      <div className="flex flex-row text-xl font-semibold items-center p-5 m-3 sm:pl-10 rounded-full cursor-pointer sm:w-full hover:bg-neutral-800">
-        <FontAwesomeIcon
-          className="sm:mr-4 text-3xl sm:text-2xl"
-          icon={faCube}
-        />
-        <span className="hidden sm:block">My Rooms</span>
-      </div>
-      <div className="flex flex-row text-xl font-semibold items-center p-5 m-3 sm:pl-10 rounded-full cursor-pointer sm:w-full hover:bg-neutral-800">
-        <FontAwesomeIcon
-          className="sm:mr-4 text-3xl sm:text-2xl"
-          icon={faUsers}
-        />
-        <span className="hidden sm:block">Shared with Me</span>
-      </div>
+      {filter !== "my-rooms" ? (
+        <div
+          className="flex flex-row text-xl font-semibold items-center p-5 m-3 sm:pl-10 rounded-full cursor-pointer sm:w-full hover:bg-neutral-800"
+          onClick={() => onFilter("my-rooms", "/dashboard/my-rooms")}
+        >
+          <FontAwesomeIcon
+            className="sm:mr-4 text-3xl sm:text-2xl"
+            icon={faCube}
+          />
+          <span className="hidden sm:block">My Rooms</span>
+        </div>
+      ) : (
+        <div
+          className="flex flex-row text-xl font-semibold items-center p-5 m-3 sm:pl-10 rounded-full cursor-pointer sm:w-full hover:bg-neutral-800 text-indigo-900"
+          onClick={() => onFilter("my-rooms", "/dashboard/my-rooms")}
+        >
+          <FontAwesomeIcon
+            className="sm:mr-4 text-3xl sm:text-2xl"
+            icon={faCube}
+          />
+          <span className="hidden sm:block">My Rooms</span>
+        </div>
+      )}
+      {filter !== "shared-with-me" ? (
+        <div
+          className="flex flex-row text-xl font-semibold items-center p-5 m-3 sm:pl-10 rounded-full cursor-pointer sm:w-full hover:bg-neutral-800"
+          onClick={() => onFilter("shared-with-me", "/dashboard/shared-with-me")}
+        >
+          <FontAwesomeIcon
+            className="sm:mr-4 text-3xl sm:text-2xl"
+            icon={faUsers}
+          />
+          <span className="hidden sm:block">Shared with Me</span>
+        </div>
+      ) : (
+        <div
+          className="flex flex-row text-xl font-semibold items-center p-5 m-3 sm:pl-10 rounded-full cursor-pointer sm:w-full hover:bg-neutral-800 text-indigo-900" 
+          onClick={() => onFilter("shared-with-me", "/dashboard/shared-with-me")}
+        >
+          <FontAwesomeIcon
+            className="sm:mr-4 text-3xl sm:text-2xl"
+            icon={faUsers}
+          />
+          <span className="hidden sm:block">Shared with Me</span>
+        </div>
+      )}
     </div>
   );
 }
