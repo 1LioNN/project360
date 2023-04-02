@@ -1,24 +1,85 @@
 import React from "react";
 import Room from "../components/Room";
 import { useState, useEffect, Suspense, useRef } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import apiService from "../services/api-service.js";
 import EditSideBar from "../components/EditSideBar";
 import { socket } from "../socketConnect";
 import io from "socket.io-client";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function EditPage() {
+  const { user, getAccessTokenSilently } = useAuth0();
   const [models, setModels] = useState([]);
   const [position, setPosition] = useState([0, 0, 0]);
   const [dimensions, setDimensions] = useState(null);
   const [roomName, setRoomName] = useState("New Room");
   const roomId = useParams().roomId;
-
-
   const myId = useRef();
 
+  useEffect(() => {
+    let isMounted = true;
+
+    getAccessTokenSilently().then((accessToken) => {
+      if (!isMounted) {
+        return;
+      }
+      apiService.storeEmail(accessToken, user.email);
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user, getAccessTokenSilently]);
 
   useEffect(() => {
+    let isMounted = true;
+
+    const callAPI = async () => {
+      const accessToken = await getAccessTokenSilently();
+      if (!isMounted) {
+        return;
+      }
+
+      apiService
+        .getMe(accessToken)
+        .then((res) => {
+          if (!isMounted) {
+            return;
+          }
+          return apiService.getRoom(accessToken, res.userId, roomId);
+        })
+        .then((res) => {
+          setDimensions(res.room.dimensions.map((x) => parseFloat(x)));
+          setRoomName(res.room.name);
+        });
+
+      console.log("HI is the ROOM ID" + roomId)
+      apiService.getItems(accessToken, roomId).then((res) => {
+        if (!isMounted) {
+          return;
+        }
+        setModels(
+          res.items.map((item) => {
+            return {
+              ...item,
+              position: item.coordinates,
+              model: item.category,
+            };
+          })
+        );
+      });
+    };
+
+    callAPI();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [roomId, getAccessTokenSilently]);
+
+  useEffect(() => {
+    let isMounted = true;
     socket.current = io();
 
     function onConnect() {
@@ -26,42 +87,29 @@ function EditPage() {
     }
     socket.on("connect", onConnect);
 
-    apiService
-      .getMe()
-      .then((res) => apiService.getRoom(res.userId, roomId))
-      .then((res) => {
-        setDimensions(res.room.dimensions.map((x) => parseFloat(x)));
-        setRoomName(res.room.name);
-      });
-
-    apiService.getItems(roomId).then((res) => {
-      setModels(
-        res.items.map((item) => {
-          return {
-            ...item,
-            position: item.coordinates,
-            model: item.category,
-          };
-        })
-      );
-    });
-
     socket.on("updateRoom", (data) => {
       console.log("Listening to updateRoom");
-    
-      apiService.getItems(data.roomId).then((res) => {
-        console.log(res); 
-        const val = res.items.map((item) => {
-          return {
-            ...item,
-            position: item.coordinates,
-            model: item.category,
-          };
-        }); 
-        setModels(val); 
-      });
 
-
+      getAccessTokenSilently()
+        .then((accessToken) => {
+          if (!isMounted) {
+            return;
+          }
+          return apiService.getItems(accessToken, roomId);
+        })
+        .then((res) => {
+          if (!isMounted) {
+            return;
+          }
+          const val = res.items.map((item) => {
+            return {
+              ...item,
+              position: item.coordinates,
+              model: item.category,
+            };
+          });
+          setModels(val);
+        });
     });
 
     socket.current.on("id", (id) => {
@@ -71,6 +119,7 @@ function EditPage() {
     return () => {
       console.log("in useSocketIO return");
       socket.current.off("id");
+      isMounted = false;
       // socket.current.off('clients')
     };
   }, [roomId]);
@@ -84,10 +133,10 @@ function EditPage() {
           setPosition={setPosition}
           models={models}
           setModels={setModels}
-          name = {roomName}
+          name={roomName}
         />
         {dimensions ? (
-          <Room dimensions={dimensions} models={models} setModels={setModels}/>
+          <Room dimensions={dimensions} models={models} setModels={setModels} />
         ) : (
           ``
         )}

@@ -8,8 +8,10 @@ import Popup from "reactjs-popup";
 import { useState } from "react";
 import apiService from "../services/api-service.js";
 import { useNavigate } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function SideBar({ userId, rooms, setRooms }) {
+  const { getAccessTokenSilently } = useAuth0();
   const [roomName, setRoomName] = useState("New Room");
   const [width, setWidth] = useState(10);
   const [length, setLength] = useState(10);
@@ -22,15 +24,19 @@ function SideBar({ userId, rooms, setRooms }) {
     setWidth(0);
     setLength(0);
 
-    apiService.createRoom(userId, roomName, [width, length]).then((res) => {
-      const newRoom = {
-        id: res.room.id,
-        name: res.room.name,
-        dimensions: res.room.dimensions,
-      };
-      setRooms([...rooms, newRoom]);
-      navigate(`/edit/${res.room.id}`);
-    });
+    getAccessTokenSilently()
+      .then((accessToken) =>
+        apiService.createRoom(accessToken, userId, roomName, [parseFloat(width), parseFloat(length)])
+      )
+      .then((res) => {
+        const newRoom = {
+          id: res.room.id,
+          name: res.room.name,
+          dimensions: res.room.dimensions,
+        };
+        setRooms([...rooms, newRoom]);
+        navigate(`/edit/${res.room.id}`);
+      });
   };
 
   return (
@@ -53,8 +59,11 @@ function SideBar({ userId, rooms, setRooms }) {
       >
         {(close) => (
           <div className="modal bg-neutral-800 p-10 pt-7 rounded-xl  font-semibold">
-            <button className="flex ml-auto text-white text-xl " onClick={close}>
-            <FontAwesomeIcon icon={faXmark} />
+            <button
+              className="flex ml-auto text-white text-xl "
+              onClick={close}
+            >
+              <FontAwesomeIcon icon={faXmark} />
             </button>
             <div className="header text-white text-2xl"> Create New Room </div>
             <form onSubmit={onSubmit} className="content flex flex-col">

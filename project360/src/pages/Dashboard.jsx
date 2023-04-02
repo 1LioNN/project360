@@ -7,20 +7,30 @@ import { useAuth0 } from "@auth0/auth0-react";
 import apiService from "../services/api-service.js";
 
 function Dashboard() {
-  const { user } = useAuth0();
+  const { user, getAccessTokenSilently } = useAuth0();
   const [userId, setUserId] = useState(null);
   const [rooms, setRooms] = useState([]);
-  let once = false;
 
   useEffect(() => {
-    if (!user || once) {
-      return;
-    }
-    once = true;
-    apiService.signIn(user.sub).then((res) => {
-      setUserId(res.userId);
-    });
-  }, []);
+    let isMounted = true;
+    getAccessTokenSilently()
+      .then((accessToken) => {
+        if (!isMounted) {
+          return;
+        }
+        return apiService.storeEmail(accessToken, user.email);
+      })
+      .then((res) => {
+        if (!isMounted) {
+          return;
+        }
+        setUserId(res.userId);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user]);
 
   return (
     <div className="flex flex-col m-0 h-full overflow-hidden">

@@ -3,6 +3,7 @@ import * as THREE from "three";
 import { useDrag } from "@use-gesture/react";
 import { useState, useEffect } from "react";
 import { useRef } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
 import Sofa0 from "./sofa0/Sofa0";
 import Bed0 from "./bed0/Bed0";
 import Table0 from "./table0/Table0";
@@ -62,6 +63,7 @@ function Model({
     default:
       break;
   }
+  const { getAccessTokenSilently } = useAuth0();
   const [clicked, setClicked] = useState(false);
   const [pos, setPos] = useState(position);
   const [bbox, setBBox] = useState(null);
@@ -145,7 +147,7 @@ function Model({
   );
 
   useEffect(() => {
-    apiService.updateItemPos(itemId, pos);
+    getAccessTokenSilently().then((accessToken) => apiService.updateItemPos(accessToken, itemId, pos));
   }, [clicked]);
 
   switch (type) {

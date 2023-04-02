@@ -5,6 +5,7 @@ import apiService from "../services/api-service.js";
 import { faLeftLong } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Dropdown from "./Dropdown";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function EditSideBar({
   roomId,
@@ -14,6 +15,7 @@ function EditSideBar({
   setModels,
   name,
 }) {
+  const { getAccessTokenSilently } = useAuth0();
   const addModel = async (type) => {
     let pos = position;
     switch (type) {
@@ -33,14 +35,18 @@ function EditSideBar({
         break;
     }
     setPosition([position[0], position[1], position[2]]);
-    apiService.createItem(roomId, type, pos).then((res) => {
-      const newItem = {
-        ...res.item,
-        model: res.item.category,
-        position: res.item.coordinates,
-      };
-      setModels([...models, newItem]);
-    });
+    getAccessTokenSilently()
+      .then((accessToken) =>
+        apiService.createItem(accessToken, roomId, type, pos)
+      )
+      .then((res) => {
+        const newItem = {
+          ...res.item,
+          model: res.item.category,
+          position: res.item.coordinates,
+        };
+        setModels([...models, newItem]);
+      });
   };
 
   return (
