@@ -27,21 +27,27 @@ function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
         dimensions: res.room.dimensions,
       };
       //reset form
-      setRoomName("");
-      setWidth(0);
-      setLength(0);
+      setRoomName("New Room");
+      setWidth(10);
+      setLength(10);
       setRooms([...rooms, newRoom]);
       setLoading(false);
       navigate(`/edit/${res.room.id}`);
     });
   };
-
+  
   const onFilter = (f, url) => {
     console.log(f);
     console.log(url);
     setFilter(f);
     console.log(filter);
     navigate(url);
+  };
+
+  const onClose = () => {
+    setRoomName("New Room");
+    setWidth(10);
+    setLength(10);
   };
 
   return (
@@ -61,9 +67,10 @@ function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
         }
         modal
         nested
+        onClose={() => onClose()}
       >
         {(close) => (
-          <div className="modal bg-neutral-800 p-10 pt-7 rounded-xl  font-semibold">
+          <div className="modal bg-neutral-900 p-10 pt-7 rounded-xl  font-semibold">
             <button
               className="flex ml-auto text-white text-xl "
               onClick={close}
