@@ -1,11 +1,14 @@
 import React from "react";
 import RoomCard from "./RoomCard";
+import SkeletonCard from "./SkeletonCard";
 import { useEffect, useState } from "react";
 import apiService from "../services/api-service.js";
 
 function RoomsContainer({ userId, rooms, setRooms }) {
   const [loading, setLoading] = useState(true);
-  const skeletons = Array.from(Array(15));
+  const skeletons = [...Array(15).keys()].map((i) => {
+    return { id: i };
+  });
 
   useEffect(() => {
     if (!userId) {
@@ -31,12 +34,7 @@ function RoomsContainer({ userId, rooms, setRooms }) {
   });
 
   const SkeletonList = skeletons.map((i) => {
-    return (
-      <div
-        className="h-[15.7rem] w-72 rounded-2xl border-neutral-700 border-2 box-border overflow-hidden bg-neutral-800 animate-pulse"
-        key={i}
-      ></div>
-    );
+    return <SkeletonCard key={i.id} />;
   });
 
   if (!loading) {
