@@ -7,14 +7,21 @@ import EditSideBar from "../components/EditSideBar";
 import { socket } from "../socketConnect";
 import io from "socket.io-client";
 import { useAuth0 } from "@auth0/auth0-react";
+import Error from "../components/Error";
+import NavBar from "../components/NavBar";
+import Loading from "../components/Loading";
 
 function EditPage() {
-  const { user, getAccessTokenSilently } = useAuth0();
+  const { user, getAccessTokenSilently, isAuthenticated } = useAuth0();
   const [models, setModels] = useState([]);
   const [position, setPosition] = useState([0, 0, 0]);
   const [dimensions, setDimensions] = useState(null);
   const [roomName, setRoomName] = useState("New Room");
   const roomId = useParams().roomId;
+  const [errorCode, setErrorCode] = useState(null);
+  const [redirect, setRedirect] = useState(null);
+  const [loadingRoom, setLoadingRoom] = useState(true);
+  const [loadingItems, setLoadingItems] = useState(true);
   const myId = useRef();
 
   useEffect(() => {
@@ -52,13 +59,19 @@ function EditPage() {
         .then((res) => {
           setDimensions(res.room.dimensions.map((x) => parseFloat(x)));
           setRoomName(res.room.name);
+          setLoadingRoom(false);
+        })
+        .catch((err) => {
+          setLoadingRoom(false);
+          setErrorCode(404);
+          isAuthenticated ? setRedirect("/dashboard/my-rooms") : setRedirect("/");
         });
 
-      console.log("HI is the ROOM ID" + roomId)
       apiService.getItems(accessToken, roomId).then((res) => {
         if (!isMounted) {
           return;
         }
+        setLoadingItems(false);
         setModels(
           res.items.map((item) => {
             return {
@@ -108,6 +121,7 @@ function EditPage() {
               model: item.category,
             };
           });
+          setLoadingItems(false);
           setModels(val);
         });
     });
@@ -115,34 +129,68 @@ function EditPage() {
     socket.current.on("id", (id) => {
       myId.current = id;
     });
-
     return () => {
       console.log("in useSocketIO return");
       socket.current.off("id");
       isMounted = false;
       // socket.current.off('clients')
     };
-  }, [roomId]);
+  }, [roomId, isAuthenticated]);
 
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <div className="flex flex-col sm:flex-row flex-wrap m-0 h-full">
-        <EditSideBar
-          roomId={roomId}
-          position={position}
-          setPosition={setPosition}
-          models={models}
-          setModels={setModels}
-          name={roomName}
+
+
+  if (!isAuthenticated) {
+    return (
+      <div className="flex flex-col m-0 h-full overflow-hidden">
+        <NavBar />
+        <Error
+          errorCode={401}
+          errorDescription={"Please Log In or Sign Up to access this page."}
+          errorMessage={"Unauthorized"}
+          redirect={"/"}
         />
-        {dimensions ? (
-          <Room dimensions={dimensions} models={models} setModels={setModels} />
-        ) : (
-          ``
-        )}
       </div>
-    </Suspense>
-  );
+    );
+  } else if (errorCode === 404) {
+    return (
+      <div className="flex flex-col m-0 h-full overflow-hidden">
+        <NavBar />
+        <Error
+          errorCode={errorCode}
+          errorDescription={"The room you are trying to access does not exist."}
+          errorMessage={"Not Found"}
+          redirect={redirect}
+        />
+      </div>
+    );
+  } else {
+    return (
+      <Suspense fallback={<Loading/>}>
+        {loadingRoom && loadingItems ? `` : (
+        <div className="flex flex-col sm:flex-row m-0 h-full">
+          <EditSideBar
+            roomId={roomId}
+            position={position}
+            setPosition={setPosition}
+            models={models}
+            setModels={setModels}
+            name={roomName}
+            loadingRoom={loadingRoom}
+            loadingItems={loadingItems}
+          />
+          {dimensions ? (
+            <Room
+              dimensions={dimensions}
+              models={models}
+              setModels={setModels}
+            />
+          ) : (
+            ``
+          )}
+        </div>)}
+      </Suspense> 
+    );
+  }
 }
 
 export default EditPage;

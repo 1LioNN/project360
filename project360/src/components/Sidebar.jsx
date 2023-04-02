@@ -10,19 +10,17 @@ import apiService from "../services/api-service.js";
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 
-function SideBar({ userId, rooms, setRooms }) {
+function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
   const { getAccessTokenSilently } = useAuth0();
   const [roomName, setRoomName] = useState("New Room");
   const [width, setWidth] = useState(10);
   const [length, setLength] = useState(10);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    //reset form
-    setRoomName("");
-    setWidth(0);
-    setLength(0);
+    setLoading(true);
 
     getAccessTokenSilently()
       .then((accessToken) =>
@@ -34,7 +32,11 @@ function SideBar({ userId, rooms, setRooms }) {
           name: res.room.name,
           dimensions: res.room.dimensions,
         };
+        setRoomName("");
+        setWidth(0);
+        setLength(0);
         setRooms([...rooms, newRoom]);
+        setLoading(false);
         navigate(`/edit/${res.room.id}`);
       });
   };
@@ -94,12 +96,18 @@ function SideBar({ userId, rooms, setRooms }) {
                 onChange={(e) => setWidth(e.target.value)}
               />
               <div className="flex flex-row justify-center mt-5">
-                <button
-                  type="submit"
-                  className="bg-indigo-900 w-28 hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800 rounded-xl p-2 font-bold"
-                >
-                  Create
-                </button>
+                {!loading ? (
+                  <button
+                    type="submit"
+                    className="bg-indigo-900 w-28 hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800 rounded-xl p-2 font-bold text-white"
+                  >
+                    Create
+                  </button>
+                ) : (
+                  <div className="flex bg-indigo-900 w-28 hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800 rounded-xl p-2 font-bold text-white cursor-pointer justify-center">
+                    Loading...
+                  </div>
+                )}
               </div>
             </form>
           </div>

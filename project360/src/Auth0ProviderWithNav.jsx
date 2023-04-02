@@ -8,7 +8,7 @@ const Auth0ProviderWithNav = ({ children }) => {
   const domain = process.env.REACT_APP_AUTH0_DOMAIN;
   const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
   const audience = process.env.REACT_APP_AUTH0_AUDIENCE;
-  const redirectUri = `${window.location.origin}/${process.env.REACT_APP_AUTH0_CALLBACK_URL}`;
+  const redirectUri = `${window.location.origin}/dashboard/my-rooms`;
 
   const onRedirectCallback = (appState) => {
     navigate(appState?.returnTo || window.location.pathname);

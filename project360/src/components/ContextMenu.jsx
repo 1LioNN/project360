@@ -13,6 +13,14 @@ import { useAuth0 } from "@auth0/auth0-react";
 function ContextMenu({ ContextMenu, models, setModels }) {
   const roomId = useParams().roomId;
   const { getAccessTokenSilently } = useAuth0();
+  const resetMenu = () => {
+    ContextMenu.current.ref = null;
+    ContextMenu.current.id = "";
+    ContextMenu.current.style.display = "none";
+    ContextMenu.current.setBBox(null);
+    ContextMenu.current.setCenter(null);
+  };
+
   const deleteItem = () => {
     console.log("delete");
     console.log(ContextMenu.current.id);
@@ -26,64 +34,70 @@ function ContextMenu({ ContextMenu, models, setModels }) {
           (model) => model.id !== parseInt(ContextMenu.current.id)
         );
         setModels(newModels);
-        ContextMenu.current.ref = null;
-        ContextMenu.current.id = "";
-        ContextMenu.current.style.display = "none";
-        ContextMenu.current.setBBox(null);
-        ContextMenu.current.setCenter(null);
+        resetMenu();
+      })
+      .catch((e) => {
+        resetMenu();
       });
   };
 
   const rotateC = () => {
     console.log("rotateC");
     console.log(ContextMenu.current.id);
-
-    const model = ContextMenu.current.ref.current;
-    model.rotation.y -= Math.PI / 4;
-    if (model.rotation.y <= -2 * Math.PI) {
-      model.rotation.y = 0;
+    try {
+      const model = ContextMenu.current.ref.current;
+      model.rotation.y -= Math.PI / 4;
+      if (model.rotation.y <= -2 * Math.PI) {
+        model.rotation.y = 0;
+      }
+      const bbox = new THREE.Box3().setFromObject(model);
+      ContextMenu.current.setBBox(bbox);
+      ContextMenu.current.setCenter(
+        bbox.max
+          .clone()
+          .sub(bbox.min)
+          .multiplyScalar(1 / 2)
+      );
+      getAccessTokenSilently().then((accessToken) =>
+        apiService.updateItemAng(
+          accessToken,
+          ContextMenu.current.id,
+          model.rotation.y
+        )
+      );
+    } catch (e) {
+      resetMenu();
     }
-    const bbox = new THREE.Box3().setFromObject(model);
-    ContextMenu.current.setBBox(bbox);
-    ContextMenu.current.setCenter(
-      bbox.max
-        .clone()
-        .sub(bbox.min)
-        .multiplyScalar(1 / 2)
-    );
-    getAccessTokenSilently().then((accessToken) =>
-      apiService.updateItemAng(
-        accessToken,
-        ContextMenu.current.id,
-        model.rotation.y
-      )
-    );
   };
 
   const rotateCC = () => {
     console.log("rotateCC");
     console.log(ContextMenu.current.id);
 
-    const model = ContextMenu.current.ref.current;
-    model.rotation.y += Math.PI / 4;
-    if (model.rotation.y >= 2 * Math.PI) {
-      model.rotation.y = 0;
+    try {
+      const model = ContextMenu.current.ref.current;
+      model.rotation.y += Math.PI / 4;
+      if (model.rotation.y >= 2 * Math.PI) {
+        model.rotation.y = 0;
+      }
+      const bbox = new THREE.Box3().setFromObject(model);
+      ContextMenu.current.setBBox(bbox);
+      ContextMenu.current.setCenter(
+        bbox.max
+          .clone()
+          .sub(bbox.min)
+          .multiplyScalar(1 / 2)
+      );
+      getAccessTokenSilently().then((accessToken) =>
+        apiService.updateItemAng(
+          accessToken,
+          ContextMenu.current.id,
+          model.rotation.y
+        )
+      );
+    } catch (e) {
+      resetMenu();
     }
-    const bbox = new THREE.Box3().setFromObject(model);
-    ContextMenu.current.setBBox(bbox);
-    ContextMenu.current.setCenter(
-      bbox.max
-        .clone()
-        .sub(bbox.min)
-        .multiplyScalar(1 / 2)
-    );
-    getAccessTokenSilently().then((accessToken) =>
-      apiService.updateItemAng(
-        accessToken,
-        ContextMenu.current.id,
-        model.rotation.y
-      )
-    );
   };
 
   return (

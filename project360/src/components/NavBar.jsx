@@ -3,13 +3,22 @@ import logo from "../assets/icons/360.png";
 import LoginButton from "./LoginButton";
 import LogoutButton from "./LogoutButton";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useNavigate } from "react-router-dom";
 
 function NavBar() {
   const { user, isAuthenticated } = useAuth0();
+  const navigate = useNavigate();
+
+  const clickHandler = () => {
+    isAuthenticated ? navigate("/dashboard/my-rooms") : navigate("/");
+  };
 
   return (
-    <div className="flex flex-row bg-gradient-to-t from-neutral-800 to-black h-20 w-full text-gray-50 font-semibold items-center border-neutral-700 border-b-2">
-      <div className="flex flex-row items-center self-start">
+    <div className="flex flex-row bg-gradient-to-t from-neutral-800 to-black h-20 w-full text-gray-50 font-semibold items-center border-neutral-700 border-b-2 pb-1">
+      <div
+        className="flex flex-row items-center self-start cursor-pointer"
+        onClick={() => clickHandler()}
+      >
         <img
           src={logo}
           alt="Logo"

@@ -9,7 +9,9 @@ const fetchTemplate = async (accessToken, url, params = {}) => {
 
   return fetch(`${BASE_URL}/${url}`, params).then((res) => {
     if (!res.ok) {
-      throw new Error(`api fetch failed: ${res.status}`);
+      return res.json().then((err) => {
+        throw new Error(`api fetch failed: ${res.status}`);
+      });
     }
     return res.json();
   });

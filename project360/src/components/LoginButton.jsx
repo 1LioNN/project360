@@ -8,7 +8,7 @@ const LoginButton = ({ styles, text }) => {
   const handleLogin = async () => {
     await loginWithRedirect({
       appState: {
-        returnTo: "/dashboard",
+        returnTo: "/dashboard/my-rooms",
       },
     });
   };
