@@ -48,6 +48,7 @@ function EditSideBar({
       };
       setModels([...models, newItem]);
       setLoadingModels(false);
+      audioService.context.resume();
       audioService.playMoveSound(0.08);
     });
   };

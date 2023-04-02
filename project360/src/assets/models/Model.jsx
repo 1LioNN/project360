@@ -102,6 +102,7 @@ function Model({
 
   const clickHandler = (e) => {
     if (!clicked) {
+      audioService.context.resume();
       audioService.playSelectSound(0.08);
     }
     setClicked(!clicked);
@@ -140,6 +141,7 @@ function Model({
           const newZ = validZ(planeIntersectPoint.z);
           setPos([newX, floor, newZ]);
         } else {
+          audioService.context.resume();
           audioService.playMoveSound(0.08);
           setClicked(false);
         }

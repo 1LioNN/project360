@@ -81,6 +81,7 @@ const playRotateSound = (vol) => {
 };
 
 const audioService = {
+  context,
   playSound,
   playJoinSound,
   playLeaveSound,

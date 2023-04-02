@@ -30,6 +30,7 @@ function ContextMenu({ ContextMenu, models, setModels }) {
         (model) => model.id !== parseInt(ContextMenu.current.id)
       );
       setModels(newModels);
+      audioService.context.resume();
       audioService.playDeleteSound(0.2);
       resetMenu();
     }).catch((e) => {
@@ -63,6 +64,7 @@ function ContextMenu({ ContextMenu, models, setModels }) {
       apiService
       .updateItemAng(ContextMenu.current.id, model.rotation.y)
       .then((res) => {
+        audioService.context.resume();
         audioService.playRotateSound(0.2);
       });
     } catch (e) {
@@ -92,6 +94,7 @@ function ContextMenu({ ContextMenu, models, setModels }) {
     apiService
       .updateItemAng(ContextMenu.current.id, model.rotation.y)
       .then((res) => {
+        audioService.context.resume();
         audioService.playRotateSound(0.2);
       });
     } catch (e) {
