@@ -166,7 +166,7 @@ function EditPage() {
   } else {
     return (
       <Suspense fallback={<Loading/>}>
-        {loadingRoom && loadingItems ? `` : (
+        {loadingRoom && loadingItems ? <Loading /> : (
         <div className="flex flex-col sm:flex-row m-0 h-full">
           <EditSideBar
             roomId={roomId}
