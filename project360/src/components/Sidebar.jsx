@@ -84,6 +84,8 @@ function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
                 className="w-80 h-10 rounded-xl border-2 border-neutral-800 p-2"
                 type="text"
                 placeholder="Room Name"
+                minLength={1}
+                maxLength={20}
                 value={roomName}
                 onChange={(e) => setRoomName(e.target.value)}
               />
