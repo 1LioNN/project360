@@ -12,6 +12,15 @@ import { useParams } from "react-router-dom";
 
 function ContextMenu({ ContextMenu, models, setModels }) {
   const roomId = useParams().roomId;
+
+  const resetMenu = () => {
+    ContextMenu.current.ref = null;
+    ContextMenu.current.id = "";
+    ContextMenu.current.style.display = "none";
+    ContextMenu.current.setBBox(null);
+    ContextMenu.current.setCenter(null);
+  };
+
   const deleteItem = () => {
     console.log("delete");
     console.log(ContextMenu.current.id);
@@ -21,13 +30,10 @@ function ContextMenu({ ContextMenu, models, setModels }) {
         (model) => model.id !== parseInt(ContextMenu.current.id)
       );
       setModels(newModels);
-
-      ContextMenu.current.ref = null;
-      ContextMenu.current.id = "";
-      ContextMenu.current.style.display = "none";
-      ContextMenu.current.setBBox(null);
-      ContextMenu.current.setCenter(null);
       audioService.playDeleteSound(0.2);
+      resetMenu();
+    }).catch((e) => {
+      resetMenu();
     });
   };
 
@@ -35,30 +41,41 @@ function ContextMenu({ ContextMenu, models, setModels }) {
     console.log("rotateC");
     console.log(ContextMenu.current.id);
 
-    const model = ContextMenu.current.ref.current;
-    model.rotation.y -= Math.PI / 4;
-    if (model.rotation.y <= -2 * Math.PI) {
-      model.rotation.y = 0;
-    }
-    const bbox = new THREE.Box3().setFromObject(model);
-    ContextMenu.current.setBBox(bbox);
-    ContextMenu.current.setCenter(
-      bbox.max
-        .clone()
-        .sub(bbox.min)
-        .multiplyScalar(1 / 2)
-    );
-    apiService
+    //if rotation is null, close context menu
+    try {
+      const model = ContextMenu.current.ref.current;
+      if (model.rotation.y === null) {
+        ContextMenu.current.style.display = "none";
+        return;
+      }
+      model.rotation.y -= Math.PI / 4;
+      if (model.rotation.y <= -2 * Math.PI) {
+        model.rotation.y = 0;
+      }
+      const bbox = new THREE.Box3().setFromObject(model);
+      ContextMenu.current.setBBox(bbox);
+      ContextMenu.current.setCenter(
+        bbox.max
+          .clone()
+          .sub(bbox.min)
+          .multiplyScalar(1 / 2)
+      );
+      apiService
       .updateItemAng(ContextMenu.current.id, model.rotation.y)
       .then((res) => {
         audioService.playRotateSound(0.2);
       });
+    } catch (e) {
+      resetMenu();
+    }
+
   };
 
   const rotateCC = () => {
     console.log("rotateCC");
     console.log(ContextMenu.current.id);
 
+    try {
     const model = ContextMenu.current.ref.current;
     model.rotation.y += Math.PI / 4;
     if (model.rotation.y >= 2 * Math.PI) {
@@ -77,6 +94,10 @@ function ContextMenu({ ContextMenu, models, setModels }) {
       .then((res) => {
         audioService.playRotateSound(0.2);
       });
+    } catch (e) {
+      resetMenu();
+    }
+
   };
 
   return (
