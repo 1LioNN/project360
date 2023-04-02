@@ -10,7 +10,7 @@ import audioService from "../services/audio-service";
 
 function RoomCard(props) {
   const playSound = () => {
-    audioService.playJoinSound();
+    audioService.playJoinSound(0.08);
   };
 
   const deleteRoom = () => {

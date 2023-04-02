@@ -3,6 +3,7 @@ import * as THREE from "three";
 import { useDrag } from "@use-gesture/react";
 import { useState, useEffect } from "react";
 import { useRef } from "react";
+
 import Sofa0 from "./sofa0/Sofa0";
 import Bed0 from "./bed0/Bed0";
 import Table0 from "./table0/Table0";
@@ -13,6 +14,7 @@ import Table1 from "./table1/Table1";
 import Chair1 from "./chair1/Chair1";
 
 import apiService from "../../services/api-service.js";
+import audioService from "../../services/audio-service";
 //function takes in a gltf file and returns a primitive object
 function Model({
   type,
@@ -99,6 +101,9 @@ function Model({
   }
 
   const clickHandler = (e) => {
+    if (!clicked) {
+      audioService.playSelectSound(0.08);
+    }
     setClicked(!clicked);
     cm.current.style.display = clicked ? " none" : " block";
     if (e.clientY > 880) {
@@ -135,6 +140,7 @@ function Model({
           const newZ = validZ(planeIntersectPoint.z);
           setPos([newX, floor, newZ]);
         } else {
+          audioService.playMoveSound(0.08);
           setClicked(false);
         }
         setIsDragging(active);

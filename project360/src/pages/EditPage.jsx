@@ -82,7 +82,6 @@ function EditPage() {
       myId.current = id;
     });
     return () => {
-      audioService.playLeaveSound();
       console.log("in useSocketIO return");
       socket.current.off("id");
       // socket.current.off('clients')

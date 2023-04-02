@@ -48,11 +48,12 @@ function EditSideBar({
       };
       setModels([...models, newItem]);
       setLoadingModels(false);
+      audioService.playMoveSound(0.08);
     });
   };
 
   const playLeaveSound = () => {
-    audioService.playLeaveSound();
+    audioService.playLeaveSound(0.08);
   };
 
   return (
