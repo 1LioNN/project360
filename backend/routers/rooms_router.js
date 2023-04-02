@@ -1,9 +1,6 @@
 import { User, Room, Item } from "../models/index.js";
 import { Router } from "express";
 import { Op } from "sequelize";
-import path from "path";
-import fs from "fs";
-import { isAuthenticated } from "../middleware/auth.js";
 
 export const roomsRouter = Router({ mergeParams: true });
 
@@ -168,6 +165,8 @@ roomsRouter.post("/", async (req, res) => {
     UserId: req.params.userId,
   });
   room.dimensions = JSON.parse(room.dimensions);
+
+  await room.addUser(user);
   return res.json({ room });
 });
 
@@ -212,7 +211,12 @@ roomsRouter.delete("/:id", async (req, res) => {
       .json({ error: `Room(id=${req.params.id}) not found.` });
   }
 
-  await room.removeItems();
+  await Item.destroy({
+    where: {
+      RoomId: req.params.id
+    }
+  });
+  await room.removeUser();
   await room.destroy();
   return res.json({ room });
 });

@@ -1,10 +1,5 @@
-import { User, Room, Item } from "../models/index.js";
+import { Room, Item } from "../models/index.js";
 import { Router } from "express";
-import { Op } from "sequelize";
-import path from "path";
-import fs from "fs";
-import { isAuthenticated } from "../middleware/auth.js";
-// import ioObject from "../app.js";
 
 export const itemsRouter = Router({ mergeParams: true });
 
