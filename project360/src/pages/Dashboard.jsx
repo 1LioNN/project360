@@ -12,8 +12,13 @@ function Dashboard() {
   const { user, getAccessTokenSilently, isAuthenticated } = useAuth0();
   const [userId, setUserId] = useState(null);
   const [rooms, setRooms] = useState([]);
-  const [filter, setFilter] = useState(useParams().filter || "my-rooms");
+  const filterParam = useParams().filter;
+  const [filter, setFilter] = useState(filterParam);
   const validFilters = ["my-rooms", "shared-rooms"];
+
+  useEffect(() => {
+    setFilter(filterParam);
+  }, [filterParam]);
 
   useEffect(() => {
     let isMounted = true;
