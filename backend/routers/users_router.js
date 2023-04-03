@@ -1,8 +1,7 @@
 import { User, Item, Room } from "../models/index.js";
+import { Op } from "sequelize";
 import { Router } from "express";
 import { createHmac } from "crypto";
-import path from "path";
-import fs from "fs";
 import dotenv from "dotenv";
 dotenv.config();
 
