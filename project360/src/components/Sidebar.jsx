@@ -8,6 +8,7 @@ import Popup from "reactjs-popup";
 import { useState } from "react";
 import apiService from "../services/api-service.js";
 import { useNavigate } from "react-router-dom";
+import audioService from "../services/audio-service.js";
 import { useAuth0 } from "@auth0/auth0-react";
 
 function SideBar({ userId, rooms, setRooms, filter, setFilter }) {

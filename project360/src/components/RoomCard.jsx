@@ -7,8 +7,12 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { useAuth0 } from "@auth0/auth0-react";
 import apiService from "../services/api-service";
+import audioService from "../services/audio-service";
 
 function RoomCard(props) {
+  const playSound = () => {
+    audioService.playJoinSound(0.08);
+  };
   const { getAccessTokenSilently } = useAuth0();
 
   const deleteRoom = () => {
@@ -34,7 +38,7 @@ function RoomCard(props) {
           {props.name}
         </div>
         <div className="flex flex-col flex-grow justify-evenly absolute top-0 right-0 bg-gradient-to-l from-black to-transparent text-3xl p-3 text-white h-full transition-all duration-300 translate-x-full group-hover:translate-x-0 gap-6 w-24">
-          <Link className="text-center group" to={`/edit/${props.id}`}>
+          <Link className="text-center group" to={`/edit/${props.id}`} onClick={()=> playSound()}>
             <FontAwesomeIcon icon={faPenToSquare} title="Edit" />
           </Link>
           <button onClick={deleteRoom}>

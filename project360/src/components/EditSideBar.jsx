@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Dropdown from "./Dropdown";
 import { useAuth0 } from "@auth0/auth0-react";
 import Loading from "./Loading";
+import audioService from "../services/audio-service.js";
 
 function EditSideBar({
   roomId,
@@ -53,7 +54,13 @@ function EditSideBar({
         };
         setModels([...models, newItem]);
         setLoadingModels(false);
+      audioService.context.resume();
+      audioService.playMoveSound(0.08);
       });
+  };
+
+  const playLeaveSound = () => {
+    audioService.playLeaveSound(0.08);
   };
 
   return (
@@ -66,6 +73,7 @@ function EditSideBar({
       <Link
         to="/dashboard/my-rooms"
         className=" flex font-semibold text-2xl gap-4 items-center m-7 hover:text-blue-500"
+        onClick={() => playLeaveSound()}
       >
         <FontAwesomeIcon icon={faLeftLong} style={{ fontSize: 30 }} />
         Back to Dashboard

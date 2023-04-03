@@ -10,6 +10,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import Error from "../components/Error";
 import NavBar from "../components/NavBar";
 import Loading from "../components/Loading";
+import audioService from "../services/audio-service";
 
 function EditPage() {
   const { user, getAccessTokenSilently, isAuthenticated } = useAuth0();
