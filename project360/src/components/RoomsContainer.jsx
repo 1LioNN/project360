@@ -1,21 +1,29 @@
 import React from "react";
 import RoomCard from "./RoomCard";
-import { useEffect, useState } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
 import apiService from "../services/api-service.js";
+import SkeletonCard from "./SkeletonCard";
+import { useEffect, useState } from "react";
 
 function RoomsContainer({ userId, rooms, setRooms }) {
+  const { getAccessTokenSilently } = useAuth0();
   const [loading, setLoading] = useState(true);
-  const skeletons = Array.from(Array(15));
+  const skeletons = [...Array(15).keys()].map((i) => {
+    return { id: i };
+  });
 
   useEffect(() => {
     if (!userId) {
       return;
     }
-    apiService.getRooms(userId).then((res) => {
-      setRooms(res.items);
-      setLoading(false);
-    });
-  }, [userId, setRooms]);
+
+    getAccessTokenSilently()
+      .then((accessToken) => apiService.getRooms(accessToken, userId))
+      .then((res) => {
+        setRooms(res.items);
+        setLoading(false);
+      });
+  }, [userId, getAccessTokenSilently, setRooms]);
 
   const RoomsList = rooms.map((room) => {
     return (
@@ -31,12 +39,7 @@ function RoomsContainer({ userId, rooms, setRooms }) {
   });
 
   const SkeletonList = skeletons.map((i) => {
-    return (
-      <div
-        className="h-[15.7rem] w-72 rounded-2xl border-neutral-700 border-2 box-border overflow-hidden bg-neutral-800 animate-pulse"
-        key={i}
-      ></div>
-    );
+    return <SkeletonCard key={i.id} />;
   });
 
   if (!loading) {

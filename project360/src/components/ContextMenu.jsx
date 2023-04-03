@@ -9,10 +9,11 @@ import {
 import apiService from "../services/api-service.js";
 import audioService from "../services/audio-service.js";
 import { useParams } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function ContextMenu({ ContextMenu, models, setModels }) {
   const roomId = useParams().roomId;
-
+  const { getAccessTokenSilently } = useAuth0();
   const resetMenu = () => {
     ContextMenu.current.ref = null;
     ContextMenu.current.id = "";
@@ -25,30 +26,27 @@ function ContextMenu({ ContextMenu, models, setModels }) {
     console.log("delete");
     console.log(ContextMenu.current.id);
 
-    apiService.deleteItem(roomId, ContextMenu.current.id).then((res) => {
-      const newModels = models.filter(
-        (model) => model.id !== parseInt(ContextMenu.current.id)
-      );
-      setModels(newModels);
-      audioService.context.resume();
-      audioService.playDeleteSound(0.2);
-      resetMenu();
-    }).catch((e) => {
-      resetMenu();
-    });
+    getAccessTokenSilently()
+      .then((accessToken) =>
+        apiService.deleteItem(accessToken, roomId, ContextMenu.current.id)
+      )
+      .then((res) => {
+        const newModels = models.filter(
+          (model) => model.id !== parseInt(ContextMenu.current.id)
+        );
+        setModels(newModels);
+        resetMenu();
+      })
+      .catch((e) => {
+        resetMenu();
+      });
   };
 
   const rotateC = () => {
     console.log("rotateC");
     console.log(ContextMenu.current.id);
-
-    //if rotation is null, close context menu
     try {
       const model = ContextMenu.current.ref.current;
-      if (model.rotation.y === null) {
-        ContextMenu.current.style.display = "none";
-        return;
-      }
       model.rotation.y -= Math.PI / 4;
       if (model.rotation.y <= -2 * Math.PI) {
         model.rotation.y = 0;
@@ -61,12 +59,13 @@ function ContextMenu({ ContextMenu, models, setModels }) {
           .sub(bbox.min)
           .multiplyScalar(1 / 2)
       );
-      apiService
-      .updateItemAng(ContextMenu.current.id, model.rotation.y)
-      .then((res) => {
-        audioService.context.resume();
-        audioService.playRotateSound(0.2);
-      });
+      getAccessTokenSilently().then((accessToken) =>
+        apiService.updateItemAng(
+          accessToken,
+          ContextMenu.current.id,
+          model.rotation.y
+        )
+      );
     } catch (e) {
       resetMenu();
     }
@@ -78,25 +77,26 @@ function ContextMenu({ ContextMenu, models, setModels }) {
     console.log(ContextMenu.current.id);
 
     try {
-    const model = ContextMenu.current.ref.current;
-    model.rotation.y += Math.PI / 4;
-    if (model.rotation.y >= 2 * Math.PI) {
-      model.rotation.y = 0;
-    }
-    const bbox = new THREE.Box3().setFromObject(model);
-    ContextMenu.current.setBBox(bbox);
-    ContextMenu.current.setCenter(
-      bbox.max
-        .clone()
-        .sub(bbox.min)
-        .multiplyScalar(1 / 2)
-    );
-    apiService
-      .updateItemAng(ContextMenu.current.id, model.rotation.y)
-      .then((res) => {
-        audioService.context.resume();
-        audioService.playRotateSound(0.2);
-      });
+      const model = ContextMenu.current.ref.current;
+      model.rotation.y += Math.PI / 4;
+      if (model.rotation.y >= 2 * Math.PI) {
+        model.rotation.y = 0;
+      }
+      const bbox = new THREE.Box3().setFromObject(model);
+      ContextMenu.current.setBBox(bbox);
+      ContextMenu.current.setCenter(
+        bbox.max
+          .clone()
+          .sub(bbox.min)
+          .multiplyScalar(1 / 2)
+      );
+      getAccessTokenSilently().then((accessToken) =>
+        apiService.updateItemAng(
+          accessToken,
+          ContextMenu.current.id,
+          model.rotation.y
+        )
+      );
     } catch (e) {
       resetMenu();
     }

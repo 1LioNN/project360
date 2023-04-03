@@ -1,6 +1,7 @@
 import { sequelize } from "./datasource.js";
 import express from "express";
 import bodyParser from "body-parser";
+import validateAccessToken from "./middleware/auth.js";
 import { usersRouter } from "./routers/users_router.js";
 import { roomsRouter } from "./routers/rooms_router.js";
 import { itemsRouter } from "./routers/items_router.js";
@@ -14,13 +15,14 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const PORT = 5000;
-const clients = {}; 
-const furniture = {}; 
+const clients = {};
 
-app.use(cors({
-  origin: `http://localhost:${process.env.PORT || 3000}`,
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: `http://localhost:${process.env.PORT || 3000}`,
+    credentials: true,
+  })
+);
 app.use(bodyParser.json());
 app.use(
   session({
@@ -30,44 +32,35 @@ app.use(
   })
 );
 
-const io = new Server(server, { 
+const io = new Server(server, {
   cors: {
     origin: "http://localhost:3000",
-  }, 
-}); 
+  },
+});
 
+io.on("connection", (socket) => {
+  clients[socket.id] = {};
+  console.log("a user connected : " + socket.id);
+  socket.emit("id", socket.id);
+  socket.emit("hello", "world");
 
-  io.on("connection", (socket) => {
-    clients[socket.id] = {};
-    console.log("a user connected : " + socket.id);
-    socket.emit("id", socket.id);
-    socket.emit("hello", "world"); 
-
-    socket.on("disconnect", () => {
-      console.log("socket disconnected : " + socket.id);
-      if (clients && clients[socket.id]) {
-        console.log("deleting " + socket.id);
-        delete clients[socket.id];
-        io.emit("removeClient", socket.id);
-      }
-    });
-
-    socket.on("update", (message) => {
-      if (clients[socket.id]) {
-        socket.broadcast.emit("position", message);
-        clients[socket.id].t = message.t; //client timestamp
-        clients[socket.id].p = message.p; //position
-      }
-    });
-
+  socket.on("disconnect", () => {
+    console.log("socket disconnected : " + socket.id);
+    if (clients && clients[socket.id]) {
+      console.log("deleting " + socket.id);
+      delete clients[socket.id];
+      io.emit("removeClient", socket.id);
+    }
   });
- 
 
-setInterval(() => {
-  // console.log("server side"); 
-  // console.log(clients); 
-  io.emit("clients", clients);
-}, 50);
+  socket.on("update", (message) => {
+    if (clients[socket.id]) {
+      socket.broadcast.emit("position", message);
+      clients[socket.id].t = message.t; //client timestamp
+      clients[socket.id].p = message.p; //position
+    }
+  });
+});
 
 try {
   await sequelize.authenticate();
@@ -77,10 +70,12 @@ try {
   console.error("Unable to connect to the database:", error);
 }
 
-app.use(function(req,res,next){
+app.use(function (req, res, next) {
   req.io = io;
   next();
 });
+
+app.use(validateAccessToken);
 
 app.use("/api/users", usersRouter);
 app.use("/api/users/:userId/rooms", roomsRouter);
@@ -94,4 +89,4 @@ app.listen(PORT, (err) => {
   else console.log("HTTP server on http://localhost:%s", PORT);
 });
 
-io.listen(5001)
+io.listen(5001);

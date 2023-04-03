@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShareFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { useAuth0 } from "@auth0/auth0-react";
 import apiService from "../services/api-service";
 import audioService from "../services/audio-service";
 
@@ -12,13 +13,17 @@ function RoomCard(props) {
   const playSound = () => {
     audioService.playJoinSound(0.08);
   };
+  const { getAccessTokenSilently } = useAuth0();
 
   const deleteRoom = () => {
-    apiService.deleteRoom(props.userId, props.id).then((res) => {
-      const newRooms = props.rooms.filter((room) => room.id !== props.id);
-      props.setRooms(newRooms);
-    }
-    );
+    getAccessTokenSilently()
+      .then((accessToken) =>
+        apiService.deleteRoom(accessToken, props.userId, props.id)
+      )
+      .then((res) => {
+        const newRooms = props.rooms.filter((room) => room.id !== props.id);
+        props.setRooms(newRooms);
+      });
   };
 
   return (
