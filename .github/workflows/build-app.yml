@@ -32,6 +32,6 @@ jobs:
           [ "$VERSION" == "main" ] && VERSION=latest
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
-          docker tag proj360-frontend proj360-frontend:$VERSION
+          docker tag proj360-frontend $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
 
