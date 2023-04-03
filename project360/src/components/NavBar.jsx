@@ -1,19 +1,13 @@
 import React from "react";
 import logo from "../assets/icons/360.png";
-import Button from "./Button";
+import LoginButton from "./LoginButton";
+import LogoutButton from "./LogoutButton";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
-import apiService from "../services/api-service.js";
 
 function NavBar() {
-  const { user, logout, loginWithRedirect, isAuthenticated } = useAuth0();
+  const { user, isAuthenticated } = useAuth0();
   const navigate = useNavigate();
-  const logoutEventHandler = () => {
-    if (user && isAuthenticated) {
-      return apiService.signOut().then(() => logout());
-    }
-    return logout();
-  };
 
   const clickHandler = () => {
     isAuthenticated ? navigate("/dashboard/my-rooms") : navigate("/");
@@ -34,23 +28,21 @@ function NavBar() {
 
       {!isAuthenticated ? (
         <div className="flex flex-row items-center ml-auto gap-10 mr-7">
-          <Button
-            className={
+          <LoginButton
+            styles={
               "bg-indigo-900 w-28 hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800"
             }
             text={"Log In"}
-            onClick={() => loginWithRedirect()}
           />
         </div>
       ) : (
         <div className="flex flex-row items-center ml-auto mr-7 gap-8">
           <div className="text-lg mr-auto"> Welcome, {user.nickname}</div>
-          <Button
-            className={
+          <LogoutButton
+            styles={
               "bg-indigo-900 w-28 hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800"
             }
             text={"Log Out"}
-            onClick={logoutEventHandler}
           />
         </div>
       )}

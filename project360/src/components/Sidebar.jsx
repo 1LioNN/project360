@@ -8,8 +8,10 @@ import Popup from "reactjs-popup";
 import { useState } from "react";
 import apiService from "../services/api-service.js";
 import { useNavigate } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
+  const { getAccessTokenSilently } = useAuth0();
   const [roomName, setRoomName] = useState("New Room");
   const [width, setWidth] = useState(10);
   const [length, setLength] = useState(10);
@@ -20,20 +22,23 @@ function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
     e.preventDefault();
     setLoading(true);
 
-    apiService.createRoom(userId, roomName, [width, length]).then((res) => {
-      const newRoom = {
-        id: res.room.id,
-        name: res.room.name,
-        dimensions: res.room.dimensions,
-      };
-      //reset form
-      setRoomName("");
-      setWidth(0);
-      setLength(0);
-      setRooms([...rooms, newRoom]);
-      setLoading(false);
-      navigate(`/edit/${res.room.id}`);
-    });
+    getAccessTokenSilently()
+      .then((accessToken) =>
+        apiService.createRoom(accessToken, userId, roomName, [parseFloat(width), parseFloat(length)])
+      )
+      .then((res) => {
+        const newRoom = {
+          id: res.room.id,
+          name: res.room.name,
+          dimensions: res.room.dimensions,
+        };
+        setRoomName("");
+        setWidth(0);
+        setLength(0);
+        setRooms([...rooms, newRoom]);
+        setLoading(false);
+        navigate(`/edit/${res.room.id}`);
+      });
   };
 
   return (

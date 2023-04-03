@@ -11,3 +11,7 @@ export const sequelize = new Sequelize(
     dialect: `postgres`,
   }
 );
+
+// export const sequelize = new Sequelize(
+//   `postgres://${process.env.DB_USR}:${process.env.DB_PWD}@${process.env.DB_LOCALHOST}:${process.env.DB_LOCALPORT}/${process.env.DB_LOCALNAME}`
+// );

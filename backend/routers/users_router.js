@@ -1,28 +1,35 @@
 import { User, Item, Room } from "../models/index.js";
 import { Router } from "express";
-import bcrypt from "bcrypt";
+import { createHmac } from "crypto";
 import path from "path";
 import fs from "fs";
-import { isAuthenticated } from "../middleware/auth.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const usersRouter = Router({ mergeParams: true });
 
-// store auth0 data
-usersRouter.post("/auth0", async (req, res) => {
-  if (!req.body.sub) {
+// store email securely
+usersRouter.post("/emails", async (req, res) => {
+  if (!req.body.email) {
     return res.status(400).json({
-      error: `sub is required`,
+      error: `email is required`,
     });
   }
 
+  const email = req.body.email;
+  const hmac = createHmac('sha256', process.env.EMAIL_SECRET);
+  hmac.update(email);
+  const hashedEmail = hmac.digest('hex');
+
   let user = await User.findOne({
     where: {
-      sub: req.body.sub,
+      email: hashedEmail,
     },
   });
+
   if (user === null) {
     user = await User.create({
-      sub: req.body.sub,
+      email: hashedEmail,
     });
   }
 
@@ -42,19 +49,10 @@ usersRouter.get("/me", async (req, res) => {
   return res.status(404).json({ error: "User not signed in" });
 });
 
-//usersRouter.use(isAuthenticated);
-
 // sign out
 usersRouter.get("/signout", async (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res
-        .status(500)
-        .json({ error: `Error occurred while logging out` });
-    } else {
-      return res.json({ message: `Successfully logged out` });
-    }
-  });
+  req.session.destroy();
+  return res.json({ message: `Successfully logged out` });
 });
 
 // get users
@@ -96,61 +94,29 @@ usersRouter.delete("/:id", async (req, res) => {
       .json({ error: `User(id=${req.params.id}) not found.` });
   }
 
-  // will need to also remove items and item junction table
-
   const userRooms = await Room.findAll({
     where: {
       UserId: req.params.id,
     },
   });
-  await Promise.all(
-    userRooms.map((room) => {
-      fs.unlink(
-        path.join(
-          room.previewMetadata.destination,
-          room.previewMetadata.filename
-        ),
-        (err) => {
-          if (err) throw err;
-        }
-      );
-    })
-  );
+  const roomIds = userRooms.map((room) => room.id);
 
-  await Room.destroy({
+  await Item.destroy({
     where: {
-      UserId: req.params.id,
+      RoomId: { [Op.in]: roomIds },
     },
   });
 
-  await user.removeRooms();
+  await Room.destroy({
+    where: {
+      id: { [Op.in]: roomIds },
+    },
+  });
+
+  await user.removeRoom();
   await user.destroy();
 
   return res.json({
     message: `User(id=${req.params.id}) has be been deleted.`,
-  });
-});
-
-// temporary, for testing purposes
-usersRouter.post("/", async (req, res) => {
-  const user = await User.create({
-    username: req.body.username,
-    password: req.body.password,
-  });
-  return res.json({
-    username: user.username,
-  });
-});
-
-// temporary, for testing purposes
-usersRouter.post("/:id/temp", async (req, res) => {
-  const user = await User.findByPk(req.params.id);
-  const room = await Room.create({
-    name: req.body.name,
-    UserId: req.params.id,
-  });
-  room.addUser(user);
-  return res.json({
-    name: room.name,
   });
 });

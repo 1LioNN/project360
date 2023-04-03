@@ -4,7 +4,7 @@ import { DataTypes } from "sequelize";
 export const User = sequelize.define(
   "User",
   {
-    sub: {
+    email: {
       type: DataTypes.STRING,
       allowNull: false,
     },

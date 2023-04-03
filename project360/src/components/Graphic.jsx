@@ -1,8 +1,6 @@
 import React from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import Button from "./Button";
-import { useAuth0 } from "@auth0/auth0-react";
-import apiService from "../services/api-service.js";
+import LoginButton from "./LoginButton";
 
 function RotatingBox() {
   const ref = React.useRef();
@@ -24,20 +22,17 @@ function RotatingBox() {
 }
 
 function Graphic() {
-  const { user, isAuthenticated, loginWithRedirect } = useAuth0();
   return (
     <div className="flex flex-row basis-full overflow-hidden flex-grow">
       <div className="z-10 fixed top-15 left-0 flex-grow w-screen h-screen bg-black opacity-80 text-white">
         <div className="flex flex-col justify-center items-center h-full gap-16">
           <div className="text-8xl font-bold">Project 360</div>
-
           <div className="text-xl">Collaborative 3D Room Editor.</div>
-          <Button
-            className={
+          <LoginButton
+            styles={
               "p-5 w-72  text-3xl bg-indigo-900 hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800"
             }
             text={"Get Started"}
-            onClick={() => loginWithRedirect()}
           />
         </div>
       </div>

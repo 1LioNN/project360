@@ -21,7 +21,7 @@ export function Table1({ innerRef, scale, pos, rot, bind, clickHandler, missHand
         receiveShadow
         geometry={nodes.Desk_Plane021.geometry}
         material={nodes.Desk_Plane021.material}
-        position={[-0.9, 0, -0.2]}
+        position={[-0.9, 0, 0]}
       />
     </group>
   );

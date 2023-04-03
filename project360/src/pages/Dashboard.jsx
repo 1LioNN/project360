@@ -9,23 +9,37 @@ import apiService from "../services/api-service.js";
 import { useParams } from "react-router-dom";
 
 function Dashboard() {
-  const { user, isAuthenticated } = useAuth0();
+  const { user, getAccessTokenSilently, isAuthenticated } = useAuth0();
   const [userId, setUserId] = useState(null);
   const [rooms, setRooms] = useState([]);
-  const [filter, setFilter] = useState(useParams().filter || "my-rooms");
+  const filterParam = useParams().filter;
+  const [filter, setFilter] = useState(filterParam);
   const validFilters = ["my-rooms", "shared-rooms"];
 
-  let once = false;
+  useEffect(() => {
+    setFilter(filterParam);
+  }, [filterParam]);
 
   useEffect(() => {
-    if (!user || once) {
-      return;
-    }
-    once = true;
-    apiService.signIn(user.sub).then((res) => {
-      setUserId(res.userId);
-    });
-  }, []);
+    let isMounted = true;
+    getAccessTokenSilently()
+      .then((accessToken) => {
+        if (!isMounted) {
+          return;
+        }
+        return apiService.storeEmail(accessToken, user.email);
+      })
+      .then((res) => {
+        if (!isMounted) {
+          return;
+        }
+        setUserId(res.userId);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user]);
 
   return (
     <div className="flex flex-col m-0 h-full overflow-hidden">
