@@ -34,6 +34,8 @@ function ContextMenu({ ContextMenu, models, setModels }) {
         const newModels = models.filter(
           (model) => model.id !== parseInt(ContextMenu.current.id)
         );
+        audioService.context.resume();
+        audioService.playDeleteSound(0.2);
         setModels(newModels);
         resetMenu();
       })
@@ -64,7 +66,10 @@ function ContextMenu({ ContextMenu, models, setModels }) {
           accessToken,
           ContextMenu.current.id,
           model.rotation.y
-        )
+        ).then((res) => {
+          audioService.context.resume();
+          audioService.playRotateSound(0.35);
+        })
       );
     } catch (e) {
       resetMenu();
@@ -95,7 +100,10 @@ function ContextMenu({ ContextMenu, models, setModels }) {
           accessToken,
           ContextMenu.current.id,
           model.rotation.y
-        )
+        ).then((res) => {
+          audioService.context.resume();
+          audioService.playRotateSound(0.35);
+        })
       );
     } catch (e) {
       resetMenu();
