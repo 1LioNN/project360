@@ -1,10 +1,13 @@
 import React from "react";
-import Button from "./Button";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import apiService from "../services/api-service.js";
 import { faLeftLong } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Dropdown from "./Dropdown";
+import { useAuth0 } from "@auth0/auth0-react";
+import Loading from "./Loading";
+import audioService from "../services/audio-service.js";
 
 function EditSideBar({
   roomId,
@@ -13,8 +16,14 @@ function EditSideBar({
   models,
   setModels,
   name,
+  loadingRoom,
+  loadingItems,
 }) {
+  const { getAccessTokenSilently } = useAuth0();
+  const [loadingModels, setLoadingModels] = useState(false);
+
   const addModel = async (type) => {
+    setLoadingModels(true);
     let pos = position;
     switch (type) {
       case "table0":
@@ -33,32 +42,49 @@ function EditSideBar({
         break;
     }
     setPosition([position[0], position[1], position[2]]);
-    apiService.createItem(roomId, type, pos).then((res) => {
-      const newItem = {
-        ...res.item,
-        model: res.item.category,
-        position: res.item.coordinates,
-      };
-      setModels([...models, newItem]);
-    });
+    getAccessTokenSilently()
+      .then((accessToken) =>
+        apiService.createItem(accessToken, roomId, type, pos)
+      )
+      .then((res) => {
+        const newItem = {
+          ...res.item,
+          model: res.item.category,
+          position: res.item.coordinates,
+        };
+        setModels([...models, newItem]);
+        setLoadingModels(false);
+      audioService.context.resume();
+      audioService.playMoveSound(0.08);
+      });
+  };
+
+  const playLeaveSound = () => {
+    audioService.playLeaveSound(0.08);
   };
 
   return (
+    <div>
+    {!loadingRoom && !loadingItems ? (
     <div className="basis-3/12 h-screen bg-gradient-to-t from-black via-neutral-900 to-black text-white overflow-y-auto no-scrollbar">
       <div className=" flex font-semibold text-xl gap-4 items-center m-7 ">
         {name}
       </div>
       <Link
-        to="/dashboard"
+        to="/dashboard/my-rooms"
         className=" flex font-semibold text-2xl gap-4 items-center m-7 hover:text-blue-500"
+        onClick={() => playLeaveSound()}
       >
         <FontAwesomeIcon icon={faLeftLong} style={{ fontSize: 30 }} />
         Back to Dashboard
       </Link>
-      <Dropdown type="bed" addModel={addModel} numModels={2} />
-      <Dropdown type="table" addModel={addModel} numModels={2} />
-      <Dropdown type="chair" addModel={addModel} numModels={2} />
-      <Dropdown type="sofa" addModel={addModel} numModels={2} />
+      <Dropdown type="bed" addModel={addModel} numModels={2} loadingModels={loadingModels}/>
+      <Dropdown type="table" addModel={addModel} numModels={2} loadingModels={loadingModels} />
+      <Dropdown type="chair" addModel={addModel} numModels={2} loadingModels={loadingModels}/>
+      <Dropdown type="sofa" addModel={addModel} numModels={2} loadingModels={loadingModels}/>
+    </div> ) : (
+      <Loading />)
+    }
     </div>
   );
 }

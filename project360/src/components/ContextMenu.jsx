@@ -7,53 +7,108 @@ import {
   faRotateLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import apiService from "../services/api-service.js";
+import audioService from "../services/audio-service.js";
 import { useParams } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function ContextMenu({ ContextMenu, models, setModels }) {
   const roomId = useParams().roomId;
+  const { getAccessTokenSilently } = useAuth0();
+  const resetMenu = () => {
+    ContextMenu.current.ref = null;
+    ContextMenu.current.id = "";
+    ContextMenu.current.style.display = "none";
+    ContextMenu.current.setBBox(null);
+    ContextMenu.current.setCenter(null);
+  };
+
   const deleteItem = () => {
     console.log("delete");
     console.log(ContextMenu.current.id);
-    
-    apiService.deleteItem(roomId, ContextMenu.current.id).then((res) => {
-      const newModels = models.filter((model) => model.id !== parseInt(ContextMenu.current.id));
-      setModels(newModels);
-      ContextMenu.current.ref = null;
-      ContextMenu.current.id = "";
-      ContextMenu.current.style.display = "none";
-      ContextMenu.current.setBBox(null);
-      ContextMenu.current.setCenter(null);
-    })
+
+    getAccessTokenSilently()
+      .then((accessToken) =>
+        apiService.deleteItem(accessToken, roomId, ContextMenu.current.id)
+      )
+      .then((res) => {
+        const newModels = models.filter(
+          (model) => model.id !== parseInt(ContextMenu.current.id)
+        );
+        audioService.context.resume();
+        audioService.playDeleteSound(0.2);
+        setModels(newModels);
+        resetMenu();
+      })
+      .catch((e) => {
+        resetMenu();
+      });
   };
 
   const rotateC = () => {
     console.log("rotateC");
     console.log(ContextMenu.current.id);
-    
-    const model = ContextMenu.current.ref.current;
-    model.rotation.y -= Math.PI / 4;
-    if (model.rotation.y <= -2 * Math.PI) {
-      model.rotation.y = 0;
+    try {
+      const model = ContextMenu.current.ref.current;
+      model.rotation.y -= Math.PI / 4;
+      if (model.rotation.y <= -2 * Math.PI) {
+        model.rotation.y = 0;
+      }
+      const bbox = new THREE.Box3().setFromObject(model);
+      ContextMenu.current.setBBox(bbox);
+      ContextMenu.current.setCenter(
+        bbox.max
+          .clone()
+          .sub(bbox.min)
+          .multiplyScalar(1 / 2)
+      );
+      getAccessTokenSilently().then((accessToken) =>
+        apiService.updateItemAng(
+          accessToken,
+          ContextMenu.current.id,
+          model.rotation.y
+        ).then((res) => {
+          audioService.context.resume();
+          audioService.playRotateSound(0.35);
+        })
+      );
+    } catch (e) {
+      resetMenu();
     }
-    const bbox = new THREE.Box3().setFromObject(model);
-    ContextMenu.current.setBBox(bbox);
-    ContextMenu.current.setCenter(bbox.max.clone().sub(bbox.min).multiplyScalar(1/2));
-    apiService.updateItemAng(ContextMenu.current.id, model.rotation.y);
+
   };
 
   const rotateCC = () => {
     console.log("rotateCC");
     console.log(ContextMenu.current.id);
 
-    const model = ContextMenu.current.ref.current;
-    model.rotation.y += Math.PI / 4;
-    if (model.rotation.y >= 2 * Math.PI) {
-      model.rotation.y = 0;
+    try {
+      const model = ContextMenu.current.ref.current;
+      model.rotation.y += Math.PI / 4;
+      if (model.rotation.y >= 2 * Math.PI) {
+        model.rotation.y = 0;
+      }
+      const bbox = new THREE.Box3().setFromObject(model);
+      ContextMenu.current.setBBox(bbox);
+      ContextMenu.current.setCenter(
+        bbox.max
+          .clone()
+          .sub(bbox.min)
+          .multiplyScalar(1 / 2)
+      );
+      getAccessTokenSilently().then((accessToken) =>
+        apiService.updateItemAng(
+          accessToken,
+          ContextMenu.current.id,
+          model.rotation.y
+        ).then((res) => {
+          audioService.context.resume();
+          audioService.playRotateSound(0.35);
+        })
+      );
+    } catch (e) {
+      resetMenu();
     }
-    const bbox = new THREE.Box3().setFromObject(model);
-    ContextMenu.current.setBBox(bbox);
-    ContextMenu.current.setCenter(bbox.max.clone().sub(bbox.min).multiplyScalar(1/2));
-    apiService.updateItemAng(ContextMenu.current.id, model.rotation.y);
+
   };
 
   return (

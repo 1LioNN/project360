@@ -1,5 +1,10 @@
-export const isAuthenticated = (req, res, next) => {
-  if (!req.session.userId && !req.username)
-    return res.status(401).json({ error: "Not Authenticated" });
-  next();
-};
+import { auth } from "express-oauth2-jwt-bearer";
+import dotenv from "dotenv";
+dotenv.config();
+
+const validateAccessToken = auth({
+  issuerBaseURL: `https://${process.env.AUTH0_DOMAIN}`,
+  audience: process.env.AUTH0_AUDIENCE,
+});
+
+export default validateAccessToken;

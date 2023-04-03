@@ -1,7 +1,7 @@
 import React from "react";
 import Button from "./Button";
 
-function ModelButton({ type, addModel }) {
+function ModelButton({ type, addModel, loadingModels }) {
   // console.log(type);
   // console.log(`../assets/models/` + type + "/" + type + ".png");
   return (
@@ -12,11 +12,17 @@ function ModelButton({ type, addModel }) {
         className="basis-4/6 object-cover h-[70%]"
       />
       <div className="flex basis-2/6 object-contain p-3 text-white justify-center">
+        {!loadingModels ? (
         <Button
           className="bg-indigo-600 rounded-md hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800"
           text="Add To Room"
           onClick={() => addModel(type)}
-        />
+        />) : (
+          <Button
+            className="bg-indigo-600 rounded-md hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800"
+            text="Adding..."
+          />
+        )}
       </div>
     </div>
   );

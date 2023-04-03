@@ -1,34 +1,79 @@
 import React from "react";
 import NavBar from "../components/NavBar";
 import Sidebar from "../components/Sidebar";
+import Error from "../components/Error";
 import RoomsContainer from "../components/RoomsContainer";
 import { useState, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import apiService from "../services/api-service.js";
+import { useParams } from "react-router-dom";
 
 function Dashboard() {
-  const { user } = useAuth0();
+  const { user, getAccessTokenSilently, isAuthenticated } = useAuth0();
   const [userId, setUserId] = useState(null);
   const [rooms, setRooms] = useState([]);
-  let once = false;
+  const filterParam = useParams().filter;
+  const [filter, setFilter] = useState(filterParam);
+  const validFilters = ["my-rooms", "shared-rooms"];
 
   useEffect(() => {
-    if (!user || once) {
-      return;
-    }
-    once = true;
-    apiService.signIn(user.sub).then((res) => {
-      setUserId(res.userId);
-    });
-  }, []);
+    setFilter(filterParam);
+  }, [filterParam]);
+
+  useEffect(() => {
+    let isMounted = true;
+    getAccessTokenSilently()
+      .then((accessToken) => {
+        if (!isMounted) {
+          return;
+        }
+        return apiService.storeEmail(accessToken, user.email);
+      })
+      .then((res) => {
+        if (!isMounted) {
+          return;
+        }
+        setUserId(res.userId);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user]);
 
   return (
     <div className="flex flex-col m-0 h-full overflow-hidden">
       <NavBar />
-      <div className="flex flex-col flex-wrap m-0 h-full sm:flex-row">
-        <Sidebar userId={userId} rooms={rooms} setRooms={setRooms} />
-        <RoomsContainer userId={userId} rooms={rooms} setRooms={setRooms} />
-      </div>
+      {isAuthenticated ? (
+        validFilters.includes(filter) ? (
+          <div className="flex flex-col flex-wrap m-0 h-full sm:flex-row">
+            <Sidebar
+              userId={userId}
+              rooms={rooms}
+              setRooms={setRooms}
+              filter={filter}
+              setFilter={setFilter}
+            />
+            <RoomsContainer userId={userId} rooms={rooms} setRooms={setRooms} />
+          </div>
+        ) : (
+          <Error
+            errorCode={404}
+            errorDescription={
+              "The page you are trying to access does not exist."
+            }
+            errorMessage={"Not Found"}
+            redirect={"/dashboard/my-rooms"}
+          />
+        )
+      ) : (
+        <Error
+          errorCode={401}
+          errorDescription={"Please Log In or Sign Up to access this page."}
+          errorMessage={"Unauthorized"}
+          redirect={"/"}
+        />
+      )}
     </div>
   );
 }
