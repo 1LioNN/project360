@@ -27,6 +27,6 @@ export function Table1({ innerRef, scale, pos, rot, bind, clickHandler, missHand
   );
 }
 
-useGLTF.preload("/table1.gltf");
+useGLTF.preload(table);
 
 export default Table1;

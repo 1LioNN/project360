@@ -69,6 +69,6 @@ export function Bed1({ innerRef, scale, pos, rot, bind, clickHandler, missHandle
   );
 }
 
-useGLTF.preload("/bed1.gltf");
+useGLTF.preload(bed);
 
 export default Bed1;

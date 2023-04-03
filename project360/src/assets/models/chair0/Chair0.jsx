@@ -44,6 +44,6 @@ export function Chair0({ innerRef, scale, pos, rot, bind, clickHandler, missHand
   );
 }
 
-useGLTF.preload("/chair0.gltf");
+useGLTF.preload(chair);
 
 export default Chair0;

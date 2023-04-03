@@ -80,6 +80,6 @@ export function Table0({ innerRef, scale, pos, rot, bind, clickHandler, missHand
   );
 }
 
-useGLTF.preload("/table0.gltf");
+useGLTF.preload(table);
 
 export default Table0;

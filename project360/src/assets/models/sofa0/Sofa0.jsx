@@ -92,6 +92,6 @@ export function Sofa0({ innerRef, scale, pos, rot, bind, clickHandler, missHandl
   );
 }
 
-useGLTF.preload("/sofa0.gltf");
+useGLTF.preload(sofa);
 
 export default Sofa0;
