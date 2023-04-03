@@ -15,6 +15,7 @@
     "prettier": "^2.8.4"
   },
   "dependencies": {
+    "@sendgrid/mail": "^7.7.0",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.2",
     "cookie": "^0.5.0",

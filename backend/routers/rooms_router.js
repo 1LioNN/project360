@@ -5,6 +5,8 @@ import { createHmac } from "crypto";
 import { validateUserRoomAuthorization } from "../middleware/author.js";
 import dotenv from "dotenv";
 dotenv.config();
+import sgMail from "@sendgrid/mail";
+sgMail.setApiKey(process.env.SENDGRID_APIKEY);
 
 export const roomsRouter = Router({ mergeParams: true });
 
@@ -71,13 +73,11 @@ roomsRouter.post(
   "/:roomId/invite",
   validateUserRoomAuthorization,
   async (req, res) => {
-    const room = await Room.findByPk(req.params.roomId);
-    if (room.UserId !== parseInt(req.params.userId)) {
-      return res.status(403).json({
-        error: `User is unauthorized to invite users in this room`,
+    if (!req.body.url) {
+      return res.status(422).json({
+        error: `url is required`,
       });
     }
-
     const email = req.body.email;
     const hmac = createHmac("sha256", process.env.EMAIL_SECRET);
     hmac.update(email);
@@ -96,7 +96,23 @@ roomsRouter.post(
     }
 
     await room.addUser(user);
-    return res.json({ room });
+
+    const msg = {
+      to: req.body.email,
+      from: process.env.EMAIL_SENDER,
+      subject: `A user has invited you to collaborate on their room!`,
+      text: req.body.url,
+      html: `<a>${req.body.url}</a>`,
+    };
+    await sgMail.send(msg).then(() => {
+      return res.json({
+        message: `email sent`,
+      });
+    }).catch((error) => {
+      return res.status(500).json({
+        error: error,
+      });
+    });
   }
 );
 
