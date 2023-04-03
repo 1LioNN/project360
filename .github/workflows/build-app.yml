@@ -12,7 +12,7 @@ jobs:
       run:
         working-directory: project360
     steps:
-      - uses: actions/checktout@v2
+      - uses: actions/checkout@v2
       - name: Build image
         run: docker build . --file Dockerfile --tag proj360-frontend
 
