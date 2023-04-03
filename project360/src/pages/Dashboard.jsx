@@ -22,19 +22,23 @@ function Dashboard() {
 
   useEffect(() => {
     let isMounted = true;
-    getAccessTokenSilently()
-      .then((accessToken) => {
+    const manageEmail = async () => {
+      const accessToken = await getAccessTokenSilently();
+      if (!isMounted) {
+        return;
+      }
+
+      apiService.storeEmail(accessToken, user.email, user.sub).then((res) => {
         if (!isMounted) {
           return;
         }
-        return apiService.storeEmail(accessToken, user.email);
-      })
-      .then((res) => {
-        if (!isMounted) {
-          return;
-        }
+
         setUserId(res.userId);
+        return apiService.updateEmail(accessToken, user.email, user.sub);
       });
+    };
+    
+    manageEmail();
 
     return () => {
       isMounted = false;

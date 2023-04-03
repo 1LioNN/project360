@@ -7,6 +7,13 @@ dotenv.config();
 
 export const usersRouter = Router({ mergeParams: true });
 
+const genHmacHash = (message, secret) => {
+  const hmac = createHmac("sha256", secret);
+  hmac.update(message);
+  const hashedMessage = hmac.digest("hex");
+  return hashedMessage;
+};
+
 // store email securely
 usersRouter.post("/emails", async (req, res) => {
   if (!req.body.email) {
@@ -15,10 +22,11 @@ usersRouter.post("/emails", async (req, res) => {
     });
   }
 
-  const email = req.body.email;
-  const hmac = createHmac('sha256', process.env.EMAIL_SECRET);
-  hmac.update(email);
-  const hashedEmail = hmac.digest('hex');
+  let message = req.body.email;
+  if (req.body.sub) {
+    message += `:${req.body.sub}`;
+  }
+  const hashedEmail = genHmacHash(message, process.env.EMAIL_SECRET);
 
   let user = await User.findOne({
     where: {
@@ -37,6 +45,44 @@ usersRouter.post("/emails", async (req, res) => {
   return res.json({
     userId: user.id,
   });
+});
+
+usersRouter.patch("/emails", async (req, res) => {
+  if (!req.body.email) {
+    return res.status(422).json({
+      error: `email is required`,
+    });
+  }
+  if (!req.body.sub) {
+    return res.status(400).json({
+      error: `sub is required`,
+    });
+  }
+
+  let message = `${req.body.email}:${req.body.sub}`;
+  const hashedEmail = genHmacHash(message, process.env.EMAIL_SECRET);
+  let user = await User.findOne({
+    where: {
+      email: hashedEmail,
+    },
+  });
+  if (user) {
+    return res.json({
+      userId: user.id,
+    });
+  }
+
+  message = req.body.email;
+  const oldHashedEmail = genHmacHash(message, process.env.EMAIL_SECRET);
+  user = await User.findOne({
+    where: {
+      email: oldHashedEmail,
+    },
+  });
+
+  user.email = hashedEmail;
+  await user.save();
+  return res.json({ userId: user.id });
 });
 
 usersRouter.get("/me", async (req, res) => {

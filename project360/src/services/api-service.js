@@ -122,16 +122,28 @@ const deleteItem = async (accessToken, userId, roomId, itemId) => {
 };
 
 // USERS
-const storeEmail = async (accessToken, email) => {
+const storeEmail = async (accessToken, email, sub=null) => {
+  const body = sub ? { email, sub } : { email };
   const params = {
     method: `POST`,
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ email }),
+    body: JSON.stringify(body),
   };
   return fetchTemplate(accessToken, `api/users/emails`, params);
 };
+
+const updateEmail = async (accessToken, email, sub) => {
+  const params = {
+    method: `PATCH`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, sub }),
+  };
+  return fetchTemplate(accessToken, `api/users/emails`, params);
+}
 
 const signOut = async (accessToken) => {
   return fetchTemplate(accessToken, `api/users/signout`);
@@ -152,6 +164,7 @@ const apiService = {
   updateItemAng,
   deleteItem,
   storeEmail,
+  updateEmail,
   signOut,
   getMe,
 };

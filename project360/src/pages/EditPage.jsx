@@ -27,12 +27,22 @@ function EditPage() {
   useEffect(() => {
     let isMounted = true;
 
-    getAccessTokenSilently().then((accessToken) => {
+    const manageEmail = async () => {
+      const accessToken = await getAccessTokenSilently();
       if (!isMounted) {
         return;
       }
-      apiService.storeEmail(accessToken, user.email);
-    });
+
+      apiService.storeEmail(accessToken, user.email, user.sub).then((res) => {
+        if (!isMounted) {
+          return;
+        }
+        
+        return apiService.updateEmail(accessToken, user.email, user.sub);
+      })
+    };
+    
+    manageEmail();
 
     return () => {
       isMounted = false;
