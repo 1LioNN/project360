@@ -35,3 +35,35 @@ jobs:
           docker tag proj360-frontend $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
 
+  build-backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build image
+        run: docker build . --file Dockerfile --tag proj360-backend
+
+      - name: Log into Github Container Registry
+        run: echo "${{ secrets.CR_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Push image to Github Container Registry
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/proj360-backend
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "main" ] && VERSION=latest
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+          docker tag proj360-backend $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
+
+
+
+
