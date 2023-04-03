@@ -17,8 +17,18 @@ const fetchTemplate = async (accessToken, url, params = {}) => {
   });
 };
 // ROOMS
-const getRooms = async (accessToken, userId) => {
-  return fetchTemplate(accessToken, `api/users/${userId}/rooms`);
+const getRooms = async (
+  accessToken,
+  userId,
+  filter = `my-rooms`,
+  offset = 0,
+  limit = null
+) => {
+  let url = `api/users/${userId}/rooms?filter=${filter}`;
+  url += limit ? `&limit=${limit}` : ``;
+  url += offset ? `&offset=${offset}` : ``;
+  
+  return fetchTemplate(accessToken, url);
 };
 
 const getRoom = async (accessToken, userId, roomId) => {
@@ -40,15 +50,22 @@ const deleteRoom = async (accessToken, userId, roomId) => {
   const params = {
     method: `DELETE`,
   };
-  return fetchTemplate(accessToken, `api/users/${userId}/rooms/${roomId}`, params);
+  return fetchTemplate(
+    accessToken,
+    `api/users/${userId}/rooms/${roomId}`,
+    params
+  );
 };
 
 // ITEMS
-const getItems = async (accessToken, roomId) => {
-  return fetchTemplate(accessToken, `api/items?roomId=${roomId}`);
+const getItems = async (accessToken, userId, roomId) => {
+  return fetchTemplate(
+    accessToken,
+    `api/users/${userId}/rooms/${roomId}/items`
+  );
 };
 
-const createItem = async (accessToken, roomId, type, position) => {
+const createItem = async (accessToken, userId, roomId, type, position) => {
   const params = {
     method: `POST`,
     headers: {
@@ -56,10 +73,14 @@ const createItem = async (accessToken, roomId, type, position) => {
     },
     body: JSON.stringify({ category: type, coordinates: position }),
   };
-  return fetchTemplate(accessToken, `api/items?roomId=${roomId}`, params);
+  return fetchTemplate(
+    accessToken,
+    `api/users/${userId}/rooms/${roomId}/items`,
+    params
+  );
 };
 
-const updateItemPos = async (accessToken, itemId, position) => {
+const updateItemPos = async (accessToken, userId, roomId, itemId, position) => {
   const params = {
     method: `PATCH`,
     headers: {
@@ -67,10 +88,14 @@ const updateItemPos = async (accessToken, itemId, position) => {
     },
     body: JSON.stringify({ coordinates: position }),
   };
-  return fetchTemplate(accessToken, `api/items/${itemId}/move`, params);
+  return fetchTemplate(
+    accessToken,
+    `api/users/${userId}/rooms/${roomId}/items/${itemId}/move`,
+    params
+  );
 };
 
-const updateItemAng = async (accessToken, itemId, degree) => {
+const updateItemAng = async (accessToken, userId, roomId, itemId, degree) => {
   const params = {
     method: `PATCH`,
     headers: {
@@ -78,14 +103,22 @@ const updateItemAng = async (accessToken, itemId, degree) => {
     },
     body: JSON.stringify({ degree }),
   };
-  return fetchTemplate(accessToken, `api/items/${itemId}/rotate`, params);
+  return fetchTemplate(
+    accessToken,
+    `api/users/${userId}/rooms/${roomId}/items/${itemId}/rotate`,
+    params
+  );
 };
 
-const deleteItem = async (accessToken, roomId, itemId) => {
+const deleteItem = async (accessToken, userId, roomId, itemId) => {
   const params = {
     method: `DELETE`,
   };
-  return fetchTemplate(accessToken, `api/items/${itemId}?roomId=${roomId}`, params);
+  return fetchTemplate(
+    accessToken,
+    `api/users/${userId}/rooms/${roomId}/items/${itemId}`,
+    params
+  );
 };
 
 // USERS

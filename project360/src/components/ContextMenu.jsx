@@ -13,6 +13,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 function ContextMenu({ ContextMenu, models, setModels }) {
   const roomId = useParams().roomId;
   const { getAccessTokenSilently } = useAuth0();
+
   const resetMenu = () => {
     ContextMenu.current.ref = null;
     ContextMenu.current.id = "";
@@ -21,14 +22,20 @@ function ContextMenu({ ContextMenu, models, setModels }) {
     ContextMenu.current.setCenter(null);
   };
 
-  const deleteItem = () => {
-    console.log("delete");
-    console.log(ContextMenu.current.id);
+  const updateRotation = async (id, rotation) => {
+    const accessToken = await getAccessTokenSilently();
+    apiService
+      .getMe(accessToken)
+      .then((res) =>
+        apiService.updateItemAng(accessToken, res.userId, roomId, id, rotation)
+      );
+  };
 
-    getAccessTokenSilently()
-      .then((accessToken) =>
-        apiService.deleteItem(accessToken, roomId, ContextMenu.current.id)
-      )
+  const updateDelete = async (id) => {
+    const accessToken = await getAccessTokenSilently();
+    apiService
+      .getMe(accessToken)
+      .then((res) => apiService.deleteItem(accessToken, res.userId, roomId, id))
       .then((res) => {
         const newModels = models.filter(
           (model) => model.id !== parseInt(ContextMenu.current.id)
@@ -39,6 +46,13 @@ function ContextMenu({ ContextMenu, models, setModels }) {
       .catch((e) => {
         resetMenu();
       });
+  };
+
+  const deleteItem = () => {
+    console.log("delete");
+    console.log(ContextMenu.current.id);
+
+    updateDelete(ContextMenu.current.id);
   };
 
   const rotateC = () => {
@@ -58,13 +72,8 @@ function ContextMenu({ ContextMenu, models, setModels }) {
           .sub(bbox.min)
           .multiplyScalar(1 / 2)
       );
-      getAccessTokenSilently().then((accessToken) =>
-        apiService.updateItemAng(
-          accessToken,
-          ContextMenu.current.id,
-          model.rotation.y
-        )
-      );
+
+      updateRotation(ContextMenu.current.id, model.rotation.y);
     } catch (e) {
       resetMenu();
     }
@@ -88,13 +97,8 @@ function ContextMenu({ ContextMenu, models, setModels }) {
           .sub(bbox.min)
           .multiplyScalar(1 / 2)
       );
-      getAccessTokenSilently().then((accessToken) =>
-        apiService.updateItemAng(
-          accessToken,
-          ContextMenu.current.id,
-          model.rotation.y
-        )
-      );
+
+      updateRotation(ContextMenu.current.id, model.rotation.y);
     } catch (e) {
       resetMenu();
     }

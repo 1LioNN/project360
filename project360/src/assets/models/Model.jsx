@@ -12,6 +12,7 @@ import Bed1 from "./bed1/Bed1";
 import Sofa1 from "./sofa1/Sofa1";
 import Table1 from "./table1/Table1";
 import Chair1 from "./chair1/Chair1";
+import { useParams } from "react-router-dom";
 
 import apiService from "../../services/api-service.js";
 //function takes in a gltf file and returns a primitive object
@@ -68,6 +69,7 @@ function Model({
   const [pos, setPos] = useState(position);
   const [bbox, setBBox] = useState(null);
   const [center, setCenter] = useState(null);
+  const roomId = useParams().roomId;
 
   useEffect(() => {
     setPos(position);
@@ -80,25 +82,35 @@ function Model({
 
   const validX = (x) => {
     if (!center) {
-      setCenter(bbox.max.clone().sub(bbox.min).multiplyScalar(1/2));
+      setCenter(
+        bbox.max
+          .clone()
+          .sub(bbox.min)
+          .multiplyScalar(1 / 2)
+      );
       return 0;
     }
 
     const maxAbsX = Math.abs(x) + center.x;
-    const signedBound = Math.sign(x) * ((dimensions[0] / 2) - center.x);
-    return maxAbsX <= (dimensions[0] / 2) ? x : signedBound;
-  }
+    const signedBound = Math.sign(x) * (dimensions[0] / 2 - center.x);
+    return maxAbsX <= dimensions[0] / 2 ? x : signedBound;
+  };
 
   const validZ = (z) => {
     if (!center) {
-      setCenter(bbox.max.clone().sub(bbox.min).multiplyScalar(1/2));
+      setCenter(
+        bbox.max
+          .clone()
+          .sub(bbox.min)
+          .multiplyScalar(1 / 2)
+      );
       return 0;
     }
 
     const maxAbsZ = Math.abs(z) + center.z;
-    const signedBound = Math.sign(z) * ((dimensions[1] / 2) - center.z);
-    return maxAbsZ <= (dimensions[1] / 2) ? z : signedBound;
-  }
+    const signedBound = Math.sign(z) * (dimensions[1] / 2 - center.z);
+    return maxAbsZ <= dimensions[1] / 2 ? z : signedBound;
+  };
 
   const clickHandler = (e) => {
     setClicked(!clicked);
@@ -147,7 +159,16 @@ function Model({
   );
 
   useEffect(() => {
-    getAccessTokenSilently().then((accessToken) => apiService.updateItemPos(accessToken, itemId, pos));
+    const updateItemPos = async () => {
+      const accessToken = await getAccessTokenSilently();
+      apiService
+        .getMe(accessToken)
+        .then((res) =>
+          apiService.updateItemPos(accessToken, res.userId, roomId, itemId, pos)
+        );
+    };
+
+    updateItemPos();
   }, [clicked]);
 
   switch (type) {

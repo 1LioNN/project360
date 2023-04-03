@@ -5,7 +5,7 @@ import apiService from "../services/api-service.js";
 import SkeletonCard from "./SkeletonCard";
 import { useEffect, useState } from "react";
 
-function RoomsContainer({ userId, rooms, setRooms }) {
+function RoomsContainer({ userId, rooms, setRooms, filter }) {
   const { getAccessTokenSilently } = useAuth0();
   const [loading, setLoading] = useState(true);
   const skeletons = [...Array(15).keys()].map((i) => {
@@ -18,7 +18,7 @@ function RoomsContainer({ userId, rooms, setRooms }) {
     }
 
     getAccessTokenSilently()
-      .then((accessToken) => apiService.getRooms(accessToken, userId))
+      .then((accessToken) => apiService.getRooms(accessToken, userId, filter))
       .then((res) => {
         setRooms(res.items);
         setLoading(false);

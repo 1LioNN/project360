@@ -54,7 +54,7 @@ function Dashboard() {
               filter={filter}
               setFilter={setFilter}
             />
-            <RoomsContainer userId={userId} rooms={rooms} setRooms={setRooms} />
+            <RoomsContainer userId={userId} rooms={rooms} setRooms={setRooms} filter={filter} />
           </div>
         ) : (
           <Error

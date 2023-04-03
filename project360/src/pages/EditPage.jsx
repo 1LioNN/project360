@@ -64,24 +64,36 @@ function EditPage() {
         .catch((err) => {
           setLoadingRoom(false);
           setErrorCode(404);
-          isAuthenticated ? setRedirect("/dashboard/my-rooms") : setRedirect("/");
+          isAuthenticated
+            ? setRedirect("/dashboard/my-rooms")
+            : setRedirect("/");
         });
 
-      apiService.getItems(accessToken, roomId).then((res) => {
-        if (!isMounted) {
-          return;
-        }
-        setLoadingItems(false);
-        setModels(
-          res.items.map((item) => {
-            return {
-              ...item,
-              position: item.coordinates,
-              model: item.category,
-            };
-          })
-        );
-      });
+      apiService
+        .getMe(accessToken)
+        .then((res) => apiService.getItems(accessToken, res.userId, roomId))
+        .then((res) => {
+          if (!isMounted) {
+            return;
+          }
+          setLoadingItems(false);
+          setModels(
+            res.items.map((item) => {
+              return {
+                ...item,
+                position: item.coordinates,
+                model: item.category,
+              };
+            })
+          );
+        })
+        .catch((err) => {
+          setLoadingRoom(false);
+          setErrorCode(403);
+          isAuthenticated
+            ? setRedirect("/dashboard/my-rooms")
+            : setRedirect("/");
+        });
     };
 
     callAPI();
@@ -102,28 +114,35 @@ function EditPage() {
 
     socket.on("updateRoom", (data) => {
       console.log("Listening to updateRoom");
-
-      getAccessTokenSilently()
-        .then((accessToken) => {
-          if (!isMounted) {
-            return;
-          }
-          return apiService.getItems(accessToken, roomId);
-        })
-        .then((res) => {
-          if (!isMounted) {
-            return;
-          }
-          const val = res.items.map((item) => {
-            return {
-              ...item,
-              position: item.coordinates,
-              model: item.category,
-            };
+      const getItems = async () => {
+        const accessToken = await getAccessTokenSilently();
+        apiService
+          .getMe(accessToken)
+          .then((res) => apiService.getItems(accessToken, res.userId, roomId))
+          .then((res) => {
+            if (!isMounted) {
+              return;
+            }
+            setLoadingItems(false);
+            setModels(
+              res.items.map((item) => {
+                return {
+                  ...item,
+                  position: item.coordinates,
+                  model: item.category,
+                };
+              })
+            );
+          })
+          .catch((err) => {
+            setLoadingRoom(false);
+            setErrorCode(403);
+            isAuthenticated
+              ? setRedirect("/dashboard/my-rooms")
+              : setRedirect("/");
           });
-          setLoadingItems(false);
-          setModels(val);
-        });
+      };
+      getItems();
     });
 
     socket.current.on("id", (id) => {
@@ -136,8 +155,6 @@ function EditPage() {
       // socket.current.off('clients')
     };
   }, [roomId, isAuthenticated]);
-
-
 
   if (!isAuthenticated) {
     return (
@@ -163,32 +180,47 @@ function EditPage() {
         />
       </div>
     );
+  } else if (errorCode === 403) {
+    return (
+      <div className="flex flex-col m-0 h-full overflow-hidden">
+        <NavBar />
+        <Error
+          errorCode={errorCode}
+          errorDescription={"You do not have permission to access this room."}
+          errorMessage={"Forbidden"}
+          redirect={redirect}
+        />
+      </div>
+    );
   } else {
     return (
-      <Suspense fallback={<Loading/>}>
-        {loadingRoom && loadingItems ? <Loading /> : (
-        <div className="flex flex-col sm:flex-row m-0 h-full">
-          <EditSideBar
-            roomId={roomId}
-            position={position}
-            setPosition={setPosition}
-            models={models}
-            setModels={setModels}
-            name={roomName}
-            loadingRoom={loadingRoom}
-            loadingItems={loadingItems}
-          />
-          {dimensions ? (
-            <Room
-              dimensions={dimensions}
+      <Suspense fallback={<Loading />}>
+        {loadingRoom && loadingItems ? (
+          <Loading />
+        ) : (
+          <div className="flex flex-col sm:flex-row m-0 h-full">
+            <EditSideBar
+              roomId={roomId}
+              position={position}
+              setPosition={setPosition}
               models={models}
               setModels={setModels}
+              name={roomName}
+              loadingRoom={loadingRoom}
+              loadingItems={loadingItems}
             />
-          ) : (
-            ``
-          )}
-        </div>)}
-      </Suspense> 
+            {dimensions ? (
+              <Room
+                dimensions={dimensions}
+                models={models}
+                setModels={setModels}
+              />
+            ) : (
+              ``
+            )}
+          </div>
+        )}
+      </Suspense>
     );
   }
 }
