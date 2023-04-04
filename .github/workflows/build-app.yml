@@ -13,6 +13,11 @@ jobs:
         working-directory: project360
     steps:
       - uses: actions/checkout@v2
+
+      - name: Create ENV file
+        run: |
+          echo "${{ secrets.FRONTEND_ENV_FILE }}" > .env
+
       - name: Build image
         run: docker build . --file Dockerfile --tag proj360-frontend
 
@@ -58,6 +63,10 @@ jobs:
         working-directory: backend
     steps:
       - uses: actions/checkout@v2
+      
+      -run: |
+          echo "${{ secrets.FRONTEND_ENV_FILE }}" > .env
+
       - name: Build image
         run: docker build . --file Dockerfile --tag proj360-backend
 
