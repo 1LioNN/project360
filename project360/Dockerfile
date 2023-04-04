@@ -13,7 +13,7 @@ RUN npm run build
 
 #SERVE REACT APP WITH NGINX
 FROM nginx:1.21.6-alpine 
-COPY --from=build  /app/build/ /usr/share/nginx/html
+COPY --from=build  /usr/src/app/build/ /usr/share/nginx/html
 RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 80
