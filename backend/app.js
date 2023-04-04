@@ -7,6 +7,8 @@ import { itemsRouter } from "./routers/items_router.js";
 import session from "express-session";
 import cors from "cors";
 import dotenv from "dotenv";
+import Sentry from "@sentry/node"; 
+import Tracing from "@sentry/tracing";
 dotenv.config();
 
 const PORT = 5000;
@@ -25,6 +27,26 @@ app.use(
   })
 );
 
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+
+  integrations: [
+
+    new Sentry.Integrations.Http({ tracing: true }),
+    new Tracing.Integrations.Express({ app }),
+    ],
+
+    tracesSampleRate: 0.1,
+});
+
+app.use(Sentry.Handlers.requestHandler());
+app.use(Sentry.Handlers.tracingHandler());
+
+const transaction = Sentry.startTransaction({
+  op: "test",
+  name: "My First Test Transaction",
+});
+
 try {
   await sequelize.authenticate();
   await sequelize.sync({ alter: { drop: false } });
@@ -33,6 +55,17 @@ try {
   console.error("Unable to connect to the database:", error);
 }
 
+setTimeout(() => {
+  try {
+    foo();
+  } catch (e) {
+    Sentry.captureException(e);
+  } finally {
+    transaction.finish();
+  }
+}, 99);
+
+app.use(Sentry.Handlers.errorHandler());
 app.use("/api/users", usersRouter);
 app.use("/api/users/:userId/rooms", roomsRouter);
 app.use("/api/items", itemsRouter);
