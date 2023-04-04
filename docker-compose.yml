@@ -12,7 +12,11 @@ services:
       - ./certs:/etc/nginx/certs
       - ./vhost:/etc/nginx/vhost.d
       - ./html:/usr/share/nginx/html
+    labels:
+      - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy=true"
   nginx-proxy-acme:
+    depends_on:
+      - "nginx-proxy"
     image: nginxproxy/acme-companion
     container_name: nginx-proxy-acme
     volumes:
@@ -30,8 +34,8 @@ services:
     expose:
       - 80
     environment:
-      - VIRTUAL_HOST=www.project360.live
-      - LETSENCRYPT_HOST=www.project360.live
+      - VIRTUAL_HOST=project360.me
+      - LETSENCRYPT_HOST=project360.me
   backend:
     image: ghcr.io/uoft-utsc-cs-sandbox/proj360-backend
     container_name: backend
@@ -39,5 +43,5 @@ services:
     expose:
       - 5000
     environment:
-      - VIRTUAL_HOST=api.www.project360.live
-      - LETSENCRYPT_HOST=api.www.project360.live
+      - VIRTUAL_HOST=api.project360.me
+      - LETSENCRYPT_HOST=api.project360.me
