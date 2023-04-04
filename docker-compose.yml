@@ -30,8 +30,8 @@ services:
     expose:
       - 80
     environment:
-      - VIRTUAL_HOST=project360.live
-      - LETSENCRYPT_HOST=project360.live
+      - VIRTUAL_HOST=www.project360.live
+      - LETSENCRYPT_HOST=www.project360.live
   backend:
     image: ghcr.io/uoft-utsc-cs-sandbox/proj360-backend
     container_name: backend
@@ -39,5 +39,5 @@ services:
     expose:
       - 5000
     environment:
-      - VIRTUAL_HOST=api.project360.live
-      - LETSENCRYPT_HOST=api.project360.live
+      - VIRTUAL_HOST=api.www.project360.live
+      - LETSENCRYPT_HOST=api.www.project360.live
