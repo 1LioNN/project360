@@ -76,7 +76,7 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use(validateAccessToken);
+//app.use(validateAccessToken);
 
 app.use("/api/users", usersRouter);
 app.use("/api/users/:userId/rooms", roomsRouter);
