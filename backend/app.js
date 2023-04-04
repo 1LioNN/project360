@@ -1,7 +1,7 @@
 import { sequelize } from "./datasource.js";
 import express from "express";
 import bodyParser from "body-parser";
-import validateAccessToken from "./middleware/auth.js";
+import validateAccessToken from "./middleware/authen.js";
 import { usersRouter } from "./routers/users_router.js";
 import { roomsRouter } from "./routers/rooms_router.js";
 import { itemsRouter } from "./routers/items_router.js";
@@ -80,7 +80,7 @@ app.use(function (req, res, next) {
 
 app.use("/api/users", usersRouter);
 app.use("/api/users/:userId/rooms", roomsRouter);
-app.use("/api/items", itemsRouter);
+app.use("/api/users/:userId/rooms/:roomId/items", itemsRouter);
 
 // const socketIoObject = io;
 // module.exports.ioObject = socketIoObject;
