@@ -8,7 +8,6 @@ import Popup from "reactjs-popup";
 import { useState } from "react";
 import apiService from "../services/api-service.js";
 import { useNavigate } from "react-router-dom";
-import audioService from "../services/audio-service.js";
 import { useAuth0 } from "@auth0/auth0-react";
 
 function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
@@ -33,13 +32,27 @@ function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
           name: res.room.name,
           dimensions: res.room.dimensions,
         };
-        setRoomName("");
-        setWidth(0);
-        setLength(0);
+        setRoomName("New Room");
+        setWidth(10);
+        setLength(10);
         setRooms([...rooms, newRoom]);
         setLoading(false);
         navigate(`/edit/${res.room.id}`);
       });
+  };
+  
+  const onFilter = (f, url) => {
+    console.log(f);
+    console.log(url);
+    setFilter(f);
+    console.log(filter);
+    navigate(url);
+  };
+
+  const onClose = () => {
+    setRoomName("New Room");
+    setWidth(10);
+    setLength(10);
   };
 
   return (
@@ -59,9 +72,10 @@ function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
         }
         modal
         nested
+        onClose={() => onClose()}
       >
         {(close) => (
-          <div className="modal bg-neutral-800 p-10 pt-7 rounded-xl  font-semibold">
+          <div className="modal bg-neutral-900 p-10 pt-7 rounded-xl  font-semibold">
             <button
               className="flex ml-auto text-white text-xl "
               onClick={close}
@@ -75,6 +89,8 @@ function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
                 className="w-80 h-10 rounded-xl border-2 border-neutral-800 p-2"
                 type="text"
                 placeholder="Room Name"
+                minLength={1}
+                maxLength={20}
                 value={roomName}
                 onChange={(e) => setRoomName(e.target.value)}
               />
@@ -115,20 +131,52 @@ function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
         )}
       </Popup>
 
-      <div className="flex flex-row text-xl font-semibold items-center p-5 m-3 sm:pl-10 rounded-full cursor-pointer sm:w-full hover:bg-neutral-800">
-        <FontAwesomeIcon
-          className="sm:mr-4 text-3xl sm:text-2xl"
-          icon={faCube}
-        />
-        <span className="hidden sm:block">My Rooms</span>
-      </div>
-      <div className="flex flex-row text-xl font-semibold items-center p-5 m-3 sm:pl-10 rounded-full cursor-pointer sm:w-full hover:bg-neutral-800">
-        <FontAwesomeIcon
-          className="sm:mr-4 text-3xl sm:text-2xl"
-          icon={faUsers}
-        />
-        <span className="hidden sm:block">Shared with Me</span>
-      </div>
+      {filter !== "my-rooms" ? (
+        <div
+          className="flex flex-row text-xl font-semibold items-center p-5 m-3 sm:pl-10 rounded-full cursor-pointer sm:w-full hover:bg-neutral-800"
+          onClick={() => onFilter("my-rooms", "/dashboard/my-rooms")}
+        >
+          <FontAwesomeIcon
+            className="sm:mr-4 text-3xl sm:text-2xl"
+            icon={faCube}
+          />
+          <span className="hidden sm:block">My Rooms</span>
+        </div>
+      ) : (
+        <div
+          className="flex flex-row text-xl font-semibold items-center p-5 m-3 sm:pl-10 rounded-full cursor-pointer sm:w-full hover:bg-neutral-800 text-indigo-900"
+          onClick={() => onFilter("my-rooms", "/dashboard/my-rooms")}
+        >
+          <FontAwesomeIcon
+            className="sm:mr-4 text-3xl sm:text-2xl"
+            icon={faCube}
+          />
+          <span className="hidden sm:block">My Rooms</span>
+        </div>
+      )}
+      {filter !== "shared-with-me" ? (
+        <div
+          className="flex flex-row text-xl font-semibold items-center p-5 m-3 sm:pl-10 rounded-full cursor-pointer sm:w-full hover:bg-neutral-800"
+          onClick={() => onFilter("shared-with-me", "/dashboard/shared-with-me")}
+        >
+          <FontAwesomeIcon
+            className="sm:mr-4 text-3xl sm:text-2xl"
+            icon={faUsers}
+          />
+          <span className="hidden sm:block">Shared with Me</span>
+        </div>
+      ) : (
+        <div
+          className="flex flex-row text-xl font-semibold items-center p-5 m-3 sm:pl-10 rounded-full cursor-pointer sm:w-full hover:bg-neutral-800 text-indigo-900" 
+          onClick={() => onFilter("shared-with-me", "/dashboard/shared-with-me")}
+        >
+          <FontAwesomeIcon
+            className="sm:mr-4 text-3xl sm:text-2xl"
+            icon={faUsers}
+          />
+          <span className="hidden sm:block">Shared with Me</span>
+        </div>
+      )}
     </div>
   );
 }

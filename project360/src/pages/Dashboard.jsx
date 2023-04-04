@@ -13,8 +13,8 @@ function Dashboard() {
   const [userId, setUserId] = useState(null);
   const [rooms, setRooms] = useState([]);
   const filterParam = useParams().filter;
-  const [filter, setFilter] = useState(filterParam);
-  const validFilters = ["my-rooms", "shared-rooms"];
+  const [filter, setFilter] = useState(filterParam || "my-rooms");
+  const validFilters = ["my-rooms", "shared-with-me"];
 
   useEffect(() => {
     setFilter(filterParam);

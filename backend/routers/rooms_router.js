@@ -27,7 +27,7 @@ roomsRouter.get("/", async (req, res) => {
     query.where = {
       UserId: req.params.userId,
     };
-  } else if (filter === "shared-rooms") {
+  } else if (filter === "shared-with-me") {
     const userRooms = await UserRoom.findAll({
       where: {
         UserId: req.params.userId,

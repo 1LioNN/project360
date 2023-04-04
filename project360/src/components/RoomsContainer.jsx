@@ -23,7 +23,7 @@ function RoomsContainer({ userId, rooms, setRooms, filter }) {
         setRooms(res.items);
         setLoading(false);
       });
-  }, [userId, getAccessTokenSilently, setRooms]);
+  }, [userId, getAccessTokenSilently, setRooms, filter]);
 
   const RoomsList = rooms.map((room) => {
     return (
