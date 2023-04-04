@@ -42,27 +42,6 @@ jobs:
           docker tag proj360-frontend $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
 
-      - name: Deploy on Droplet
-        uses: appleboy/ssh-action@v0.1.8
-        with:
-          host: ${{secrets.DROPLET_HOST}}
-          username: ${{ secrets.DROPLET_USER}}
-          key: ${{secrets.DROPLET_PRIV_KEY}}
-          passphrase: ${{secrets.PASSPHRASE}}
-          script: |
-            #Log In to Github Container Registry
-            docker login  https://ghcr.io -u ${{secrets.CR_PAT}} -p ${{secrets.CR_PAT}} 
-            #Pull docker container
-            docker pull ghcr.io/uoft-utsc-cs-sandbox/proj360-frontend
-            #Stop Old Containers
-            ids=$(docker ps -a -q)
-            for id in $ids
-            do
-              echo "$id"
-              docker stop $id && docker rm $id
-            done
-            #Run docker container
-            docker run -d -p 80:80 ghcr.io/uoft-utsc-cs-sandbox/proj360-frontend
 
   build-backend:
     runs-on: ubuntu-latest
@@ -99,25 +78,3 @@ jobs:
           echo VERSION=$VERSION
           docker tag proj360-backend $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
-
-      - name: Deploy on Droplet
-        uses: appleboy/ssh-action@v0.1.8
-        with:
-          host: ${{secrets.DROPLET_HOST}}
-          username: ${{secrets.DROPLET_USER}}
-          key: ${{secrets.DROPLET_PRIV_KEY}}
-          passphrase: ${{secrets.PASSPHRASE}}
-          script: |
-            #Log In to Github Container Registry
-            docker login  https://ghcr.io -u ${{secrets.CR_PAT}} -p ${{secrets.CR_PAT}} 
-            #Pull docker container
-            docker pull ghcr.io/uoft-utsc-cs-sandbox/proj360-backend
-            #Stop Old Containers
-            ids=$(docker ps -a -q)
-            for id in $ids
-            do
-              echo "$id"
-              docker stop $id && docker rm $id
-            done
-            #Run docker container
-            docker run -d -p 5000:5000 ghcr.io/uoft-utsc-cs-sandbox/proj360-backend
