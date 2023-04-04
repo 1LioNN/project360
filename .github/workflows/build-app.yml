@@ -43,6 +43,7 @@ jobs:
 
 
   build-backend:
+    needs: build-frontend
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -78,7 +79,6 @@ jobs:
           docker push $IMAGE_ID:$VERSION
 
   deploy: 
-    needs: build-frontend
     needs: build-backend
     runs-on: ubuntu-latest
 
