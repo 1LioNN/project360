@@ -28,16 +28,20 @@ function Dashboard() {
         return;
       }
 
-      apiService.storeEmail(accessToken, user.email, user.sub).then((res) => {
-        if (!isMounted) {
-          return;
-        }
+      apiService
+        .storeEmail(accessToken, user.email)
+        .then((res) =>
+          apiService.updateEmail(accessToken, user.email, user.sub)
+        )
+        .then((res) => {
+          if (!isMounted) {
+            return;
+          }
 
-        setUserId(res.userId);
-        return apiService.updateEmail(accessToken, user.email, user.sub);
-      });
+          setUserId(res.userId);
+        });
     };
-    
+
     manageEmail();
 
     return () => {
@@ -58,7 +62,12 @@ function Dashboard() {
               filter={filter}
               setFilter={setFilter}
             />
-            <RoomsContainer userId={userId} rooms={rooms} setRooms={setRooms} filter={filter} />
+            <RoomsContainer
+              userId={userId}
+              rooms={rooms}
+              setRooms={setRooms}
+              filter={filter}
+            />
           </div>
         ) : (
           <Error

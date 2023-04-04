@@ -78,40 +78,88 @@ roomsRouter.post(
         error: `url is required`,
       });
     }
-    const email = req.body.email;
+
+    if (!req.body.sender) {
+      return res.status(422).json({
+        error: `sender email is required`,
+      });
+    }
+
+    if (!req.body.recipient) {
+      return res.status(422).json({
+        error: `recipient email is required`,
+      });
+    }
+
+    if (!req.body.username) {
+      return res.status(422).json({
+        error: `sender's username is required`,
+      });
+    }
+
+    if (req.body.sender === req.body.recipient) {
+      return res.status(422).json({
+        error: `recipient's email cannot be the same as the sender's email`,
+      });
+    }
+
+    const email = req.body.recipient;
     const hmac = createHmac("sha256", process.env.EMAIL_SECRET);
     hmac.update(email);
     const hashedEmail = hmac.digest("hex");
 
-    let user = await User.findOne({
+    const room = await Room.findByPk(req.params.roomId);
+
+    let userList = await User.findAll({
       where: {
         email: hashedEmail,
       },
     });
-
-    if (user === null) {
+    userList = userList.map((user) => user.id);
+    let user = null;
+    if (!userList.length) {
       user = await User.create({
         email: hashedEmail,
       });
-    }
+    } else {
+      const userRooms = await UserRoom.findAll({
+        where: {
+          RoomId: req.params.roomId,
+        },
+      });
+      const userIds = userRooms.map((userRoom) => userRoom.UserId);
+      const userId = userList.filter((id) => !userIds.includes(id))[0];
+      if (!userId) {
+        return res.status(422).json({
+          error: `${req.body.recipient} has already been invited`,
+        });
+      }
 
+      user = await User.findByPk(userId);
+    }
     await room.addUser(user);
 
-    const msg = {
-      to: req.body.email,
-      from: process.env.EMAIL_SENDER,
-      subject: `A user has invited you to collaborate on their room!`,
-      text: req.body.url,
-      html: `<a>${req.body.url}</a>`,
-    };
-    await sgMail.send(msg).then(() => {
-      return res.json({
-        message: `email sent`,
-      });
-    }).catch((error) => {
-      return res.status(500).json({
-        error: error,
-      });
+    // const msg = {
+    //   to: email,
+    //   from: process.env.EMAIL_SENDER,
+    //   subject: `${req.body.username} has invited you to collaborate on their room!`,
+    //   text: req.body.url,
+    //   html: `<p>${req.body.username} has invited you to collaborate on their room: <a>${req.body.url}</a></p>`,
+    // };
+    // await sgMail
+    //   .send(msg)
+    //   .then(() => {
+    //     return res.json({
+    //       message: `email sent`,
+    //     });
+    //   })
+    //   .catch((error) => {
+    //     return res.status(500).json({
+    //       error: error,
+    //     });
+    //   });
+    return res.json({
+      message: `sendgrid will be setup at some point`,
     });
   }
 );

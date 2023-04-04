@@ -46,6 +46,17 @@ const createRoom = async (accessToken, userId, name, dimensions) => {
   return fetchTemplate(accessToken, `api/users/${userId}/rooms`, params);
 };
 
+const inviteUser = async (accessToken, userId, roomId, username, sender, recipient, url) => {
+  const params = {
+    method: `POST`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ username, sender, recipient, url })
+  };
+  return fetchTemplate(accessToken, `api/users/${userId}/rooms/${roomId}/invite`, params);
+}
+
 const deleteRoom = async (accessToken, userId, roomId) => {
   const params = {
     method: `DELETE`,
@@ -122,14 +133,13 @@ const deleteItem = async (accessToken, userId, roomId, itemId) => {
 };
 
 // USERS
-const storeEmail = async (accessToken, email, sub=null) => {
-  const body = sub ? { email, sub } : { email };
+const storeEmail = async (accessToken, email) => {
   const params = {
     method: `POST`,
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(body),
+    body: JSON.stringify({ email }),
   };
   return fetchTemplate(accessToken, `api/users/emails`, params);
 };
@@ -157,6 +167,7 @@ const apiService = {
   getRooms,
   getRoom,
   createRoom,
+  inviteUser,
   deleteRoom,
   getItems,
   createItem,

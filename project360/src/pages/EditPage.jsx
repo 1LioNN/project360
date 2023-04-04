@@ -34,15 +34,13 @@ function EditPage() {
         return;
       }
 
-      apiService.storeEmail(accessToken, user.email, user.sub).then((res) => {
-        if (!isMounted) {
-          return;
-        }
-        
-        return apiService.updateEmail(accessToken, user.email, user.sub);
-      })
+      apiService
+        .storeEmail(accessToken, user.email)
+        .then((res) =>
+          apiService.updateEmail(accessToken, user.email, user.sub)
+        );
     };
-    
+
     manageEmail();
 
     return () => {

@@ -13,19 +13,50 @@ import { useState, useRef } from "react";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 function RoomCard(props) {
+  const { user, getAccessTokenSilently } = useAuth0();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const optionsRef = useRef(null);
 
+  const deleteRoom = () => {
+    getAccessTokenSilently()
+      .then((accessToken) =>
+        apiService.deleteRoom(accessToken, props.userId, props.id)
+      )
+      .then((res) => {
+        const newRooms = props.rooms.filter((room) => room.id !== props.id);
+        props.setRooms(newRooms);
+      });
+  };
+
   const onSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-    //Fake loading
-    setTimeout(() => {
-      console.log(email);
-      setLoading(false);
-      setEmail("");
-    }, 1000);
+
+    const roomId = props.id;
+    const url = `${window.location.origin}/edit/${roomId}`;
+    const sendInvite = async () => {
+      const accessToken = await getAccessTokenSilently();
+      apiService
+        .getMe(accessToken)
+        .then((res) =>
+          apiService.inviteUser(
+            accessToken,
+            res.userId,
+            roomId,
+            user.nickname,
+            user.email,
+            email,
+            url
+          )
+        )
+        .finally(() => {
+          setLoading(false);
+          setEmail("");
+        });
+    };
+
+    sendInvite();
   };
 
   const onOpen = () => {
@@ -39,18 +70,6 @@ function RoomCard(props) {
 
   const playSound = () => {
     audioService.playJoinSound(0.08);
-  };
-  const { getAccessTokenSilently } = useAuth0();
-
-  const deleteRoom = () => {
-    getAccessTokenSilently()
-      .then((accessToken) =>
-        apiService.deleteRoom(accessToken, props.userId, props.id)
-      )
-      .then((res) => {
-        const newRooms = props.rooms.filter((room) => room.id !== props.id);
-        props.setRooms(newRooms);
-      });
   };
 
   return (
@@ -68,7 +87,11 @@ function RoomCard(props) {
           className="flex flex-col flex-grow justify-evenly absolute top-0 right-0 bg-gradient-to-l from-black to-transparent text-3xl p-3 text-white h-full transition-all duration-300 translate-x-full group-hover:translate-x-0 gap-6 w-24"
           ref={optionsRef}
         >
-          <Link className="text-center group" to={`/edit/${props.id}`} onClick={()=> playSound()}>
+          <Link
+            className="text-center group"
+            to={`/edit/${props.id}`}
+            onClick={() => playSound()}
+          >
             <FontAwesomeIcon icon={faPenToSquare} title="Edit" />
           </Link>
           <button onClick={deleteRoom}>
@@ -102,7 +125,7 @@ function RoomCard(props) {
                   <label className="mt-5 text-white">Email Address</label>
                   <input
                     className="w-[26rem] h-10 rounded-xl border-2 border-neutral-800 p-2"
-                    type="text"
+                    type="email"
                     placeholder="Email Address"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}

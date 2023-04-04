@@ -23,9 +23,6 @@ usersRouter.post("/emails", async (req, res) => {
   }
 
   let message = req.body.email;
-  if (req.body.sub) {
-    message += `:${req.body.sub}`;
-  }
   const hashedEmail = genHmacHash(message, process.env.EMAIL_SECRET);
 
   let user = await User.findOne({
@@ -34,16 +31,14 @@ usersRouter.post("/emails", async (req, res) => {
     },
   });
 
-  if (user === null) {
+  if (!user) {
     user = await User.create({
       email: hashedEmail,
     });
   }
 
-  req.session.userId = user.id;
-
   return res.json({
-    userId: user.id,
+    message: `email stored successfully`,
   });
 });
 
@@ -59,29 +54,39 @@ usersRouter.patch("/emails", async (req, res) => {
     });
   }
 
-  let message = `${req.body.email}:${req.body.sub}`;
+  let message = req.body.email;
   const hashedEmail = genHmacHash(message, process.env.EMAIL_SECRET);
+  message = `${req.body.email}:${req.body.sub}`;
+  const hashedEmailId = genHmacHash(message, process.env.EMAIL_SECRET);
+
   let user = await User.findOne({
     where: {
       email: hashedEmail,
+      emailId: hashedEmailId,
     },
   });
   if (user) {
-    return res.json({
-      userId: user.id,
+    req.session.userId = user.id;
+    return res.json({ userId: user.id });
+  }
+
+  user = await User.findOne({
+    where: {
+      email: hashedEmail,
+      [Op.and]: { emailId: { [Op.is]: null } },
+    },
+  });
+  if (user) {
+    user.emailId = hashedEmailId;
+    await user.save();
+  } else {
+    user = await User.create({
+      email: hashedEmail,
+      emailId: hashedEmailId,
     });
   }
 
-  message = req.body.email;
-  const oldHashedEmail = genHmacHash(message, process.env.EMAIL_SECRET);
-  user = await User.findOne({
-    where: {
-      email: oldHashedEmail,
-    },
-  });
-
-  user.email = hashedEmail;
-  await user.save();
+  req.session.userId = user.id;
   return res.json({ userId: user.id });
 });
 
