@@ -19,7 +19,7 @@ const clients = {};
 
 app.use(
   cors({
-    origin: `https://project360.me`,
+    origin: `http://localhost:3000`,
     credentials: true,
   })
 );
@@ -34,7 +34,7 @@ app.use(
 
 const io = new Server(server, {
   cors: {
-    origin: `https://project360.me`,
+    origin: `http://localhost:3000`,
     credentials: true,
   },
 });
