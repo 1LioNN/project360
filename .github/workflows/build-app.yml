@@ -42,7 +42,7 @@ jobs:
 
       - name: Deploy on Droplet
         uses: appleboy/ssh-action@v0.1.8
-        with: 
+        with:
           host: ${{secrets.DROPLET_HOST}}
           username: ${{ secrets.DROPLET_USER}}
           key: ${{secrets.DROPLET_PRIV_KEY}}
@@ -55,7 +55,6 @@ jobs:
             #Run docker container
             docker run -d -p 80:80 ghcr.io/uoft-utsc-cs-sandbox/proj360-frontend
 
-
   build-backend:
     runs-on: ubuntu-latest
     defaults:
@@ -63,8 +62,9 @@ jobs:
         working-directory: backend
     steps:
       - uses: actions/checkout@v2
-      
-      -run: |
+
+      - name: Create ENV file
+        run: |
           echo "${{ secrets.FRONTEND_ENV_FILE }}" > .env
 
       - name: Build image
@@ -91,7 +91,7 @@ jobs:
 
       - name: Deploy on Droplet
         uses: appleboy/ssh-action@v0.1.8
-        with: 
+        with:
           host: ${{secrets.DROPLET_HOST}}
           username: ${{secrets.DROPLET_USER}}
           key: ${{secrets.DROPLET_PRIV_KEY}}
