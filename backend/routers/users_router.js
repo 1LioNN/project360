@@ -17,9 +17,9 @@ usersRouter.post("/emails", async (req, res) => {
   }
 
   const email = req.body.email;
-  const hmac = createHmac('sha256', process.env.EMAIL_SECRET);
+  const hmac = createHmac("sha256", process.env.EMAIL_SECRET);
   hmac.update(email);
-  const hashedEmail = hmac.digest('hex');
+  const hashedEmail = hmac.digest("hex");
 
   let user = await User.findOne({
     where: {

@@ -40,7 +40,11 @@ const deleteRoom = async (accessToken, userId, roomId) => {
   const params = {
     method: `DELETE`,
   };
-  return fetchTemplate(accessToken, `api/users/${userId}/rooms/${roomId}`, params);
+  return fetchTemplate(
+    accessToken,
+    `api/users/${userId}/rooms/${roomId}`,
+    params
+  );
 };
 
 // ITEMS
@@ -85,7 +89,11 @@ const deleteItem = async (accessToken, roomId, itemId) => {
   const params = {
     method: `DELETE`,
   };
-  return fetchTemplate(accessToken, `api/items/${itemId}?roomId=${roomId}`, params);
+  return fetchTemplate(
+    accessToken,
+    `api/items/${itemId}?roomId=${roomId}`,
+    params
+  );
 };
 
 // USERS

@@ -38,7 +38,11 @@ function RoomCard(props) {
           {props.name}
         </div>
         <div className="flex flex-col flex-grow justify-evenly absolute top-0 right-0 bg-gradient-to-l from-black to-transparent text-3xl p-3 text-white h-full transition-all duration-300 translate-x-full group-hover:translate-x-0 gap-6 w-24">
-          <Link className="text-center group" to={`/edit/${props.id}`} onClick={()=> playSound()}>
+          <Link
+            className="text-center group"
+            to={`/edit/${props.id}`}
+            onClick={() => playSound()}
+          >
             <FontAwesomeIcon icon={faPenToSquare} title="Edit" />
           </Link>
           <button onClick={deleteRoom}>

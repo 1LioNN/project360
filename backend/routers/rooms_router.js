@@ -142,7 +142,7 @@ roomsRouter.get("/", async (req, res) => {
     rooms = rooms.map((room) => {
       room.dimensions = JSON.parse(room.dimensions);
       return room;
-    })
+    });
     return res.json({ items: rooms });
   }
 
@@ -213,8 +213,8 @@ roomsRouter.delete("/:id", async (req, res) => {
 
   await Item.destroy({
     where: {
-      RoomId: req.params.id
-    }
+      RoomId: req.params.id,
+    },
   });
   await room.removeUser();
   await room.destroy();

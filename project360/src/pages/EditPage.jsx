@@ -65,7 +65,9 @@ function EditPage() {
         .catch((err) => {
           setLoadingRoom(false);
           setErrorCode(404);
-          isAuthenticated ? setRedirect("/dashboard/my-rooms") : setRedirect("/");
+          isAuthenticated
+            ? setRedirect("/dashboard/my-rooms")
+            : setRedirect("/");
         });
 
       apiService.getItems(accessToken, roomId).then((res) => {
@@ -138,8 +140,6 @@ function EditPage() {
     };
   }, [roomId, isAuthenticated]);
 
-
-
   if (!isAuthenticated) {
     return (
       <div className="flex flex-col m-0 h-full overflow-hidden">
@@ -166,30 +166,33 @@ function EditPage() {
     );
   } else {
     return (
-      <Suspense fallback={<Loading/>}>
-        {loadingRoom && loadingItems ? <Loading /> : (
-        <div className="flex flex-col sm:flex-row m-0 h-full">
-          <EditSideBar
-            roomId={roomId}
-            position={position}
-            setPosition={setPosition}
-            models={models}
-            setModels={setModels}
-            name={roomName}
-            loadingRoom={loadingRoom}
-            loadingItems={loadingItems}
-          />
-          {dimensions ? (
-            <Room
-              dimensions={dimensions}
+      <Suspense fallback={<Loading />}>
+        {loadingRoom && loadingItems ? (
+          <Loading />
+        ) : (
+          <div className="flex flex-col sm:flex-row m-0 h-full">
+            <EditSideBar
+              roomId={roomId}
+              position={position}
+              setPosition={setPosition}
               models={models}
               setModels={setModels}
+              name={roomName}
+              loadingRoom={loadingRoom}
+              loadingItems={loadingItems}
             />
-          ) : (
-            ``
-          )}
-        </div>)}
-      </Suspense> 
+            {dimensions ? (
+              <Room
+                dimensions={dimensions}
+                models={models}
+                setModels={setModels}
+              />
+            ) : (
+              ``
+            )}
+          </div>
+        )}
+      </Suspense>
     );
   }
 }

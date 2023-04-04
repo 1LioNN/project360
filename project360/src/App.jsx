@@ -5,7 +5,7 @@ import Edit from "./pages/EditPage";
 import AuthGuard from "./components/AuthGuard";
 import NotFound from "./pages/NotFound";
 import Loading from "./components/Loading";
-import { Routes, Route} from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 function App() {
   const { isLoading, error } = useAuth0();
@@ -22,10 +22,7 @@ function App() {
     <div className="App h-full">
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route
-          path="/dashboard/:filter"
-          element={<Dashboard />}
-        />
+        <Route path="/dashboard/:filter" element={<Dashboard />} />
         <Route path="/edit/:roomId" element={<Edit />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

@@ -62,19 +62,16 @@ function ContextMenu({ ContextMenu, models, setModels }) {
           .multiplyScalar(1 / 2)
       );
       getAccessTokenSilently().then((accessToken) =>
-        apiService.updateItemAng(
-          accessToken,
-          ContextMenu.current.id,
-          model.rotation.y
-        ).then((res) => {
-          audioService.context.resume();
-          audioService.playRotateSound(0.35);
-        })
+        apiService
+          .updateItemAng(accessToken, ContextMenu.current.id, model.rotation.y)
+          .then((res) => {
+            audioService.context.resume();
+            audioService.playRotateSound(0.35);
+          })
       );
     } catch (e) {
       resetMenu();
     }
-
   };
 
   const rotateCC = () => {
@@ -96,19 +93,16 @@ function ContextMenu({ ContextMenu, models, setModels }) {
           .multiplyScalar(1 / 2)
       );
       getAccessTokenSilently().then((accessToken) =>
-        apiService.updateItemAng(
-          accessToken,
-          ContextMenu.current.id,
-          model.rotation.y
-        ).then((res) => {
-          audioService.context.resume();
-          audioService.playRotateSound(0.35);
-        })
+        apiService
+          .updateItemAng(accessToken, ContextMenu.current.id, model.rotation.y)
+          .then((res) => {
+            audioService.context.resume();
+            audioService.playRotateSound(0.35);
+          })
       );
     } catch (e) {
       resetMenu();
     }
-
   };
 
   return (

@@ -2,7 +2,15 @@ import React, { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import sofa from "./sofa1.gltf";
 
-export function Sofa1({ innerRef, scale, pos, rot, bind, clickHandler, missHandler }) {
+export function Sofa1({
+  innerRef,
+  scale,
+  pos,
+  rot,
+  bind,
+  clickHandler,
+  missHandler,
+}) {
   const { nodes, materials } = useGLTF(sofa);
   return (
     <group

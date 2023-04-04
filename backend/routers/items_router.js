@@ -20,7 +20,12 @@ itemsRouter.post("/", async (req, res) => {
   });
   item.coordinates = JSON.parse(item.coordinates);
 
-  req.io.emit("updateRoom", { roomId: item.RoomId, itemId: item.id, x: item.coordinates[0], z: item.coordinates[2] }); 
+  req.io.emit("updateRoom", {
+    roomId: item.RoomId,
+    itemId: item.id,
+    x: item.coordinates[0],
+    z: item.coordinates[2],
+  });
 
   return res.json({ item });
 });
@@ -106,7 +111,11 @@ itemsRouter.patch("/:id/rotate/", async (req, res) => {
   await item.save();
   item.coordinates = JSON.parse(item.coordinates);
 
-  req.io.emit("updateRoom", { roomId: item.RoomId, itemId: item.id, degree: item.rotate }); 
+  req.io.emit("updateRoom", {
+    roomId: item.RoomId,
+    itemId: item.id,
+    degree: item.rotate,
+  });
 
   return res.json({ item });
 });
@@ -119,20 +128,25 @@ itemsRouter.patch("/:id/move", async (req, res) => {
       .status(404)
       .json({ error: `Item(id=${req.params.id}) not found.` });
   }
-  
+
   if (!req.body.coordinates) {
     return res.status(422).json({
       error: `Missing required parameter 'coordinates' in request body.`,
     });
   }
-  
+
   item.coordinates = JSON.stringify(req.body.coordinates);
   await item.save();
   item.coordinates = JSON.parse(item.coordinates);
 
   // emit socket io event to tell other clients to update the room
-  req.io.emit("updateRoom", { roomId: item.RoomId, itemId: item.id, x: item.coordinates[0], z: item.coordinates[2] }); 
-  
+  req.io.emit("updateRoom", {
+    roomId: item.RoomId,
+    itemId: item.id,
+    x: item.coordinates[0],
+    z: item.coordinates[2],
+  });
+
   return res.json({ item });
 });
 
@@ -148,7 +162,7 @@ itemsRouter.delete("/:id", async (req, res) => {
       .json({ error: `Item(id=${req.params.id}) not found.` });
   }
 
-  req.io.emit("updateRoom", { roomId: item.RoomId, itemId: item.id }); 
+  req.io.emit("updateRoom", { roomId: item.RoomId, itemId: item.id });
 
   await item.destroy();
   return res.json({ item });

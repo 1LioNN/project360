@@ -2,7 +2,15 @@ import React from "react";
 import { useGLTF } from "@react-three/drei";
 import table from "./table0.gltf";
 
-export function Table0({ innerRef, scale, pos, rot, bind, clickHandler, missHandler }) {
+export function Table0({
+  innerRef,
+  scale,
+  pos,
+  rot,
+  bind,
+  clickHandler,
+  missHandler,
+}) {
   const { nodes, materials } = useGLTF(table);
   return (
     <group

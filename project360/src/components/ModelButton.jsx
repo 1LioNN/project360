@@ -13,11 +13,12 @@ function ModelButton({ type, addModel, loadingModels }) {
       />
       <div className="flex basis-2/6 object-contain p-3 text-white justify-center">
         {!loadingModels ? (
-        <Button
-          className="bg-indigo-600 rounded-md hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800"
-          text="Add To Room"
-          onClick={() => addModel(type)}
-        />) : (
+          <Button
+            className="bg-indigo-600 rounded-md hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800"
+            text="Add To Room"
+            onClick={() => addModel(type)}
+          />
+        ) : (
           <Button
             className="bg-indigo-600 rounded-md hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800"
             text="Adding..."

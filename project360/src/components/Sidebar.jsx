@@ -25,7 +25,10 @@ function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
 
     getAccessTokenSilently()
       .then((accessToken) =>
-        apiService.createRoom(accessToken, userId, roomName, [parseFloat(width), parseFloat(length)])
+        apiService.createRoom(accessToken, userId, roomName, [
+          parseFloat(width),
+          parseFloat(length),
+        ])
       )
       .then((res) => {
         const newRoom = {

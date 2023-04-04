@@ -13,7 +13,7 @@ const Auth0ProviderWithNav = ({ children }) => {
   const onRedirectCallback = (appState) => {
     navigate(appState?.returnTo || window.location.pathname);
   };
-  
+
   if (!(domain && clientId && redirectUri && audience)) {
     return null;
   }
