@@ -18,7 +18,6 @@ jobs:
         run: |
           echo "${{ secrets.FRONTEND_ENV_FILE }}" > .env
           ls -a
-          cat .env
 
       - name: Build image
         run: docker build . --file Dockerfile --tag proj360-frontend
@@ -55,7 +54,6 @@ jobs:
         run: |
           echo "${{ secrets.BACKEND_ENV_FILE }}" > .env
           ls -a
-          cat .env
 
       - name: Build image
         run: docker build . --file Dockerfile --tag proj360-backend
@@ -78,3 +76,28 @@ jobs:
           echo VERSION=$VERSION
           docker tag proj360-backend $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
+
+  deploy: 
+    needs: build-frontend
+    needs: build-backend
+    runs-on: ubuntu-latest
+
+    - name: Docker Compose
+      uses: appleboy/ssh-action@v0.1.8
+      with: 
+         host: ${{secrets.DROPLET_HOST}}
+          username: ${{ secrets.DROPLET_USER}}
+          key: ${{secrets.DROPLET_PRIV_KEY}}
+          passphrase: ${{secrets.PASSPHRASE}}
+          script: |
+            #Log In to Github Container Registry
+            docker login  https://ghcr.io/ -u ${{secrets.CR_PAT}} -p ${{secrets.CR_PAT}} 
+            #Stop Current Docker Containers
+            docker compose down
+            #Pull and Re Run Docker Containers
+            docker compose pull && docker compose up -d
+            
+
+
+
+
