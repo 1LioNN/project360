@@ -3,6 +3,7 @@ import Home from "./pages/HomePage";
 import Dashboard from "./pages/Dashboard";
 import Edit from "./pages/EditPage";
 import { Routes, Route } from "react-router-dom";
+import * as Sentry from "@sentry/react";
 
 function App() {
   const { isLoading, error } = useAuth0();
@@ -26,5 +27,5 @@ function App() {
   );
 }
 
-export default App;
+export default Sentry.withProfiler(App);
 
