@@ -7,6 +7,7 @@ import {
   faRotateLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import apiService from "../services/api-service.js";
+import audioService from "../services/audio-service.js";
 import { useParams } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 
@@ -40,6 +41,8 @@ function ContextMenu({ ContextMenu, models, setModels }) {
         const newModels = models.filter(
           (model) => model.id !== parseInt(ContextMenu.current.id)
         );
+        audioService.context.resume();
+        audioService.playDeleteSound(0.2);
         setModels(newModels);
         resetMenu();
       })
@@ -72,11 +75,11 @@ function ContextMenu({ ContextMenu, models, setModels }) {
           .sub(bbox.min)
           .multiplyScalar(1 / 2)
       );
-
       updateRotation(ContextMenu.current.id, model.rotation.y);
     } catch (e) {
       resetMenu();
     }
+
   };
 
   const rotateCC = () => {
@@ -97,11 +100,11 @@ function ContextMenu({ ContextMenu, models, setModels }) {
           .sub(bbox.min)
           .multiplyScalar(1 / 2)
       );
-
       updateRotation(ContextMenu.current.id, model.rotation.y);
     } catch (e) {
       resetMenu();
     }
+
   };
 
   return (
