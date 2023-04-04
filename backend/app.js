@@ -55,16 +55,6 @@ try {
   console.error("Unable to connect to the database:", error);
 }
 
-setTimeout(() => {
-  try {
-    foo();
-  } catch (e) {
-    Sentry.captureException(e);
-  } finally {
-    transaction.finish();
-  }
-}, 99);
-
 app.use(Sentry.Handlers.errorHandler());
 app.use("/api/users", usersRouter);
 app.use("/api/users/:userId/rooms", roomsRouter);
