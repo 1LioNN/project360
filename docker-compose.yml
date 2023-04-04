@@ -22,7 +22,7 @@ services:
       - ./html:/usr/share/nginx/html
       - ./acme:/etc/acme.sh
     environment:
-        - DEFAULT_EMAIL=<your_email>
+        - DEFAULT_EMAIL=lion.su@mail.utoronto.ca
   frontend:
     image: ghcr.io/uoft-utsc-cs-sandbox/proj360-frontend
     container_name: frontend
@@ -30,8 +30,8 @@ services:
     expose:
       - 80
     environment:
-      - VIRTUAL_HOST=<your_domain>
-      - LETSENCRYPT_HOST=<your_domain>
+      - VIRTUAL_HOST=project360.live
+      - LETSENCRYPT_HOST=project360.live
   backend:
     image: ghcr.io/uoft-utsc-cs-sandbox/proj360-backend
     container_name: backend
@@ -39,5 +39,5 @@ services:
     expose:
       - 5000
     environment:
-      - VIRTUAL_HOST=api.<your_domain>
-      - LETSENCRYPT_HOST=api.<your_domain>
+      - VIRTUAL_HOST=api.project360.live
+      - LETSENCRYPT_HOST=api.project360.live
