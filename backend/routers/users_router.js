@@ -1,12 +1,18 @@
 import { User, Item, Room } from "../models/index.js";
+import { Op } from "sequelize";
 import { Router } from "express";
 import { createHmac } from "crypto";
-import path from "path";
-import fs from "fs";
 import dotenv from "dotenv";
 dotenv.config();
 
 export const usersRouter = Router({ mergeParams: true });
+
+const genHmacHash = (message, secret) => {
+  const hmac = createHmac("sha256", secret);
+  hmac.update(message);
+  const hashedMessage = hmac.digest("hex");
+  return hashedMessage;
+};
 
 // store email securely
 usersRouter.post("/emails", async (req, res) => {
@@ -16,10 +22,8 @@ usersRouter.post("/emails", async (req, res) => {
     });
   }
 
-  const email = req.body.email;
-  const hmac = createHmac('sha256', process.env.EMAIL_SECRET);
-  hmac.update(email);
-  const hashedEmail = hmac.digest('hex');
+  let message = req.body.email;
+  const hashedEmail = genHmacHash(message, process.env.EMAIL_SECRET);
 
   let user = await User.findOne({
     where: {
@@ -27,17 +31,63 @@ usersRouter.post("/emails", async (req, res) => {
     },
   });
 
-  if (user === null) {
+  if (!user) {
     user = await User.create({
       email: hashedEmail,
     });
   }
 
-  req.session.userId = user.id;
-
   return res.json({
-    userId: user.id,
+    message: `email stored successfully`,
   });
+});
+
+usersRouter.patch("/emails", async (req, res) => {
+  if (!req.body.email) {
+    return res.status(422).json({
+      error: `email is required`,
+    });
+  }
+  if (!req.body.sub) {
+    return res.status(400).json({
+      error: `sub is required`,
+    });
+  }
+
+  let message = req.body.email;
+  const hashedEmail = genHmacHash(message, process.env.EMAIL_SECRET);
+  message = `${req.body.email}:${req.body.sub}`;
+  const hashedEmailId = genHmacHash(message, process.env.EMAIL_SECRET);
+
+  let user = await User.findOne({
+    where: {
+      email: hashedEmail,
+      emailId: hashedEmailId,
+    },
+  });
+  if (user) {
+    req.session.userId = user.id;
+    return res.json({ userId: user.id });
+  }
+
+  user = await User.findOne({
+    where: {
+      email: hashedEmail,
+      [Op.and]: { emailId: { [Op.is]: null } },
+    },
+  });
+  if (user) {
+    user.emailId = hashedEmailId;
+    await user.save();
+  } else {
+    user = await User.create({
+      email: hashedEmail,
+      emailId: hashedEmailId,
+    });
+  }
+
+  req.session.userId = user.id;
+  return res.json({ userId: user.id });
 });
 
 usersRouter.get("/me", async (req, res) => {

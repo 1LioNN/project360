@@ -1,16 +1,18 @@
 import { Room, Item } from "../models/index.js";
+import { validateUserItemAuthorization } from "../middleware/author.js";
 import { Router } from "express";
 
 export const itemsRouter = Router({ mergeParams: true });
 
+itemsRouter.use(validateUserItemAuthorization);
+
 // post furniture piece
-// api/items?$roomId=${roomId}
 itemsRouter.post("/", async (req, res) => {
-  const room = await Room.findOne({ where: { id: req.query.roomId } });
+  const room = await Room.findOne({ where: { id: req.params.roomId } });
   if (!room) {
     return res
       .status(404)
-      .json({ error: `Room(id=${req.query.roomId}) not found.` });
+      .json({ error: `Room(id=${req.params.roomId}) not found.` });
   }
   const item = await Item.create({
     coordinates: JSON.stringify(req.body.coordinates),
@@ -26,13 +28,12 @@ itemsRouter.post("/", async (req, res) => {
 });
 
 // get all furniture pieces
-// api/items?roomId=${roomId}
 itemsRouter.get("/", async (req, res) => {
-  const room = await Room.findByPk(req.query.roomId);
+  const room = await Room.findByPk(req.params.roomId);
   if (!room) {
     return res
       .status(404)
-      .json({ error: `Room(id=${req.query.roomId}) not found.` });
+      .json({ error: `Room(id=${req.params.roomId}) not found.` });
   }
 
   let items = await Item.findAll({
@@ -49,17 +50,16 @@ itemsRouter.get("/", async (req, res) => {
 });
 
 // get furniture piece
-// api/items/:id?roomId=${roomId}
 itemsRouter.get("/:id", async (req, res) => {
-  const room = await Room.findOne({ where: { id: req.query.roomId } });
+  const room = await Room.findOne({ where: { id: req.params.roomId } });
   if (!room) {
     return res
       .status(404)
-      .json({ error: `Room(id=${req.query.roomId}) not found.` });
+      .json({ error: `Room(id=${req.params.roomId}) not found.` });
   }
 
   const item = await Item.findAll({
-    where: { id: req.params.id, RoomId: req.query.roomId },
+    where: { id: req.params.id, RoomId: req.params.roomId },
   });
   if (!item) {
     return res
@@ -68,21 +68,6 @@ itemsRouter.get("/:id", async (req, res) => {
   }
   item.coordinates = JSON.parse(item.coordinates);
   return res.json({ item });
-});
-
-// will need to update at some point
-// display items for the sidebar according to category
-itemsRouter.get("/catergories/:type", async (req, res) => {
-  const items = await Item.findAll({
-    where: { category: req.params.type },
-    order: [["id", "ASC"]],
-  });
-  if (items.length === 0) {
-    return res
-      .status(404)
-      .json({ error: `Items with category ${req.params.type} not found.` });
-  }
-  return res.json({ items });
 });
 
 // rotate the item once it has been placed
@@ -137,11 +122,8 @@ itemsRouter.patch("/:id/move", async (req, res) => {
 });
 
 // delete item from room
-// api/items/:id?roomId=${roomId}0
 itemsRouter.delete("/:id", async (req, res) => {
-  const item = await Item.findOne({
-    where: { id: req.params.id, RoomId: req.query.roomId },
-  });
+  const item = await Item.findByPk(req.params.id);
   if (!item) {
     return res
       .status(404)
