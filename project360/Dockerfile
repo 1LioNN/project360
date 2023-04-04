@@ -1,11 +1,13 @@
 #BUILD REACT APP
 FROM node:14-alpine3.14 as build
-WORKDIR /app
-COPY package.json ./
-COPY package-lock.json ./
+WORKDIR /usr/src/app
+COPY project360/package.json ./
+COPY project360/package-lock.json ./
 
-COPY . ./
 RUN npm install --silent
+
+COPY project360 ./
+
 RUN npm run build
 
 
