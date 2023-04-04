@@ -1,4 +1,4 @@
-const BASE_URL = `localhost:5000`;
+const BASE_URL = `http://localhost:5000`;
 
 const fetchTemplate = async (accessToken, url, params = {}) => {
   params.credentials = `include`;
