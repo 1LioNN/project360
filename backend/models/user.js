@@ -8,6 +8,10 @@ export const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    emailId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     tableName: "User",

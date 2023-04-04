@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import apiService from "../services/api-service.js";
 import { faLeftLong } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,6 +22,26 @@ function EditSideBar({
   const { getAccessTokenSilently } = useAuth0();
   const [loadingModels, setLoadingModels] = useState(false);
 
+  const addModelRequest = async (type, pos) => {
+    const accessToken = await getAccessTokenSilently();
+    apiService
+      .getMe(accessToken)
+      .then((res) =>
+        apiService.createItem(accessToken, res.userId, roomId, type, pos)
+      )
+      .then((res) => {
+        const newItem = {
+          ...res.item,
+          model: res.item.category,
+          position: res.item.coordinates,
+        };
+        setModels([...models, newItem]);
+        setLoadingModels(false);
+        audioService.context.resume();
+        audioService.playMoveSound(0.08);
+      });
+  };
+
   const addModel = async (type) => {
     setLoadingModels(true);
     let pos = position;
@@ -42,21 +62,7 @@ function EditSideBar({
         break;
     }
     setPosition([position[0], position[1], position[2]]);
-    getAccessTokenSilently()
-      .then((accessToken) =>
-        apiService.createItem(accessToken, roomId, type, pos)
-      )
-      .then((res) => {
-        const newItem = {
-          ...res.item,
-          model: res.item.category,
-          position: res.item.coordinates,
-        };
-        setModels([...models, newItem]);
-        setLoadingModels(false);
-        audioService.context.resume();
-        audioService.playMoveSound(0.08);
-      });
+    addModelRequest(type, pos);
   };
 
   const playLeaveSound = () => {

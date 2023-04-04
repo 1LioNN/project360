@@ -13,8 +13,8 @@ function Dashboard() {
   const [userId, setUserId] = useState(null);
   const [rooms, setRooms] = useState([]);
   const filterParam = useParams().filter;
-  const [filter, setFilter] = useState(filterParam);
-  const validFilters = ["my-rooms", "shared-rooms"];
+  const [filter, setFilter] = useState(filterParam || "my-rooms");
+  const validFilters = ["my-rooms", "shared-with-me"];
 
   useEffect(() => {
     setFilter(filterParam);
@@ -22,19 +22,27 @@ function Dashboard() {
 
   useEffect(() => {
     let isMounted = true;
-    getAccessTokenSilently()
-      .then((accessToken) => {
-        if (!isMounted) {
-          return;
-        }
-        return apiService.storeEmail(accessToken, user.email);
-      })
-      .then((res) => {
-        if (!isMounted) {
-          return;
-        }
-        setUserId(res.userId);
-      });
+    const manageEmail = async () => {
+      const accessToken = await getAccessTokenSilently();
+      if (!isMounted) {
+        return;
+      }
+
+      apiService
+        .storeEmail(accessToken, user.email)
+        .then((res) =>
+          apiService.updateEmail(accessToken, user.email, user.sub)
+        )
+        .then((res) => {
+          if (!isMounted) {
+            return;
+          }
+
+          setUserId(res.userId);
+        });
+    };
+
+    manageEmail();
 
     return () => {
       isMounted = false;
@@ -54,7 +62,12 @@ function Dashboard() {
               filter={filter}
               setFilter={setFilter}
             />
-            <RoomsContainer userId={userId} rooms={rooms} setRooms={setRooms} />
+            <RoomsContainer
+              userId={userId}
+              rooms={rooms}
+              setRooms={setRooms}
+              filter={filter}
+            />
           </div>
         ) : (
           <Error
