@@ -40,7 +40,7 @@ jobs:
         with: 
           host: ${{secrets.DROPLET_HOST}}
           username: ${{ secrets.DROPLET_USER}}
-          key: ${{secrets. DROPLET_KEY}}
+          key: ${{secrets. DROPLET_PRIV_KEY}}
           script: |
             #Log In to Github Container Registry
             docker login  https://ghcr.io -u ${{secrets.CR_PAT}} -p ${{secrets.CR_PAT}} 
@@ -84,7 +84,7 @@ jobs:
         with: 
           host: ${{secrets.DROPLET_HOST}}
           username: ${{secrets.DROPLET_USER}}
-          key: ${{secrets. DROPLET_KEY}}
+          key: ${{secrets. DROPLET_PRIV_KEY}}
           script: |
             #Log In to Github Container Registry
             docker login  https://ghcr.io -u ${{secrets.CR_PAT}} -p ${{secrets.CR_PAT}} 
