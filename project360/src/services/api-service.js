@@ -1,4 +1,4 @@
-const BASE_URL = `https://api.project360.me:${process.env.PORT || 5000}`;
+const BASE_URL = `api.project360.me:${process.env.PORT || 5000}`;
 
 const fetchTemplate = async (accessToken, url, params = {}) => {
   params.credentials = `include`;
