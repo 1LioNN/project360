@@ -77,6 +77,28 @@ jobs:
           echo VERSION=$VERSION
           docker tag proj360-backend $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
+  
+  docker-compose:
+    needs: [build-frontend, build-backend]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy using docker compose
+        uses: appleboy/ssh-action@v0.1.8
+        with: 
+          host: ${{secrets.DROPLET_HOST}}
+          username: ${{ secrets.DROPLET_USER}}
+          key: ${{secrets.DROPLET_PRIV_KEY}}
+          passphrase: ${{secrets.PASSPHRASE}}
+          script: |
+            #Log In to Github Container Registry
+            docker login  https://ghcr.io/ -u ${{secrets.CR_PAT}} -p ${{secrets.CR_PAT}} 
+            #pull newly built images
+            docker compose pull
+            #stop old containers
+            docker compose down
+            #start new containers
+            docker compose up -d
 
 
 

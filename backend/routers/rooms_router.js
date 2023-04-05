@@ -11,8 +11,9 @@ sgMail.setApiKey(process.env.SENDGRID_APIKEY);
 export const roomsRouter = Router({ mergeParams: true });
 
 roomsRouter.get("/", async (req, res) => {
-  const offset = req.query.offset ? parseFloat(req.query.offset) : 0;
-  const limit = req.query.limit;
+  const page = req.query.page ? parseFloat(req.query.page) : 0;
+  const limit = req.query.limit ? parse(req.query.limit) : 15;
+  const offset = page * limit;
   const filter = req.query.filter;
   const query = {
     order: [["createdAt", "DESC"]],
@@ -23,11 +24,16 @@ roomsRouter.get("/", async (req, res) => {
     query.limit = limit;
   }
 
-  if (filter === "my-rooms") {
-    query.where = {
+  query.where = {
+    UserId: req.params.userId,
+  };
+  let count = await Room.count({
+    where: {
       UserId: req.params.userId,
-    };
-  } else if (filter === "shared-with-me") {
+    },
+  });
+
+  if (filter === "shared-with-me") {
     const userRooms = await UserRoom.findAll({
       where: {
         UserId: req.params.userId,
@@ -40,14 +46,17 @@ roomsRouter.get("/", async (req, res) => {
         { UserId: { [Op.not]: req.params.userId } },
       ],
     };
-  } else if (filter) {
+    count = await Room.count({
+      where: query.where,
+    });
+  } else if (filter && filter !== "my-rooms") {
     return res.status(422).json({
       error: `Query parameter 'filter' is invalid. Use either 'own' or 'invited'`,
     });
   }
 
   const rooms = await Room.findAll(query);
-  return res.json({ items: rooms });
+  return res.json({ items: rooms, total: count });
 });
 
 roomsRouter.post("/", async (req, res) => {

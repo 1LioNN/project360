@@ -1,4 +1,4 @@
-const BASE_URL = `http://localhost:5000`;
+const BASE_URL = `https://api.project360.me`;
 
 const fetchTemplate = async (accessToken, url, params = {}) => {
   params.credentials = `include`;
@@ -21,12 +21,12 @@ const getRooms = async (
   accessToken,
   userId,
   filter = `my-rooms`,
-  offset = 0,
+  page = 0,
   limit = 15
 ) => {
   let url = `api/users/${userId}/rooms?filter=${filter}`;
   url += limit ? `&limit=${limit}` : ``;
-  url += offset ? `&offset=${offset}` : ``;
+  url += page ? `&page=${page}` : ``;
   
   return fetchTemplate(accessToken, url);
 };
