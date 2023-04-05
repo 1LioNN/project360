@@ -119,7 +119,7 @@ function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
                 {!loading ? (
                   <button
                     type="submit"
-                    className="bg-indigo-900 w-28 hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800 rounded-xl p-2 font-bold text-white"
+                    className="p-3 bg-indigo-900 w-28 hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800 rounded-xl p-2 font-bold text-white"
                   >
                     Create
                   </button>

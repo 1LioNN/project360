@@ -32,7 +32,7 @@ function RoomsContainer({ userId, rooms, setRooms, filter, page, setPage }) {
         setTotal(res.total);
         setLoading(false);
       });
-  }, [userId, getAccessTokenSilently, setRooms, filter, page]);
+  }, [userId, getAccessTokenSilently, setRooms, filter, page, rooms.length]);
 
   
   useEffect(() => {
@@ -52,6 +52,7 @@ function RoomsContainer({ userId, rooms, setRooms, filter, page, setPage }) {
         userId={userId}
         rooms={rooms}
         setRooms={setRooms}
+        filter={filter}
       />
     );
   });
