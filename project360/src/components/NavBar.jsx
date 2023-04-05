@@ -22,7 +22,7 @@ function NavBar() {
         <img
           src={logo}
           alt="Logo"
-          className="h-14 w-14 align-middle ml-5 mt-3"
+          className="h-14 w-14 align-middle ml-5 mt-2"
         />
       </div>
 
