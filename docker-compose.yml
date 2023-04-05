@@ -53,25 +53,4 @@ services:
     environment:
       - VIRTUAL_HOST=api.project360.me
       - LETSENCRYPT_HOST=api.project360.me
-  redis:
-    image: redis:latest
-    container_name: redis
-    restart: always
-    volumes:
-      - redisdata:/var/lib/redis
-    ports:
-      - 6379:6379
-    networks:
-      - app
-    expose:
-      - 5001
-    environment:
-      - VIRTUAL_HOST=api.project360.redis.me
-      - LETSENCRYPT_HOST=api.project360.redis.me
 
-networks:
-  app:
-    driver: bridge
-
-volumes:
-  redisdata:

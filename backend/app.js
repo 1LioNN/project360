@@ -66,7 +66,8 @@ export const io = new Server(server, {
 });
 
 const pubClient = redis.createClient({
-  url: "redis://localhost:6379",
+  host: "redis",
+  port: 6379,
 });
 const subClient = pubClient.duplicate();
 
