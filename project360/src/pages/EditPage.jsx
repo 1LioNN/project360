@@ -48,14 +48,6 @@ function EditPage() {
   }, [user, getAccessTokenSilently]);
 
   useEffect(() => {
-    socket.connect();
-
-    return () => {
-      socket.disconnect();
-    }
-  }, []);
-
-  useEffect(() => {
     let isMounted = true;
 
     const callAPI = async () => {

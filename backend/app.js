@@ -10,6 +10,7 @@ import cors from "cors";
 import http from "http";
 import { Server } from "socket.io";
 import redis from 'redis';
+import redisAdapter from "@socket.io/redis-adapter";
 export const app = express();
 const server = http.createServer(app);
 import dotenv from "dotenv";
@@ -43,6 +44,15 @@ export const io = new Server(server, {
   },
 });
 
+const pubClient = redis.createClient({
+  url: "redis://localhost:6379",
+});
+const subClient = pubClient.duplicate();
+
+Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
+  io.adapter(redisAdapter.createAdapter(pubClient, subClient));
+})
+
 io.on("connection", (socket) => {
   clients[socket.id] = {};
   console.log("a user connected : " + socket.id);
@@ -55,11 +65,6 @@ io.on("connection", (socket) => {
       io.emit("removeClient", socket.id);
     }
   });
-
-  socket.on("foo", (data) => {
-    console.log(data.data);
-    socket.emit('bar', { data: `${data.data} ${data.data}`});
-  })
 });
 
 try {
