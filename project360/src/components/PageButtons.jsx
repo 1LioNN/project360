@@ -16,7 +16,7 @@ function PageButtons({ page, setPage, totalRooms, roomsPerPage }) {
   };
 
   return (
-    <div className="flex flex-row justify-center h-12 sm:relative sm:bottom-2.5 sm:left-[calc(100%-60%)] left-[calc(100%-81.5%)]">
+    <div className="flex flex-row justify-center h-12 w-full sm:fixed sm:left-[calc(100%-50%)] sm:bottom-2 sm:justify-start">
       <button
         className="bg-neutral-500 hover:bg-neutral-700 text-neutral-300  text-xl font-bold py-2 px-4 rounded-l-lg w-28 disabled:cursor-not-allowed disabled:opacity-50 "
         onClick={() => updatePage(page - 1)}

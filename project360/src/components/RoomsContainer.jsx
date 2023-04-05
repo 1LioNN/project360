@@ -26,10 +26,10 @@ function RoomsContainer({ userId, rooms, setRooms, filter, page, setPage }) {
       )
       .then((res) => {
         // ADd the new rooms to the existing ones
-        setRooms((rooms) => [...rooms, ...res.items]);
+        setRooms(res.items);
         setLoading(false);
       });
-  }, [userId, getAccessTokenSilently, setRooms, filter, page]);
+  }, [userId, getAccessTokenSilently, setRooms, filter]);
 
   useEffect(() => {
     if (rooms.length === 0) {
@@ -38,14 +38,6 @@ function RoomsContainer({ userId, rooms, setRooms, filter, page, setPage }) {
       setEmpty(false);
     }
   }, [rooms]);
-
-  const handleScroll = (e) => {
-    const target = e.target;
-    if ((target.scrollHeight - target.scrollTop == target.clientHeight) || (page === 0 && target.clientWidth > 640)) {
-      console.log("bottom");
-      setPage(page + 1);
-    }
-  };
 
   const RoomsList = rooms.map((room) => {
     return (
@@ -67,11 +59,10 @@ function RoomsContainer({ userId, rooms, setRooms, filter, page, setPage }) {
   if (!loading) {
     if (!empty) {
       return (
-          <div className="flex flex-row flex-wrap basis-10/12 p-4 pb-24 gap-4 content-start justify-center sm:justify-start sm:h-[calc(100% - 80%)] overflow-y-scroll no-scrollbar relative"
-          onScroll={(e)=> handleScroll(e)}>
-            {RoomsList}
-          </div>
-
+        <div className="flex flex-row flex-wrap basis-10/12 p-4 sm:pb-4 pb-24 gap-4 content-start justify-center sm:justify-start sm:h-full overflow-y-scroll no-scrollbar relative">
+          {RoomsList}
+          <PageButtons page={page} setPage={setPage} /> 
+        </div>
       );
     } else {
       return (
