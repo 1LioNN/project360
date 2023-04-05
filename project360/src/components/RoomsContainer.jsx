@@ -10,12 +10,14 @@ function RoomsContainer({ userId, rooms, setRooms, filter, page, setPage }) {
   const { getAccessTokenSilently } = useAuth0();
   const [loading, setLoading] = useState(true);
   const [empty, setEmpty] = useState(false);
+  const [total , setTotal] = useState(0);
 
   const skeletons = [...Array(15).keys()].map((i) => {
     return { id: i };
   });
 
   useEffect(() => {
+    console.log("RoomsContainer useEffect");
     if (!userId) {
       return;
     }
@@ -27,10 +29,12 @@ function RoomsContainer({ userId, rooms, setRooms, filter, page, setPage }) {
       .then((res) => {
         // ADd the new rooms to the existing ones
         setRooms(res.items);
+        setTotal(res.total);
         setLoading(false);
       });
-  }, [userId, getAccessTokenSilently, setRooms, filter]);
+  }, [userId, getAccessTokenSilently, setRooms, filter, page]);
 
+  
   useEffect(() => {
     if (rooms.length === 0) {
       setEmpty(true);
@@ -61,7 +65,7 @@ function RoomsContainer({ userId, rooms, setRooms, filter, page, setPage }) {
       return (
         <div className="flex flex-row flex-wrap basis-10/12 p-4 sm:pb-4 pb-24 gap-4 content-start justify-center sm:justify-start sm:h-full overflow-y-scroll no-scrollbar relative">
           {RoomsList}
-          <PageButtons page={page} setPage={setPage} /> 
+          <PageButtons page={page} setPage={setPage} totalRooms={total} currentRooms={rooms.length} /> 
         </div>
       );
     } else {

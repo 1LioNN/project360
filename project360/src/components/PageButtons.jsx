@@ -1,17 +1,29 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 
-function PageButtons({ page, setPage, totalRooms, roomsPerPage }) {
+function PageButtons({ page, setPage, totalRooms, currentRooms }) {
   const [first, setFirst] = useState(false);
   const [last, setLast] = useState(false);
 
-  const updatePage = (newpage) => {
-    console.log("page", page);
-    if (newpage < 0) {
-      setPage(0);
+  useEffect(() => {
+    if (page === 0) {
       setFirst(true);
-      return;
-    } 
+    } else {
+      setFirst(false);
+    }
+
+    if (totalRooms - (page + 1) * 15 <= 0) {
+      setLast(true);
+    } else {
+      setLast(false);
+    }
+
+    if (totalRooms > 0 && currentRooms === 0) {
+      setPage(page - 1);
+    }
+  }, [page, totalRooms, currentRooms]);
+
+  const updatePage = (newpage) => {
     setPage(newpage);
   };
 
@@ -28,7 +40,7 @@ function PageButtons({ page, setPage, totalRooms, roomsPerPage }) {
         {page + 1}
       </span>
       <button
-        className="bg-neutral-500 hover:bg-neutral-700 text-neutral-300 text-xl font-bold py-2 px-4 rounded-r-lg w-28"
+        className="bg-neutral-500 hover:bg-neutral-700 text-neutral-300 text-xl font-bold py-2 px-4 rounded-r-lg w-28 disabled:cursor-not-allowed disabled:opacity-50"
         onClick={() => updatePage(page + 1)}
         disabled={last}
       >
