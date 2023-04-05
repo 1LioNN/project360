@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../assets/icons/360.png";
+import logo from "../assets/icons/360.webp";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShareFromSquare } from "@fortawesome/free-solid-svg-icons";
@@ -11,12 +11,14 @@ import audioService from "../services/audio-service";
 import Popup from "reactjs-popup";
 import { useState, useRef } from "react";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import Button from "./Button";
 
 function RoomCard(props) {
   const { user, getAccessTokenSilently } = useAuth0();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const optionsRef = useRef(null);
+  const allow = props.filter === "my-rooms" ? "block" : "hidden";
 
   const deleteRoom = () => {
     getAccessTokenSilently()
@@ -50,9 +52,15 @@ function RoomCard(props) {
             url
           )
         )
-        .finally(() => {
+        .then(() => {
           setLoading(false);
           setEmail("");
+          alert("Invite sent!");
+        })
+        .catch((err) => {
+          setLoading(false);
+          setEmail("");
+          alert("Error sending invite. Invalid Email Address.");
         });
     };
 
@@ -84,7 +92,7 @@ function RoomCard(props) {
           {props.name}
         </div>
         <div
-          className="flex flex-col flex-grow justify-evenly absolute top-0 right-0 bg-gradient-to-l from-black to-transparent text-3xl p-3 text-white h-full transition-all duration-300 translate-x-full group-hover:translate-x-0 gap-6 w-24"
+          className="flex flex-col flex-grow absolute top-0 right-0 bg-gradient-to-l from-black to-transparent text-3xl p-5 text-white h-full transition-all duration-300 translate-x-full group-hover:translate-x-0 gap-11 w-24"
           ref={optionsRef}
         >
           <Link
@@ -94,12 +102,58 @@ function RoomCard(props) {
           >
             <FontAwesomeIcon icon={faPenToSquare} title="Edit" />
           </Link>
-          <button onClick={deleteRoom}>
-            <FontAwesomeIcon icon={faTrash} title="Delete" />
-          </button>
+
           <Popup
             trigger={
-              <button>
+              <button className={allow}>
+                <FontAwesomeIcon icon={faTrash} title="Delete" />
+              </button>
+            }
+            modal
+            nested
+            onClose={() => onClose()}
+            onOpen={() => {
+              onOpen();
+            }}
+          >
+            {(close) => (
+              <div className="modal bg-[#111111] p-7 w-[30rem] rounded-xl  font-semibold">
+                <button
+                  className="flex ml-auto text-white text-xl "
+                  onClick={close}
+                >
+                  <FontAwesomeIcon icon={faXmark} />
+                </button>
+                <div className="header text-white text-2xl">
+                  Delete "{props.name}"?
+                </div>
+                <div className="text-white font-light text-md mt-2">
+                  Are you sure you want to delete this room? This action cannot
+                  be undone.
+                </div>
+                <div className="flex mt-10 justify-between w-4/6">
+                  <Button
+                    className="w-32 text-white bg-red-600 border-none hover:bg-gradient-to-r from-red-500 via-red-400 to-red-500"
+                    text={"Delete Room"}
+                    onClick={() => {
+                      deleteRoom();
+                      close();
+                    }}
+                  />
+
+                  <Button
+                    className="w-32 text-white bg-indigo-900 border-non hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800"
+                    text={"Cancel"}
+                    onClick={close}
+                  />
+                </div>
+              </div>
+            )}
+          </Popup>
+
+          <Popup
+            trigger={
+              <button className={allow}>
                 <FontAwesomeIcon icon={faShareFromSquare} title="Invite" />
               </button>
             }
@@ -111,7 +165,7 @@ function RoomCard(props) {
             }}
           >
             {(close) => (
-              <div className="modal bg-neutral-900 p-7 w-[30rem] rounded-xl  font-semibold">
+              <div className="modal bg-[#111111] p-7 w-[30rem] rounded-xl  font-semibold">
                 <button
                   className="flex ml-auto text-white text-xl "
                   onClick={close}
@@ -134,12 +188,12 @@ function RoomCard(props) {
                     {!loading ? (
                       <button
                         type="submit"
-                        className="bg-indigo-900 w-32 hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800 rounded-xl p-2 font-bold text-white"
+                        className="p-3 bg-indigo-900 w-32 hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800 rounded-xl font-bold text-white"
                       >
                         Share
                       </button>
                     ) : (
-                      <div className="flex bg-indigo-900 w-32 hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800 rounded-xl p-2 font-bold text-white cursor-pointer justify-center">
+                      <div className="p-3 flex bg-indigo-900 w-32 hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800 rounded-xl font-bold text-white cursor-pointer justify-center">
                         Processing...
                       </div>
                     )}

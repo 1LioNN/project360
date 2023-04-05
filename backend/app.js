@@ -14,6 +14,8 @@ import redisAdapter from "@socket.io/redis-adapter";
 export const app = express();
 const server = http.createServer(app);
 import dotenv from "dotenv";
+import Sentry from "@sentry/node"; 
+import Tracing from "@sentry/tracing";
 dotenv.config();
 
 const PORT = 5000;
@@ -36,6 +38,26 @@ app.use(
     saveUninitialized: true,
   })
 );
+
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+
+  integrations: [
+
+    new Sentry.Integrations.Http({ tracing: true }),
+    new Tracing.Integrations.Express({ app }),
+    ],
+
+    tracesSampleRate: 0.1,
+});
+
+app.use(Sentry.Handlers.requestHandler());
+app.use(Sentry.Handlers.tracingHandler());
+
+const transaction = Sentry.startTransaction({
+  op: "test",
+  name: "My First Test Transaction",
+});
 
 export const io = new Server(server, {
   cors: {
@@ -75,6 +97,7 @@ try {
   console.error("Unable to connect to the database:", error);
 }
 
+app.use(Sentry.Handlers.errorHandler());
 app.use(validateAccessToken);
 
 app.use("/api/users", usersRouter);

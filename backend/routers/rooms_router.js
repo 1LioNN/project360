@@ -11,8 +11,9 @@ sgMail.setApiKey(process.env.SENDGRID_APIKEY);
 export const roomsRouter = Router({ mergeParams: true });
 
 roomsRouter.get("/", async (req, res) => {
-  const offset = req.query.offset ? parseFloat(req.query.offset) : 0;
-  const limit = req.query.limit;
+  const page = req.query.page ? parseFloat(req.query.page) : 0;
+  const limit = req.query.limit ? parseInt(req.query.limit) : 15;
+  const offset = page * limit;
   const filter = req.query.filter;
   const query = {
     order: [["createdAt", "DESC"]],
@@ -23,11 +24,16 @@ roomsRouter.get("/", async (req, res) => {
     query.limit = limit;
   }
 
-  if (filter === "my-rooms") {
-    query.where = {
+  query.where = {
+    UserId: req.params.userId,
+  };
+  let count = await Room.count({
+    where: {
       UserId: req.params.userId,
-    };
-  } else if (filter === "shared-with-me") {
+    },
+  });
+
+  if (filter === "shared-with-me") {
     const userRooms = await UserRoom.findAll({
       where: {
         UserId: req.params.userId,
@@ -40,14 +46,17 @@ roomsRouter.get("/", async (req, res) => {
         { UserId: { [Op.not]: req.params.userId } },
       ],
     };
-  } else if (filter) {
+    count = await Room.count({
+      where: query.where,
+    });
+  } else if (filter && filter !== "my-rooms") {
     return res.status(422).json({
       error: `Query parameter 'filter' is invalid. Use either 'own' or 'invited'`,
     });
   }
 
   const rooms = await Room.findAll(query);
-  return res.json({ items: rooms });
+  return res.json({ items: rooms, total: count });
 });
 
 roomsRouter.post("/", async (req, res) => {
@@ -139,25 +148,25 @@ roomsRouter.post(
     }
     await room.addUser(user);
 
-    // const msg = {
-    //   to: email,
-    //   from: process.env.EMAIL_SENDER,
-    //   subject: `${req.body.username} has invited you to collaborate on their room!`,
-    //   text: req.body.url,
-    //   html: `<p>${req.body.username} has invited you to collaborate on their room: <a>${req.body.url}</a></p>`,
-    // };
-    // await sgMail
-    //   .send(msg)
-    //   .then(() => {
-    //     return res.json({
-    //       message: `email sent`,
-    //     });
-    //   })
-    //   .catch((error) => {
-    //     return res.status(500).json({
-    //       error: error,
-    //     });
-    //   });
+     const msg = {
+       to: email,
+       from: process.env.EMAIL_SENDER,
+       subject: `${req.body.username} has invited you to collaborate on their room!`,
+       text: req.body.url,
+       html: `<p>${req.body.username} has invited you to collaborate on their room: <a>${req.body.url}</a></p>`,
+     };
+     await sgMail
+       .send(msg)
+       .then(() => {
+         return res.json({
+           message: `email sent`,
+         });
+       })
+       .catch((error) => {
+         return res.status(500).json({
+           error: error,
+         });
+       });
     return res.json({
       message: `sendgrid will be setup at some point`,
     });
