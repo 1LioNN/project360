@@ -117,7 +117,7 @@ function RoomCard(props) {
             }}
           >
             {(close) => (
-              <div className="modal bg-neutral-900 p-7 w-[30rem] rounded-xl  font-semibold">
+              <div className="modal bg-[#111111] p-7 w-[30rem] rounded-xl  font-semibold">
                 <button
                   className="flex ml-auto text-white text-xl "
                   onClick={close}
@@ -165,7 +165,7 @@ function RoomCard(props) {
             }}
           >
             {(close) => (
-              <div className="modal bg-neutral-900 p-7 w-[30rem] rounded-xl  font-semibold">
+              <div className="modal bg-[#111111] p-7 w-[30rem] rounded-xl  font-semibold">
                 <button
                   className="flex ml-auto text-white text-xl "
                   onClick={close}

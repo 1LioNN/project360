@@ -78,7 +78,7 @@ function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
         onClose={() => onClose()}
       >
         {(close) => (
-          <div className="modal bg-neutral-900 p-10 pt-7 rounded-xl  font-semibold">
+          <div className="modal bg-[#111111] p-10 pt-7 rounded-xl  font-semibold">
             <button
               className="flex ml-auto text-white text-xl "
               onClick={close}
