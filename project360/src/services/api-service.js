@@ -22,7 +22,7 @@ const getRooms = async (
   userId,
   filter = `my-rooms`,
   offset = 0,
-  limit = null
+  limit = 15
 ) => {
   let url = `api/users/${userId}/rooms?filter=${filter}`;
   url += limit ? `&limit=${limit}` : ``;

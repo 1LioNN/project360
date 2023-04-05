@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../assets/icons/360.png";
+import logo from "../assets/icons/360.webp";
 import LoginButton from "./LoginButton";
 import LogoutButton from "./LogoutButton";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -22,7 +22,7 @@ function NavBar() {
         <img
           src={logo}
           alt="Logo"
-          className="h-14 w-12 align-middle ml-5 mt-3"
+          className="h-14 w-14 align-middle ml-5 mt-3"
         />
       </div>
 

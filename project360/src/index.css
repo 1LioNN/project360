@@ -23,36 +23,41 @@
   .cube-face {
     width: 150px;
     height: 150px;
-    background: rgb(238, 238, 238);
-    border: 2px solid rgb(136, 136, 136);
+    border: 2px solid #0081c5;
     position: absolute;
     display: flex;
     align-items: center;
-    opacity: 0.6;
+    opacity: 0.95;
     justify-content: center;
   }
 
   .cube-front {
     transform: translateZ(75px);
+    background: #00a4df;
   }
 
   .cube-back {
     transform: rotateY(180deg) translateZ(75px);
+    background: #80dbff;
   }
 
   .cube-right {
     transform: rotateY(90deg) translateZ(75px);
+    background: #0081c5;
   }
 
   .cube-left {
     transform: rotateY(-90deg) translateZ(75px);
+    background: #00a4df;
   }
 
   .cube-top {
     transform: rotateX(90deg) translateZ(75px);
+    background: #b5efff;
   }
 
   .cube-bottom {
     transform: rotateX(-90deg) translateZ(75px);
+    background: #0081c5;
   }
 }
