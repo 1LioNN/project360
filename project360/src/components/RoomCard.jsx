@@ -19,7 +19,6 @@ function RoomCard(props) {
   const [loading, setLoading] = useState(false);
   const optionsRef = useRef(null);
   const allow = props.filter === "my-rooms" ? "block" : "hidden";
-  console.log(allow);
 
   const deleteRoom = () => {
     getAccessTokenSilently()
@@ -106,7 +105,7 @@ function RoomCard(props) {
 
           <Popup
             trigger={
-              <button className={allow} >
+              <button className={allow}>
                 <FontAwesomeIcon icon={faTrash} title="Delete" />
               </button>
             }
