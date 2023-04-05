@@ -2,6 +2,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import Home from "./pages/HomePage";
 import Dashboard from "./pages/Dashboard";
 import Edit from "./pages/EditPage";
+import Credits from "./pages/CreditsPage";
 import AuthGuard from "./components/AuthGuard";
 import NotFound from "./pages/NotFound";
 import Loading from "./components/Loading";
@@ -24,6 +25,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/dashboard/:filter" element={<Dashboard />} />
         <Route path="/edit/:roomId" element={<Edit />} />
+        <Route path="/credits" element={<Credits />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
