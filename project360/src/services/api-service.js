@@ -21,12 +21,12 @@ const getRooms = async (
   accessToken,
   userId,
   filter = `my-rooms`,
-  offset = 0,
-  limit = null
+  page = 0,
+  limit = 15
 ) => {
   let url = `api/users/${userId}/rooms?filter=${filter}`;
   url += limit ? `&limit=${limit}` : ``;
-  url += offset ? `&offset=${offset}` : ``;
+  url += page ? `&page=${page}` : ``;
   
   return fetchTemplate(accessToken, url);
 };
