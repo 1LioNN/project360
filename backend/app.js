@@ -9,6 +9,7 @@ import session from "express-session";
 import cors from "cors";
 import http from "http";
 import { Server } from "socket.io";
+import redis from './redis'
 export const app = express();
 const server = http.createServer(app);
 import dotenv from "dotenv";
@@ -16,6 +17,11 @@ dotenv.config();
 
 const PORT = 5000;
 const clients = {};
+
+//connect to redis
+(async () => {
+  await redis.connect(); 
+})(); 
 
 app.use(
   cors({
