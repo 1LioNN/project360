@@ -25,7 +25,8 @@ function RoomsContainer({ userId, rooms, setRooms, filter, page, setPage }) {
         apiService.getRooms(accessToken, userId, filter, page, 15)
       )
       .then((res) => {
-        setRooms(res.items);
+        // ADd the new rooms to the existing ones
+        setRooms((rooms) => [...rooms, ...res.items]);
         setLoading(false);
       });
   }, [userId, getAccessTokenSilently, setRooms, filter, page]);
@@ -37,6 +38,14 @@ function RoomsContainer({ userId, rooms, setRooms, filter, page, setPage }) {
       setEmpty(false);
     }
   }, [rooms]);
+
+  const handleScroll = (e) => {
+    const target = e.target;
+    if ((target.scrollHeight - target.scrollTop == target.clientHeight) || (page === 0 && target.clientWidth > 640)) {
+      console.log("bottom");
+      setPage(page + 1);
+    }
+  };
 
   const RoomsList = rooms.map((room) => {
     return (
@@ -57,23 +66,19 @@ function RoomsContainer({ userId, rooms, setRooms, filter, page, setPage }) {
 
   if (!loading) {
     if (!empty) {
-    return (
-      <div className="flex flex-row flex-wrap basis-10/12 p-4 pb-24 sm:pb-4 gap-4 content-start justify-center sm:justify-start sm:h-[calc(100%)] overflow-y-scroll no-scrollbar relative">
-        {RoomsList}
-        <PageButtons
-          page={page}
-          setPage={setPage}
-          totalRooms={rooms.length}
-          roomsPerPage={15}
-        />
-      </div>
-    );
+      return (
+          <div className="flex flex-row flex-wrap basis-10/12 p-4 pb-24 gap-4 content-start justify-center sm:justify-start sm:h-[calc(100% - 80%)] overflow-y-scroll no-scrollbar relative"
+          onScroll={(e)=> handleScroll(e)}>
+            {RoomsList}
+          </div>
+
+      );
     } else {
       return (
-        <div className="flex flex-row flex-wrap basis-10/12 p-4 pb-24 sm:pb-4 gap-4 content-start justify-center sm:justify-start sm:h-[calc(100%)] overflow-y-scroll no-scrollbar relative">
-            THERES NOTHING HERE
+        <div className="flex flex-row flex-wrap basis-10/12 p-4 pb-24 gap-4 content-start justify-center sm:justify-start sm:h-[calc(100%)] overflow-y-scroll no-scrollbar relative">
+          THERES NOTHING HERE
         </div>
-      )
+      );
     }
   } else {
     return (
