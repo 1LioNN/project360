@@ -85,9 +85,9 @@ app.use("/api/users/:userId/rooms/:roomId/items", itemsRouter);
 // const socketIoObject = io;
 // module.exports.ioObject = socketIoObject;
 
-app.listen(PORT, (err) => {
+server.listen(PORT, (err) => {
   if (err) console.log(err);
   else console.log("HTTP server on http://localhost:%s", PORT);
 });
 
-io.listen(5001);
+//io.listen(5001);
