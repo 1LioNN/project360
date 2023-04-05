@@ -1,4 +1,4 @@
-const BASE_URL = `api.project360.me`;
+const BASE_URL = `https://api.project360.me`;
 
 const fetchTemplate = async (accessToken, url, params = {}) => {
   params.credentials = `include`;
