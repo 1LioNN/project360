@@ -16,8 +16,8 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
   integrations: [new Sentry.BrowserTracing(), new Sentry.Replay()],
-  tracesSampleRate: 1.0, 
-  replaysSessionSampleRate: 0.1, 
+  tracesSampleRate: 1.0,
+  replaysSessionSampleRate: 0.1,
 });
 
 root.render(

@@ -7,7 +7,9 @@ function CreditsPage() {
       <NavBar />
       <div className="p-5 pl-10 pr-10 flex flex-col flex-grow h-full bg-inherit text-white overflow-y-scroll no-scrollbar">
         <span className="flex text-5xl font-bold">Credits</span>
-        <span className="flex text-4xl font-bold  mt-10  justify-center">Code</span>
+        <span className="flex text-4xl font-bold  mt-10  justify-center">
+          Code
+        </span>
         <div className="flex flex-col flex-wrap sm:flex-row mt-16 sm:justify-evenly gap-5">
           <div>
             <span className="text-2xl font-bold mt-10">
@@ -196,7 +198,9 @@ function CreditsPage() {
             </ul>
           </div>
         </div>
-        <span className="flex text-4xl font-bold mt-10 justify-center">Assets</span>
+        <span className="flex text-4xl font-bold mt-10 justify-center">
+          Assets
+        </span>
         <div className="flex flex-col flex-wrap sm:flex-row mt-16 sm:justify-evenly gap-5">
           <div>
             <span className="text-2xl font-bold mt-10">3D Models</span>

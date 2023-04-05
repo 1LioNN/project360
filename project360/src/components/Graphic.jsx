@@ -53,10 +53,38 @@ function RoomExample() {
         <planeGeometry args={[length, width]} />
         <meshStandardMaterial map={texture} side={THREE.DoubleSide} />
       </mesh>
-      <Bed1 pos={[-2.8, 0.1, -2]} rot={0} bind={()=>{return;}} scale={0.07}/>
-      <Table1 pos={[-2.67, 1, 4]} rot={Math.PI} bind={()=>{return;}} scale={2.5}/>
-      <Chair0 pos={[-2.75, 0, 2.5]} rot={0} bind={()=>{return;}} scale={0.024}/>
-      <Sofa0 pos={[3.75, 0, -2.15]} rot={-Math.PI/2} bind={()=>{return;}} scale={2.5}/>
+      <Bed1
+        pos={[-2.8, 0.1, -2]}
+        rot={0}
+        bind={() => {
+          return;
+        }}
+        scale={0.07}
+      />
+      <Table1
+        pos={[-2.67, 1, 4]}
+        rot={Math.PI}
+        bind={() => {
+          return;
+        }}
+        scale={2.5}
+      />
+      <Chair0
+        pos={[-2.75, 0, 2.5]}
+        rot={0}
+        bind={() => {
+          return;
+        }}
+        scale={0.024}
+      />
+      <Sofa0
+        pos={[3.75, 0, -2.15]}
+        rot={-Math.PI / 2}
+        bind={() => {
+          return;
+        }}
+        scale={2.5}
+      />
     </group>
   );
 }
@@ -81,7 +109,7 @@ function Graphic() {
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} />
-        <RoomExample />  
+        <RoomExample />
       </Canvas>
     </div>
   );

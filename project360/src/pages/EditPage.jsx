@@ -149,7 +149,7 @@ function EditPage() {
 
     return () => {
       isMounted = false;
-      socket.off('updateRoom');
+      socket.off("updateRoom");
     };
   }, [roomId, isAuthenticated]);
 

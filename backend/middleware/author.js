@@ -24,7 +24,7 @@ const validateUserItemAuthorization = async (req, res, next) => {
     },
   });
   const roomIds = userRooms.map((room) => room.RoomId);
-  
+
   if (!roomIds.includes(roomId)) {
     return res.status(403).json({
       error: `User is unauthorized to do that`,

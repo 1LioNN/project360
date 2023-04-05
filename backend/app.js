@@ -9,12 +9,12 @@ import session from "express-session";
 import cors from "cors";
 import http from "http";
 import { Server } from "socket.io";
-import redis from 'redis';
+import redis from "redis";
 import redisAdapter from "@socket.io/redis-adapter";
 export const app = express();
 const server = http.createServer(app);
 import dotenv from "dotenv";
-import Sentry from "@sentry/node"; 
+import Sentry from "@sentry/node";
 import Tracing from "@sentry/tracing";
 dotenv.config();
 
@@ -43,12 +43,11 @@ Sentry.init({
   dsn: process.env.SENTRY_DSN,
 
   integrations: [
-
     new Sentry.Integrations.Http({ tracing: true }),
     new Tracing.Integrations.Express({ app }),
-    ],
+  ],
 
-    tracesSampleRate: 0.1,
+  tracesSampleRate: 0.1,
 });
 
 app.use(Sentry.Handlers.requestHandler());
@@ -73,7 +72,7 @@ const subClient = pubClient.duplicate();
 
 Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
   io.adapter(redisAdapter.createAdapter(pubClient, subClient));
-})
+});
 
 io.on("connection", (socket) => {
   clients[socket.id] = {};

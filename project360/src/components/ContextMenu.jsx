@@ -25,14 +25,11 @@ function ContextMenu({ ContextMenu, models, setModels }) {
 
   const updateRotation = async (id, rotation) => {
     const accessToken = await getAccessTokenSilently();
-    apiService
-      .getMe(accessToken)
-      .then((res) => {
-        apiService.updateItemAng(accessToken, res.userId, roomId, id, rotation);
-        audioService.context.resume();
-        audioService.playRotateSound(0.35);
-      }
-      );
+    apiService.getMe(accessToken).then((res) => {
+      apiService.updateItemAng(accessToken, res.userId, roomId, id, rotation);
+      audioService.context.resume();
+      audioService.playRotateSound(0.35);
+    });
   };
 
   const updateDelete = async (id) => {

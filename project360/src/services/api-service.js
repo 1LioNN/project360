@@ -27,7 +27,7 @@ const getRooms = async (
   let url = `api/users/${userId}/rooms?filter=${filter}`;
   url += limit ? `&limit=${limit}` : ``;
   url += page ? `&page=${page}` : ``;
-  
+
   return fetchTemplate(accessToken, url);
 };
 
@@ -46,16 +46,28 @@ const createRoom = async (accessToken, userId, name, dimensions) => {
   return fetchTemplate(accessToken, `api/users/${userId}/rooms`, params);
 };
 
-const inviteUser = async (accessToken, userId, roomId, username, sender, recipient, url) => {
+const inviteUser = async (
+  accessToken,
+  userId,
+  roomId,
+  username,
+  sender,
+  recipient,
+  url
+) => {
   const params = {
     method: `POST`,
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ username, sender, recipient, url })
+    body: JSON.stringify({ username, sender, recipient, url }),
   };
-  return fetchTemplate(accessToken, `api/users/${userId}/rooms/${roomId}/invite`, params);
-}
+  return fetchTemplate(
+    accessToken,
+    `api/users/${userId}/rooms/${roomId}/invite`,
+    params
+  );
+};
 
 const deleteRoom = async (accessToken, userId, roomId) => {
   const params = {
@@ -153,7 +165,7 @@ const updateEmail = async (accessToken, email, sub) => {
     body: JSON.stringify({ email, sub }),
   };
   return fetchTemplate(accessToken, `api/users/emails`, params);
-}
+};
 
 const signOut = async (accessToken) => {
   return fetchTemplate(accessToken, `api/users/signout`);

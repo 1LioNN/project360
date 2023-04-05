@@ -148,25 +148,25 @@ roomsRouter.post(
     }
     await room.addUser(user);
 
-     const msg = {
-       to: email,
-       from: process.env.EMAIL_SENDER,
-       subject: `${req.body.username} has invited you to collaborate on their room!`,
-       text: req.body.url,
-       html: `<p>${req.body.username} has invited you to collaborate on their room: <a>${req.body.url}</a></p>`,
-     };
-     await sgMail
-       .send(msg)
-       .then(() => {
-         return res.json({
-           message: `email sent`,
-         });
-       })
-       .catch((error) => {
-         return res.status(500).json({
-           error: error,
-         });
-       });
+    const msg = {
+      to: email,
+      from: process.env.EMAIL_SENDER,
+      subject: `${req.body.username} has invited you to collaborate on their room!`,
+      text: req.body.url,
+      html: `<p>${req.body.username} has invited you to collaborate on their room: <a>${req.body.url}</a></p>`,
+    };
+    await sgMail
+      .send(msg)
+      .then(() => {
+        return res.json({
+          message: `email sent`,
+        });
+      })
+      .catch((error) => {
+        return res.status(500).json({
+          error: error,
+        });
+      });
   }
 );
 
