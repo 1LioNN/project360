@@ -1,0 +1,106 @@
+name: Build App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: project360
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create ENV file
+        run: |
+          echo "${{ secrets.FRONTEND_ENV_FILE }}" > .env
+          ls -a
+
+      - name: Build image
+        run: docker build . --file Dockerfile --tag proj360-frontend
+
+      - name: Log into Github Container Registry
+        run: echo "${{ secrets.CR_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Push image to Github Container Registry
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/proj360-frontend
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "main" ] && VERSION=latest
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+          docker tag proj360-frontend $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
+
+
+  build-backend:
+    needs: build-frontend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create ENV file
+        run: |
+          echo "${{ secrets.BACKEND_ENV_FILE }}" > .env
+          ls -a
+
+      - name: Build image
+        run: docker build . --file Dockerfile --tag proj360-backend
+
+      - name: Log into Github Container Registry
+        run: echo "${{ secrets.CR_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Push image to Github Container Registry
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/proj360-backend
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "main" ] && VERSION=latest
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+          docker tag proj360-backend $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
+  
+  docker-compose:
+    needs: [build-frontend, build-backend]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy using docker compose
+        uses: appleboy/ssh-action@v0.1.8
+        with: 
+          host: ${{secrets.DROPLET_HOST}}
+          username: ${{ secrets.DROPLET_USER}}
+          key: ${{secrets.DROPLET_PRIV_KEY}}
+          passphrase: ${{secrets.PASSPHRASE}}
+          script: |
+            #Log In to Github Container Registry
+            docker login  https://ghcr.io/ -u ${{secrets.CR_PAT}} -p ${{secrets.CR_PAT}} 
+            #pull newly built images
+            docker compose pull
+            #stop old containers
+            docker compose down
+            #start new containers
+            docker compose up -d
+
+
+
+
+

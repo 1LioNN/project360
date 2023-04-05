@@ -3,6 +3,8 @@ import * as THREE from "three";
 import { useDrag } from "@use-gesture/react";
 import { useState, useEffect } from "react";
 import { useRef } from "react";
+
+import { useAuth0 } from "@auth0/auth0-react";
 import Sofa0 from "./sofa0/Sofa0";
 import Bed0 from "./bed0/Bed0";
 import Table0 from "./table0/Table0";
@@ -11,8 +13,10 @@ import Bed1 from "./bed1/Bed1";
 import Sofa1 from "./sofa1/Sofa1";
 import Table1 from "./table1/Table1";
 import Chair1 from "./chair1/Chair1";
+import { useParams } from "react-router-dom";
 
 import apiService from "../../services/api-service.js";
+import audioService from "../../services/audio-service";
 //function takes in a gltf file and returns a primitive object
 function Model({
   type,
@@ -62,10 +66,16 @@ function Model({
     default:
       break;
   }
+  const { getAccessTokenSilently } = useAuth0();
   const [clicked, setClicked] = useState(false);
   const [pos, setPos] = useState(position);
   const [bbox, setBBox] = useState(null);
   const [center, setCenter] = useState(null);
+  const roomId = useParams().roomId;
+
+  useEffect(() => {
+    setPos(position);
+  }, [position]);
 
   let planeIntersectPoint = new THREE.Vector3();
   const ref = useRef();
@@ -74,27 +84,41 @@ function Model({
 
   const validX = (x) => {
     if (!center) {
-      setCenter(bbox.max.clone().sub(bbox.min).multiplyScalar(1/2));
+      setCenter(
+        bbox.max
+          .clone()
+          .sub(bbox.min)
+          .multiplyScalar(1 / 2)
+      );
       return 0;
     }
 
     const maxAbsX = Math.abs(x) + center.x;
-    const signedBound = Math.sign(x) * ((dimensions[0] / 2) - center.x);
-    return maxAbsX <= (dimensions[0] / 2) ? x : signedBound;
-  }
+    const signedBound = Math.sign(x) * (dimensions[0] / 2 - center.x);
+    return maxAbsX <= dimensions[0] / 2 ? x : signedBound;
+  };
 
   const validZ = (z) => {
     if (!center) {
-      setCenter(bbox.max.clone().sub(bbox.min).multiplyScalar(1/2));
+      setCenter(
+        bbox.max
+          .clone()
+          .sub(bbox.min)
+          .multiplyScalar(1 / 2)
+      );
       return 0;
     }
 
     const maxAbsZ = Math.abs(z) + center.z;
-    const signedBound = Math.sign(z) * ((dimensions[1] / 2) - center.z);
-    return maxAbsZ <= (dimensions[1] / 2) ? z : signedBound;
-  }
+    const signedBound = Math.sign(z) * (dimensions[1] / 2 - center.z);
+    return maxAbsZ <= dimensions[1] / 2 ? z : signedBound;
+  };
 
   const clickHandler = (e) => {
+    if (!clicked) {
+      audioService.context.resume();
+      audioService.playSelectSound(0.08);
+    }
     setClicked(!clicked);
     cm.current.style.display = clicked ? " none" : " block";
     if (e.clientY > 880) {
@@ -131,6 +155,8 @@ function Model({
           const newZ = validZ(planeIntersectPoint.z);
           setPos([newX, floor, newZ]);
         } else {
+          audioService.context.resume();
+          audioService.playMoveSound(0.08);
           setClicked(false);
         }
         setIsDragging(active);
@@ -141,7 +167,16 @@ function Model({
   );
 
   useEffect(() => {
-    apiService.updateItemPos(itemId, pos);
+    const updateItemPos = async () => {
+      const accessToken = await getAccessTokenSilently();
+      apiService
+        .getMe(accessToken)
+        .then((res) =>
+          apiService.updateItemPos(accessToken, res.userId, roomId, itemId, pos)
+        );
+    };
+
+    updateItemPos();
   }, [clicked]);
 
   switch (type) {

@@ -1,36 +1,93 @@
 import { User, Item, Room } from "../models/index.js";
+import { Op } from "sequelize";
 import { Router } from "express";
-import bcrypt from "bcrypt";
-import path from "path";
-import fs from "fs";
-import { isAuthenticated } from "../middleware/auth.js";
+import { createHmac } from "crypto";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const usersRouter = Router({ mergeParams: true });
 
-// store auth0 data
-usersRouter.post("/auth0", async (req, res) => {
+const genHmacHash = (message, secret) => {
+  const hmac = createHmac("sha256", secret);
+  hmac.update(message);
+  const hashedMessage = hmac.digest("hex");
+  return hashedMessage;
+};
+
+// store email securely
+usersRouter.post("/emails", async (req, res) => {
+  if (!req.body.email) {
+    return res.status(400).json({
+      error: `email is required`,
+    });
+  }
+
+  let message = req.body.email;
+  const hashedEmail = genHmacHash(message, process.env.EMAIL_SECRET);
+
+  let user = await User.findOne({
+    where: {
+      email: hashedEmail,
+    },
+  });
+
+  if (!user) {
+    user = await User.create({
+      email: hashedEmail,
+    });
+  }
+
+  return res.json({
+    message: `email stored successfully`,
+  });
+});
+
+usersRouter.patch("/emails", async (req, res) => {
+  if (!req.body.email) {
+    return res.status(422).json({
+      error: `email is required`,
+    });
+  }
   if (!req.body.sub) {
     return res.status(400).json({
       error: `sub is required`,
     });
   }
 
+  let message = req.body.email;
+  const hashedEmail = genHmacHash(message, process.env.EMAIL_SECRET);
+  message = `${req.body.email}:${req.body.sub}`;
+  const hashedEmailId = genHmacHash(message, process.env.EMAIL_SECRET);
+
   let user = await User.findOne({
     where: {
-      sub: req.body.sub,
+      email: hashedEmail,
+      emailId: hashedEmailId,
     },
   });
-  if (user === null) {
+  if (user) {
+    req.session.userId = user.id;
+    return res.json({ userId: user.id });
+  }
+
+  user = await User.findOne({
+    where: {
+      email: hashedEmail,
+      [Op.and]: { emailId: { [Op.is]: null } },
+    },
+  });
+  if (user) {
+    user.emailId = hashedEmailId;
+    await user.save();
+  } else {
     user = await User.create({
-      sub: req.body.sub,
+      email: hashedEmail,
+      emailId: hashedEmailId,
     });
   }
 
   req.session.userId = user.id;
-
-  return res.json({
-    userId: user.id,
-  });
+  return res.json({ userId: user.id });
 });
 
 usersRouter.get("/me", async (req, res) => {
@@ -42,19 +99,10 @@ usersRouter.get("/me", async (req, res) => {
   return res.status(404).json({ error: "User not signed in" });
 });
 
-//usersRouter.use(isAuthenticated);
-
 // sign out
 usersRouter.get("/signout", async (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res
-        .status(500)
-        .json({ error: `Error occurred while logging out` });
-    } else {
-      return res.json({ message: `Successfully logged out` });
-    }
-  });
+  req.session.destroy();
+  return res.json({ message: `Successfully logged out` });
 });
 
 // get users
@@ -96,61 +144,29 @@ usersRouter.delete("/:id", async (req, res) => {
       .json({ error: `User(id=${req.params.id}) not found.` });
   }
 
-  // will need to also remove items and item junction table
-
   const userRooms = await Room.findAll({
     where: {
       UserId: req.params.id,
     },
   });
-  await Promise.all(
-    userRooms.map((room) => {
-      fs.unlink(
-        path.join(
-          room.previewMetadata.destination,
-          room.previewMetadata.filename
-        ),
-        (err) => {
-          if (err) throw err;
-        }
-      );
-    })
-  );
+  const roomIds = userRooms.map((room) => room.id);
 
-  await Room.destroy({
+  await Item.destroy({
     where: {
-      UserId: req.params.id,
+      RoomId: { [Op.in]: roomIds },
     },
   });
 
-  await user.removeRooms();
+  await Room.destroy({
+    where: {
+      id: { [Op.in]: roomIds },
+    },
+  });
+
+  await user.removeRoom();
   await user.destroy();
 
   return res.json({
     message: `User(id=${req.params.id}) has be been deleted.`,
-  });
-});
-
-// temporary, for testing purposes
-usersRouter.post("/", async (req, res) => {
-  const user = await User.create({
-    username: req.body.username,
-    password: req.body.password,
-  });
-  return res.json({
-    username: user.username,
-  });
-});
-
-// temporary, for testing purposes
-usersRouter.post("/:id/temp", async (req, res) => {
-  const user = await User.findByPk(req.params.id);
-  const room = await Room.create({
-    name: req.body.name,
-    UserId: req.params.id,
-  });
-  room.addUser(user);
-  return res.json({
-    name: room.name,
   });
 });

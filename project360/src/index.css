@@ -2,8 +2,62 @@
 @tailwind components;
 @tailwind utilities;
 
-#root{
+#root {
   background-color: #181818;
   height: 100vh;
   width: 100vw;
+}
+
+@layer utilities {
+  .cpath-0-3-0-0 {
+    clip-path: inset(0 1.5ch 0 0);
+  }
+
+  .cube {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    transform-style: preserve-3d;
+  }
+
+  .cube-face {
+    width: 150px;
+    height: 150px;
+    border: 2px solid #0081c5;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    opacity: 0.95;
+    justify-content: center;
+  }
+
+  .cube-front {
+    transform: translateZ(75px);
+    background: #00a4df;
+  }
+
+  .cube-back {
+    transform: rotateY(180deg) translateZ(75px);
+    background: #80dbff;
+  }
+
+  .cube-right {
+    transform: rotateY(90deg) translateZ(75px);
+    background: #0081c5;
+  }
+
+  .cube-left {
+    transform: rotateY(-90deg) translateZ(75px);
+    background: #00a4df;
+  }
+
+  .cube-top {
+    transform: rotateX(90deg) translateZ(75px);
+    background: #b5efff;
+  }
+
+  .cube-bottom {
+    transform: rotateX(-90deg) translateZ(75px);
+    background: #0081c5;
+  }
 }

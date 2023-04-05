@@ -2,7 +2,15 @@ import React from "react";
 import { useGLTF } from "@react-three/drei";
 import chair from "./chair0.gltf";
 
-export function Chair0({ innerRef, scale, pos, rot, bind, clickHandler, missHandler }) {
+export function Chair0({
+  innerRef,
+  scale,
+  pos,
+  rot,
+  bind,
+  clickHandler,
+  missHandler,
+}) {
   const { nodes, materials } = useGLTF(chair);
   return (
     <group
@@ -16,7 +24,7 @@ export function Chair0({ innerRef, scale, pos, rot, bind, clickHandler, missHand
       onPointerMissed={(e) => missHandler(e)}
       dispose={null}
     >
-     <mesh
+      <mesh
         castShadow
         receiveShadow
         geometry={nodes.weaving3DAlanaOfficeChairFabricMesh001.geometry}
@@ -44,6 +52,6 @@ export function Chair0({ innerRef, scale, pos, rot, bind, clickHandler, missHand
   );
 }
 
-useGLTF.preload("/chair0.gltf");
+useGLTF.preload(chair);
 
 export default Chair0;

@@ -1,9 +1,16 @@
-
 import React from "react";
 import { useGLTF } from "@react-three/drei";
 import bed from "./bed0.gltf";
 
-export function Bed0({ innerRef, scale, pos, rot, bind, clickHandler, missHandler }) {
+export function Bed0({
+  innerRef,
+  scale,
+  pos,
+  rot,
+  bind,
+  clickHandler,
+  missHandler,
+}) {
   const { nodes, materials } = useGLTF(bed);
   return (
     <group
@@ -61,6 +68,6 @@ export function Bed0({ innerRef, scale, pos, rot, bind, clickHandler, missHandle
   );
 }
 
-useGLTF.preload("/bed0.gltf");
+useGLTF.preload(bed);
 
 export default Bed0;

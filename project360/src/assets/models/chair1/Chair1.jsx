@@ -2,7 +2,15 @@ import React from "react";
 import { useGLTF } from "@react-three/drei";
 import chair from "./chair1.gltf";
 
-export function Chair1({ innerRef, scale, pos, rot, bind, clickHandler, missHandler }) {
+export function Chair1({
+  innerRef,
+  scale,
+  pos,
+  rot,
+  bind,
+  clickHandler,
+  missHandler,
+}) {
   const { nodes, materials } = useGLTF(chair);
   return (
     <group
@@ -32,6 +40,6 @@ export function Chair1({ innerRef, scale, pos, rot, bind, clickHandler, missHand
   );
 }
 
-useGLTF.preload("/chair1.gltf");
+useGLTF.preload(chair);
 
 export default Chair1;

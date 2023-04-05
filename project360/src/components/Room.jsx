@@ -8,7 +8,7 @@ import { useRef } from "react";
 import ContextMenu from "../components/ContextMenu";
 import Model from "../assets/models/Model";
 
-function Room({ dimensions, models, setModels }) {
+function Room({ dimensions, models, setModels, pos, setPos }) {
   const length = dimensions[0];
   const width = dimensions[1];
   const [isDragging, setIsDragging] = useState(false);
@@ -17,27 +17,29 @@ function Room({ dimensions, models, setModels }) {
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
   texture.repeat.set(2, 2);
-
   const cm = useRef(null);
 
   const modelsList = models.map((model) => {
     return (
-    <Model
-      type = {model.model}
-      key={model.id}
-      itemId={model.id}
-      position={model.position}
-      rotation={model.rotate}
-      setIsDragging={setIsDragging}
-      floorPlane={floorPlane}
-      dimensions={dimensions}
-      ContextMenu={cm}
-    />);
+      <Model
+        type={model.model}
+        key={model.id}
+        itemId={model.id}
+        position={model.position}
+        rotation={model.rotate}
+        setIsDragging={setIsDragging}
+        floorPlane={floorPlane}
+        dimensions={dimensions}
+        ContextMenu={cm}
+        pos={pos}
+        setPos={setPos}
+      />
+    );
   });
 
   return (
     <div className="basis-9/12 h-screen bg-zinc-900 overflow-hidden">
-      <ContextMenu ContextMenu={cm} models={models} setModels={setModels}  />
+      <ContextMenu ContextMenu={cm} models={models} setModels={setModels} />
       <Canvas camera={{ position: [0, 5, 10] }}>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} />
