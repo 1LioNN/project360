@@ -12,7 +12,7 @@ export const roomsRouter = Router({ mergeParams: true });
 
 roomsRouter.get("/", async (req, res) => {
   const page = req.query.page ? parseFloat(req.query.page) : 0;
-  const limit = req.query.limit ? parse(req.query.limit) : 15;
+  const limit = req.query.limit ? parseInt(req.query.limit) : 15;
   const offset = page * limit;
   const filter = req.query.filter;
   const query = {
