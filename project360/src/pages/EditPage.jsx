@@ -5,7 +5,6 @@ import { useParams } from "react-router-dom";
 import apiService from "../services/api-service.js";
 import EditSideBar from "../components/EditSideBar";
 import { socket } from "../socketConnect";
-import io from "socket.io-client";
 import { useAuth0 } from "@auth0/auth0-react";
 import Error from "../components/Error";
 import NavBar from "../components/NavBar";
@@ -47,6 +46,14 @@ function EditPage() {
       isMounted = false;
     };
   }, [user, getAccessTokenSilently]);
+
+  useEffect(() => {
+    socket.connect();
+
+    return () => {
+      socket.disconnect();
+    }
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -114,14 +121,8 @@ function EditPage() {
 
   useEffect(() => {
     let isMounted = true;
-    socket.current = io();
 
-    function onConnect() {
-      console.log("connected");
-    }
-    socket.on("connect", onConnect);
-
-    socket.on("updateRoom", (data) => {
+    socket.on("updateRoom", () => {
       console.log("Listening to updateRoom");
       const getItems = async () => {
         const accessToken = await getAccessTokenSilently();
@@ -154,14 +155,9 @@ function EditPage() {
       getItems();
     });
 
-    socket.current.on("id", (id) => {
-      myId.current = id;
-    });
     return () => {
-      console.log("in useSocketIO return");
-      socket.current.off("id");
       isMounted = false;
-      // socket.current.off('clients')
+      socket.off('updateRoom');
     };
   }, [roomId, isAuthenticated]);
 

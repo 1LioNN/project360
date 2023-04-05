@@ -9,7 +9,7 @@ import session from "express-session";
 import cors from "cors";
 import http from "http";
 import { Server } from "socket.io";
-import redis from './redis'
+import redis from 'redis';
 export const app = express();
 const server = http.createServer(app);
 import dotenv from "dotenv";
@@ -19,13 +19,11 @@ const PORT = 5000;
 const clients = {};
 
 //connect to redis
-(async () => {
-  await redis.connect(); 
-})(); 
+const redisClient = redis.createClient();
 
 app.use(
   cors({
-    origin: `https://project360.me`,
+    origin: `http://localhost:3000`,
     credentials: true,
   })
 );
@@ -38,9 +36,9 @@ app.use(
   })
 );
 
-const io = new Server(server, {
+export const io = new Server(server, {
   cors: {
-    origin: `https://project360.me`,
+    origin: `http://localhost:3000`,
     credentials: true,
   },
 });
@@ -48,8 +46,6 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   clients[socket.id] = {};
   console.log("a user connected : " + socket.id);
-  socket.emit("id", socket.id);
-  socket.emit("hello", "world");
 
   socket.on("disconnect", () => {
     console.log("socket disconnected : " + socket.id);
@@ -60,13 +56,10 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("update", (message) => {
-    if (clients[socket.id]) {
-      socket.broadcast.emit("position", message);
-      clients[socket.id].t = message.t; //client timestamp
-      clients[socket.id].p = message.p; //position
-    }
-  });
+  socket.on("foo", (data) => {
+    console.log(data.data);
+    socket.emit('bar', { data: `${data.data} ${data.data}`});
+  })
 });
 
 try {
@@ -77,23 +70,13 @@ try {
   console.error("Unable to connect to the database:", error);
 }
 
-app.use(function (req, res, next) {
-  req.io = io;
-  next();
-});
-
-//app.use(validateAccessToken);
+app.use(validateAccessToken);
 
 app.use("/api/users", usersRouter);
 app.use("/api/users/:userId/rooms", roomsRouter);
 app.use("/api/users/:userId/rooms/:roomId/items", itemsRouter);
 
-// const socketIoObject = io;
-// module.exports.ioObject = socketIoObject;
-
-app.listen(PORT, (err) => {
+server.listen(PORT, (err) => {
   if (err) console.log(err);
   else console.log("HTTP server on http://localhost:%s", PORT);
 });
-
-io.listen(5001);
