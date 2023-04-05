@@ -52,12 +52,15 @@ app.use(Sentry.Handlers.tracingHandler());
 const transaction = Sentry.startTransaction({
   op: "test",
   name: "My First Test Transaction",
+});
+
 const io = new Server(server, {
   cors: {
     origin: `http://localhost:3000`,
     credentials: true,
   },
 });
+
 
 io.on("connection", (socket) => {
   clients[socket.id] = {};
