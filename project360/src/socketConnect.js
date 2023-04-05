@@ -1,5 +1,5 @@
 import { io } from "socket.io-client";
-const URL = "http://localhost:5000";
+const URL = "https://api.project360.me";
 
 export const socket = io(URL, {
   withCredentials: true,

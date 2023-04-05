@@ -26,7 +26,7 @@ const redisClient = redis.createClient();
 
 app.use(
   cors({
-    origin: `http://localhost:3000`,
+    origin: `https://project360.me`,
     credentials: true,
   })
 );
@@ -60,7 +60,7 @@ const transaction = Sentry.startTransaction({
 
 export const io = new Server(server, {
   cors: {
-    origin: `http://localhost:3000`,
+    origin: `https://project360.me`,
     credentials: true,
   },
 });
@@ -107,3 +107,4 @@ server.listen(PORT, (err) => {
   if (err) console.log(err);
   else console.log("HTTP server on http://localhost:%s", PORT);
 });
+
