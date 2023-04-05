@@ -71,7 +71,7 @@ function RoomsContainer({ userId, rooms, setRooms, filter, page, setPage }) {
       );
     } else {
       return (
-        <div className="flex flex-row flex-wrap basis-10/12 p-4 pb-24 gap-4 content-start justify-center sm:justify-start sm:h-[calc(100%)] overflow-y-scroll no-scrollbar relative">
+        <div className="flex flex-row flex-wrap basis-10/12 p-4 sm:pb-4 pb-24 gap-4 content-start justify-center sm:justify-center sm:h-full">
           THERES NOTHING HERE
         </div>
       );

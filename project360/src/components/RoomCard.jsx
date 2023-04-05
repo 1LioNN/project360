@@ -18,6 +18,8 @@ function RoomCard(props) {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const optionsRef = useRef(null);
+  const allow = props.filter === "my-rooms" ? "block" : "hidden";
+  console.log(allow);
 
   const deleteRoom = () => {
     getAccessTokenSilently()
@@ -91,7 +93,7 @@ function RoomCard(props) {
           {props.name}
         </div>
         <div
-          className="flex flex-col flex-grow justify-evenly absolute top-0 right-0 bg-gradient-to-l from-black to-transparent text-3xl p-3 text-white h-full transition-all duration-300 translate-x-full group-hover:translate-x-0 gap-6 w-24"
+          className="flex flex-col flex-grow absolute top-0 right-0 bg-gradient-to-l from-black to-transparent text-3xl p-5 text-white h-full transition-all duration-300 translate-x-full group-hover:translate-x-0 gap-11 w-24"
           ref={optionsRef}
         >
           <Link
@@ -104,7 +106,7 @@ function RoomCard(props) {
 
           <Popup
             trigger={
-              <button>
+              <button className={allow} >
                 <FontAwesomeIcon icon={faTrash} title="Delete" />
               </button>
             }
@@ -134,7 +136,10 @@ function RoomCard(props) {
                   <Button
                     className="w-32 text-white bg-red-600 border-none hover:bg-gradient-to-r from-red-500 via-red-400 to-red-500"
                     text={"Delete Room"}
-                    onClick={() => {deleteRoom(); close()}}
+                    onClick={() => {
+                      deleteRoom();
+                      close();
+                    }}
                   />
 
                   <Button
@@ -149,7 +154,7 @@ function RoomCard(props) {
 
           <Popup
             trigger={
-              <button>
+              <button className={allow}>
                 <FontAwesomeIcon icon={faShareFromSquare} title="Invite" />
               </button>
             }
@@ -184,12 +189,12 @@ function RoomCard(props) {
                     {!loading ? (
                       <button
                         type="submit"
-                        className="p-3 bg-indigo-900 w-32 hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800 rounded-xl p-2 font-bold text-white"
+                        className="p-3 bg-indigo-900 w-32 hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800 rounded-xl font-bold text-white"
                       >
                         Share
                       </button>
                     ) : (
-                      <div className="flex bg-indigo-900 w-32 hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800 rounded-xl p-2 font-bold text-white cursor-pointer justify-center">
+                      <div className="flex bg-indigo-900 w-32 hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800 rounded-xl font-bold text-white cursor-pointer justify-center">
                         Processing...
                       </div>
                     )}

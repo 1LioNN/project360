@@ -5,7 +5,7 @@ function PageButtons({ page, setPage, totalRooms, currentRooms }) {
   const [first, setFirst] = useState(false);
   const [last, setLast] = useState(false);
 
-  console.log(currentRooms, totalRooms, page)
+  console.log(currentRooms, totalRooms, page);
 
   useEffect(() => {
     if (page === 0) {
@@ -20,7 +20,7 @@ function PageButtons({ page, setPage, totalRooms, currentRooms }) {
       setLast(false);
     }
 
-    if (totalRooms > 0 && currentRooms === 0) {
+    if (totalRooms > 0 && currentRooms === 0 && !(page === 0)) {
       setPage(page - 1);
     }
   }, [page, totalRooms, currentRooms]);
