@@ -13,8 +13,11 @@ function RoomsContainer({ userId, rooms, setRooms, filter, page, setPage }) {
   const { getAccessTokenSilently } = useAuth0();
   const [loading, setLoading] = useState(true);
   const [empty, setEmpty] = useState(false);
-  const [total , setTotal] = useState(0);
-  const emptyText = filter === "my-rooms" ? "There seems to be nothing here..." : "Nothing shared with you yet...";
+  const [total, setTotal] = useState(0);
+  const emptyText =
+    filter === "my-rooms"
+      ? "There seems to be nothing here..."
+      : "Nothing shared with you yet...";
   const icon = filter === "my-rooms" ? faCube : faUsers;
 
   const skeletons = [...Array(15).keys()].map((i) => {
@@ -39,7 +42,6 @@ function RoomsContainer({ userId, rooms, setRooms, filter, page, setPage }) {
       });
   }, [userId, getAccessTokenSilently, setRooms, filter, page, rooms.length]);
 
-  
   useEffect(() => {
     if (rooms.length === 0) {
       setEmpty(true);
@@ -71,17 +73,21 @@ function RoomsContainer({ userId, rooms, setRooms, filter, page, setPage }) {
       return (
         <div className="flex flex-row flex-wrap basis-10/12 p-4 sm:pb-4 pb-24 gap-4 content-start justify-center sm:justify-start sm:h-full overflow-y-scroll no-scrollbar relative">
           {RoomsList}
-          <PageButtons page={page} setPage={setPage} totalRooms={total} currentRooms={rooms.length} /> 
+          <PageButtons
+            page={page}
+            setPage={setPage}
+            totalRooms={total}
+            currentRooms={rooms.length}
+          />
         </div>
       );
     } else {
       return (
         <div className="flex flex-row flex-grow basis-10/12 p-4 sm:pb-4 pb-24 gap-4 items-center justify-center text-neutral-700 font-bold text-4xl text-center">
-          <div className="flex flex-col"> 
-          <FontAwesomeIcon icon={icon} className="text-9xl" />
-          <span className="mt-10">{emptyText}</span>
+          <div className="flex flex-col">
+            <FontAwesomeIcon icon={icon} className="text-9xl" />
+            <span className="mt-10">{emptyText}</span>
           </div>
-
         </div>
       );
     }

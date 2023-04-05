@@ -193,7 +193,7 @@ function RoomCard(props) {
                         Share
                       </button>
                     ) : (
-                      <div className="flex bg-indigo-900 w-32 hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800 rounded-xl font-bold text-white cursor-pointer justify-center">
+                      <div className="p-3 flex bg-indigo-900 w-32 hover:bg-gradient-to-br from-blue-300 via-indigo-400 to-indigo-800 rounded-xl font-bold text-white cursor-pointer justify-center">
                         Processing...
                       </div>
                     )}

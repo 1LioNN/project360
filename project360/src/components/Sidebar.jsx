@@ -43,7 +43,7 @@ function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
         navigate(`/edit/${res.room.id}`);
       });
   };
-  
+
   const onFilter = (f, url) => {
     console.log(f);
     console.log(url);
@@ -160,7 +160,9 @@ function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
       {filter !== "shared-with-me" ? (
         <div
           className="flex flex-row text-xl font-semibold items-center p-5 m-3 sm:pl-10 rounded-full cursor-pointer sm:w-full hover:bg-neutral-800"
-          onClick={() => onFilter("shared-with-me", "/dashboard/shared-with-me")}
+          onClick={() =>
+            onFilter("shared-with-me", "/dashboard/shared-with-me")
+          }
         >
           <FontAwesomeIcon
             className="sm:mr-4 text-3xl sm:text-2xl"
@@ -170,8 +172,10 @@ function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
         </div>
       ) : (
         <div
-          className="flex flex-row text-xl font-semibold items-center p-5 m-3 sm:pl-10 rounded-full cursor-pointer sm:w-full hover:bg-neutral-800 text-indigo-900" 
-          onClick={() => onFilter("shared-with-me", "/dashboard/shared-with-me")}
+          className="flex flex-row text-xl font-semibold items-center p-5 m-3 sm:pl-10 rounded-full cursor-pointer sm:w-full hover:bg-neutral-800 text-indigo-900"
+          onClick={() =>
+            onFilter("shared-with-me", "/dashboard/shared-with-me")
+          }
         >
           <FontAwesomeIcon
             className="sm:mr-4 text-3xl sm:text-2xl"

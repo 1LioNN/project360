@@ -7,6 +7,7 @@ import AuthGuard from "./components/AuthGuard";
 import NotFound from "./pages/NotFound";
 import Loading from "./components/Loading";
 import { Routes, Route } from "react-router-dom";
+import * as Sentry from "@sentry/react";
 
 function App() {
   const { isLoading, error } = useAuth0();
@@ -32,4 +33,4 @@ function App() {
   );
 }
 
-export default App;
+export default Sentry.withProfiler(App);
