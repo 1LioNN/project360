@@ -167,9 +167,6 @@ roomsRouter.post(
            error: error,
          });
        });
-    return res.json({
-      message: `sendgrid will be setup at some point`,
-    });
   }
 );
 
