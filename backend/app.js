@@ -9,6 +9,8 @@ import session from "express-session";
 import cors from "cors";
 import http from "http";
 import { Server } from "socket.io";
+import redis from 'redis';
+import redisAdapter from "@socket.io/redis-adapter";
 export const app = express();
 const server = http.createServer(app);
 import dotenv from "dotenv";
@@ -18,6 +20,9 @@ dotenv.config();
 
 const PORT = 5000;
 const clients = {};
+
+//connect to redis
+const redisClient = redis.createClient();
 
 app.use(
   cors({
@@ -54,19 +59,25 @@ const transaction = Sentry.startTransaction({
   name: "My First Test Transaction",
 });
 
-const io = new Server(server, {
+export const io = new Server(server, {
   cors: {
     origin: `http://localhost:3000`,
     credentials: true,
   },
 });
 
+const pubClient = redis.createClient({
+  url: "redis://localhost:6379",
+});
+const subClient = pubClient.duplicate();
+
+Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
+  io.adapter(redisAdapter.createAdapter(pubClient, subClient));
+})
 
 io.on("connection", (socket) => {
   clients[socket.id] = {};
   console.log("a user connected : " + socket.id);
-  socket.emit("id", socket.id);
-  socket.emit("hello", "world");
 
   socket.on("disconnect", () => {
     console.log("socket disconnected : " + socket.id);
@@ -74,14 +85,6 @@ io.on("connection", (socket) => {
       console.log("deleting " + socket.id);
       delete clients[socket.id];
       io.emit("removeClient", socket.id);
-    }
-  });
-
-  socket.on("update", (message) => {
-    if (clients[socket.id]) {
-      socket.broadcast.emit("position", message);
-      clients[socket.id].t = message.t; //client timestamp
-      clients[socket.id].p = message.p; //position
     }
   });
 });
@@ -95,23 +98,13 @@ try {
 }
 
 app.use(Sentry.Handlers.errorHandler());
-app.use(function (req, res, next) {
-  req.io = io;
-  next();
-});
-
-//app.use(validateAccessToken);
+app.use(validateAccessToken);
 
 app.use("/api/users", usersRouter);
 app.use("/api/users/:userId/rooms", roomsRouter);
 app.use("/api/users/:userId/rooms/:roomId/items", itemsRouter);
 
-// const socketIoObject = io;
-// module.exports.ioObject = socketIoObject;
-
-app.listen(PORT, (err) => {
+server.listen(PORT, (err) => {
   if (err) console.log(err);
   else console.log("HTTP server on http://localhost:%s", PORT);
 });
-
-io.listen(5001);

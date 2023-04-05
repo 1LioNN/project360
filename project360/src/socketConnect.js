@@ -1,8 +1,7 @@
 import { io } from "socket.io-client";
+const URL = "http://localhost:5000";
 
-// "undefined" means the URL will be computed from the `window.location` object
-const URL = "http://localhost:5001";
-
-export const socket = io.connect(URL, {
+export const socket = io(URL, {
   withCredentials: true,
+  transports: ['websocket'],
 });

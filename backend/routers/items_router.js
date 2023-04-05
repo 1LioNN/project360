@@ -1,6 +1,7 @@
 import { Room, Item } from "../models/index.js";
 import { validateUserItemAuthorization } from "../middleware/author.js";
 import { Router } from "express";
+import { io } from "../app.js";
 
 export const itemsRouter = Router({ mergeParams: true });
 
@@ -22,12 +23,7 @@ itemsRouter.post("/", async (req, res) => {
   });
   item.coordinates = JSON.parse(item.coordinates);
 
-  req.io.emit("updateRoom", {
-    roomId: item.RoomId,
-    itemId: item.id,
-    x: item.coordinates[0],
-    z: item.coordinates[2],
-  });
+  io.emit("updateRoom");
 
   return res.json({ item });
 });
@@ -96,11 +92,7 @@ itemsRouter.patch("/:id/rotate/", async (req, res) => {
   await item.save();
   item.coordinates = JSON.parse(item.coordinates);
 
-  req.io.emit("updateRoom", {
-    roomId: item.RoomId,
-    itemId: item.id,
-    degree: item.rotate,
-  });
+  io.emit("updateRoom");
 
   return res.json({ item });
 });
@@ -125,12 +117,7 @@ itemsRouter.patch("/:id/move", async (req, res) => {
   item.coordinates = JSON.parse(item.coordinates);
 
   // emit socket io event to tell other clients to update the room
-  req.io.emit("updateRoom", {
-    roomId: item.RoomId,
-    itemId: item.id,
-    x: item.coordinates[0],
-    z: item.coordinates[2],
-  });
+  io.emit("updateRoom");
 
   return res.json({ item });
 });
@@ -144,7 +131,7 @@ itemsRouter.delete("/:id", async (req, res) => {
       .json({ error: `Item(id=${req.params.id}) not found.` });
   }
 
-  req.io.emit("updateRoom", { roomId: item.RoomId, itemId: item.id });
+  io.emit("updateRoom");
 
   await item.destroy();
   return res.json({ item });
