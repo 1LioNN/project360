@@ -153,7 +153,8 @@ roomsRouter.post(
       from: process.env.EMAIL_SENDER,
       subject: `${req.body.username} has invited you to collaborate on their room!`,
       text: req.body.url,
-      html: `<p>${req.body.username} has invited you to collaborate on their room: <a>${req.body.url}</a></p>`,
+      html: `<h5>Welcome to Project 360! Your personal collaborative 3D Room Editor! </h5> 
+      <p>${req.body.username} has invited you to collaborate on their room: <a href=${req.body.url}</a></p>`,
     };
     await sgMail
       .send(msg)
