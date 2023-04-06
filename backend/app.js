@@ -63,7 +63,7 @@ export const io = new Server(server, {
 });
 
 const pubClient = redis.createClient({
-  url: `redis://redis:6379`
+  url: `redis://redis:6379`,
 });
 const subClient = pubClient.duplicate();
 
@@ -104,4 +104,3 @@ server.listen(PORT, (err) => {
   if (err) console.log(err);
   else console.log("HTTP server on http://localhost:%s", PORT);
 });
-

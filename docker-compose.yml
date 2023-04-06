@@ -53,4 +53,3 @@ services:
     environment:
       - VIRTUAL_HOST=api.project360.me
       - LETSENCRYPT_HOST=api.project360.me
-

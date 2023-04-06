@@ -1,16 +1,19 @@
 # [Project 360](https://project360.me)
 
-Developed by the _Project 360_ team.
+[https://project360.me](https://project360.me) is developed by the _Project 360_ team.
 
 ### Team members
 
 ##### Lion Su - 1007271523
-Lion worked on Three.js + ContextMenu, Web Audio, deployment, and majority of the frontend.
+
+Lion worked on Three.js, Web Audio, deployment, and majority of the frontend.
 
 ##### Vanshika Virmani - 1006865251
+
 Vanshika worked on auth0, socket.io, sentry, and some of the backend.
 
 ##### Lander Joshua Vitug - 1006560366
+
 Lander worked on sengrid, auth0, socket.io + redis, and some of the backend.
 
 ## Project Description
