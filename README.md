@@ -1,18 +1,23 @@
-# Project 360
+# [Project 360](https://project360.me)
 
 Developed by the _Project 360_ team.
 
 ### Team members
 
-- Lion Su - 1007271523
-- Vanshika Virmani - 1006865251
-- Lander Joshua Vitug - 1006560366
+##### Lion Su - 1007271523
+Lion worked on Three.js + ContextMenu, Web Audio, deployment, and majority of the frontend.
+
+##### Vanshika Virmani - 1006865251
+Vanshika worked on auth0, socket.io, sentry, and some of the backend.
+
+##### Lander Joshua Vitug - 1006560366
+Lander worked on sengrid, auth0, socket.io + redis, and some of the backend.
 
 ## Project Description
 
-_Project 360_ is an interactive and immersive 3D collaborative interior designer web app that empowers users to create and design customized interior spaces. The app offers users the option to create canvases of varying dimensions. With a vast array of placeable items and furniture to choose from, including essentials like chairs, desks, and beds, as well as decorative items like plants and paintings, users can bring their vision to life with ease.
+_Project 360_ is an interactive and immersive 3D collaborative interior designer web app that empowers users to create and design customized interior spaces. The app offers users the option to create canvases of varying dimensions. Users can bring their vision to life with ease as they place all sorts of furniture from tables, to beds, chairs, to sofas.
 
-Users can view their canvas spaces from a 360-degree camera perspective, which is navigable by dragging the screen with a mouse. Collaboration between users is made possible, with up to 3-4 people per canvas. This feature allows users to place items together in real time, offering a dynamic and social experience for designing interior spaces.
+Users can view their canvas spaces from a 360-degree camera perspective, which is navigable by dragging the screen with a mouse. Collaboration between users is indeed possible. This feature allows users to place items together in real time, offering a dynamic and social experience for designing interior spaces.
 
 _Project 360_ also includes an invitation system, allowing users to invite collaborators to their canvases via email. Users can easily share their designs with others, making it a valuable tool for professionals in the interior design industry or anyone looking to create a virtual space for a project.
 
