@@ -21,9 +21,6 @@ dotenv.config();
 const PORT = 5000;
 const clients = {};
 
-//connect to redis
-const redisClient = redis.createClient();
-
 app.use(
   cors({
     origin: `https://project360.me`,
@@ -66,8 +63,7 @@ export const io = new Server(server, {
 });
 
 const pubClient = redis.createClient({
-  host: "redis",
-  port: 6379,
+  url: `redis://redis:6379`
 });
 const subClient = pubClient.duplicate();
 
