@@ -7,10 +7,8 @@ function CreditsPage() {
       <NavBar />
       <div className="p-5 pl-10 pr-10 flex flex-col flex-grow h-full bg-inherit text-white overflow-y-scroll no-scrollbar">
         <span className="flex text-5xl font-bold">Credits</span>
-        <span className="flex text-4xl font-bold  mt-10  justify-center">
-          Code
-        </span>
-        <div className="flex flex-col flex-wrap sm:flex-row mt-16 sm:justify-evenly gap-5">
+        <span className="flex text-4xl font-bold mt-10">Code</span>
+        <div className="flex flex-col flex-wrap sm:flex-row mt-10 sm:justify-start gap-9">
           <div>
             <span className="text-2xl font-bold mt-10">
               Express + Sequelize
@@ -197,11 +195,122 @@ function CreditsPage() {
               </li>
             </ul>
           </div>
+          <div>
+            <span className="text-2xl font-bold mt-10">Sentry</span>
+            <ul className="text-lg mt-4">
+              <li>
+                <a
+                  className="text-blue-400"
+                  href="https://nicholasmordecai.co.uk/programming/sentry-io-using-node-js/"
+                >
+                  Sentry Setup with Node.js
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <span className="flex text-2xl font-bold">Socket.io + Redis</span>
+            <ul className="text-lg mt-4">
+              <li>
+                <a
+                  className="text-blue-400"
+                  href="https://www.valentinog.com/blog/socket-react/"
+                >
+                  Socket.io + React Tutorial
+                </a>
+              </li>
+              <li>
+                <a
+                  className="text-blue-400"
+                  href="https://youtu.be/jgpVdJB2sKQ"
+                >
+                  Redis Crash Course
+                </a>
+              </li>
+              <li>
+                <a
+                  className="text-blue-400"
+                  href="https://www.youtube.com/watch?v=ZwFA3YMfkoc"
+                >
+                  Redis + Node.js Tutorial
+                </a>
+              </li>
+              <li>
+                <a
+                  className="text-blue-400"
+                  href="https://developer.redis.com/create/docker/nodejs-nginx-redis"
+                >
+                  Redis Docker Setup
+                </a>
+              </li>
+              <li>
+                <a
+                  className="text-blue-400"
+                  href="https://socket.io/docs/v4/redis-adapter/"
+                >
+                  Socket.io Redis Adapter Docs
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <span className="flex text-2xl font-bold">Auth0</span>
+            <ul className="text-lg mt-4">
+              <li>
+                <a
+                  className="text-blue-400"
+                  href="https://auth0.com/docs/quickstart/spa/react/02-calling-an-api"
+                >
+                  Auth0 React Tutorial
+                </a>
+              </li>
+              <li>
+                <a
+                  className="text-blue-400"
+                  href="https://auth0.com/docs/quickstart/spa/react/01-login"
+                >
+                  Auth0 Authentication Refactoring
+                </a>
+              </li>
+              <li>
+                <a
+                  className="text-blue-400"
+                  href="https://github.com/gitdagray/react_login_auth0"
+                >
+                  Auth0 React Setup
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <span className="flex text-2xl font-bold">Deployment and Misc</span>
+            <ul className="text-lg mt-4">
+              <li>
+                <a className="text-blue-400"
+                href= "digitalocean.com">
+                  Deployed using DigitalOcean
+                </a>
+              </li>
+              <li>
+                <a className="text-blue-400"
+                >
+                  Deployed using lab9 and lab10 code
+                </a>
+              </li>
+              <li>
+                <a className="text-blue-400"
+                href= "chat.openai.com/chat">
+                  ChatGPT
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
-        <span className="flex text-4xl font-bold mt-10 justify-center">
-          Assets
-        </span>
-        <div className="flex flex-col flex-wrap sm:flex-row mt-16 sm:justify-evenly gap-5">
+
+        <span className="flex text-4xl font-bold mt-10">Assets</span>
+        <div className="flex flex-col flex-wrap sm:flex-row mt-10 sm:justify-start gap-5">
           <div>
             <span className="text-2xl font-bold mt-10">3D Models</span>
             <ul className="text-lg mt-4">

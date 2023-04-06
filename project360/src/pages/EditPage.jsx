@@ -115,7 +115,6 @@ function EditPage() {
     let isMounted = true;
 
     socket.on("updateRoom", () => {
-      console.log("Listening to updateRoom");
       const getItems = async () => {
         const accessToken = await getAccessTokenSilently();
         apiService

@@ -52,15 +52,10 @@ function ContextMenu({ ContextMenu, models, setModels }) {
   };
 
   const deleteItem = () => {
-    console.log("delete");
-    console.log(ContextMenu.current.id);
-
     updateDelete(ContextMenu.current.id);
   };
 
   const rotateC = () => {
-    console.log("rotateC");
-    console.log(ContextMenu.current.id);
     try {
       const model = ContextMenu.current.ref.current;
       model.rotation.y -= Math.PI / 4;
@@ -82,9 +77,6 @@ function ContextMenu({ ContextMenu, models, setModels }) {
   };
 
   const rotateCC = () => {
-    console.log("rotateCC");
-    console.log(ContextMenu.current.id);
-
     try {
       const model = ContextMenu.current.ref.current;
       model.rotation.y += Math.PI / 4;

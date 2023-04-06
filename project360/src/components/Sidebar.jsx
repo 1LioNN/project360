@@ -45,10 +45,7 @@ function SideBar({ userId, rooms, setRooms, filter, setFilter }) {
   };
 
   const onFilter = (f, url) => {
-    console.log(f);
-    console.log(url);
     setFilter(f);
-    console.log(filter);
     navigate(url);
   };
 

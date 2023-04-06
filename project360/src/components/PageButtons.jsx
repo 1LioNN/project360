@@ -4,9 +4,6 @@ import { useState } from "react";
 function PageButtons({ page, setPage, totalRooms, currentRooms }) {
   const [first, setFirst] = useState(false);
   const [last, setLast] = useState(false);
-
-  console.log(currentRooms, totalRooms, page);
-
   useEffect(() => {
     if (page === 0) {
       setFirst(true);

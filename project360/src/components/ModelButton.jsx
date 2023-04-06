@@ -2,8 +2,6 @@ import React from "react";
 import Button from "./Button";
 
 function ModelButton({ type, addModel, loadingModels }) {
-  // console.log(type);
-  // console.log(`../assets/models/` + type + "/" + type + ".png");
   return (
     <div className="flex flex-col border-neutral-600 border-2 rounded-3xl h-60 w-52 overflow-hidden">
       <img

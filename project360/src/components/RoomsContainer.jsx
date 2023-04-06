@@ -25,7 +25,6 @@ function RoomsContainer({ userId, rooms, setRooms, filter, page, setPage }) {
   });
 
   useEffect(() => {
-    console.log("RoomsContainer useEffect");
     if (!userId) {
       return;
     }

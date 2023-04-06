@@ -104,7 +104,7 @@ function Graphic() {
           />
         </div>
       </div>
-      <Canvas camera={{ position: [0, 5, 10] }}>
+      <Canvas camera={{ position: [0, 8, 11] }}>
         <ambientLight intensity={0.3} />
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
         <ambientLight intensity={0.5} />
