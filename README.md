@@ -49,9 +49,11 @@ Overall, _Project 360_ is an innovative and user-friendly web app that offers an
   - Will use scopes for User information (name, email, maybe a profile picture)
 - socket.io (2 points)
   - Will be used for allowing users to collaborate on dragging the furniture to the room in real time.
+  - Will also include the usage of redis to work with multiple replicas
   - Canvas updates will give users the ability to:
     - Place items on the canvas
     - Move items around on the canvas
+    - Rotate items on the canvas
     - Clear/ delete items from the canvas
 - sendgrid (2 points)
   - Will be used for sending emails for invitations to the individual rooms
