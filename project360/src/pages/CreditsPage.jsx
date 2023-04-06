@@ -288,20 +288,17 @@ function CreditsPage() {
             <span className="flex text-2xl font-bold">Deployment and Misc</span>
             <ul className="text-lg mt-4">
               <li>
-                <a className="text-blue-400"
-                href= "digitalocean.com">
+                <a className="text-blue-400" href="digitalocean.com">
                   Deployed using DigitalOcean
                 </a>
               </li>
               <li>
-                <a className="text-blue-400"
-                >
+                <a className="text-blue-400">
                   Deployed using lab9 and lab10 code
                 </a>
               </li>
               <li>
-                <a className="text-blue-400"
-                href= "chat.openai.com/chat">
+                <a className="text-blue-400" href="chat.openai.com/chat">
                   ChatGPT
                 </a>
               </li>
